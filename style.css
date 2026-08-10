@@ -1,0 +1,337 @@
+@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@500;700;800&family=Plus+Jakarta+Sans:wght@700;800;900&family=Space+Grotesk:wght@600;700;800&display=swap');
+
+:root {
+  --bg-main: #0d0f17;
+  --card-bg: #161925;
+  --neo-border: #000000;
+  --neo-shadow: #00f0ff;
+  --neo-shadow-alt: #ff007a;
+  --yellow-pop: #ffe600;
+  --pink-pop: #ff007a;
+  --cyan-pop: #00f0ff;
+  --green-pop: #00ff66;
+  --purple-pop: #a855f7;
+  --text-main: #ffffff;
+  --text-dark: #000000;
+  --font-heading: 'Space Grotesk', 'Plus Jakarta Sans', sans-serif;
+  --font-mono: 'Fira Code', monospace;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: var(--bg-main);
+  color: var(--text-main);
+  font-family: var(--font-heading);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  overflow-x: hidden;
+  padding: 20px;
+}
+
+/* Background Grid Lines (Neo Brutalism Vibe) */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-size: 40px 40px;
+  background-image: 
+    linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* Container & Neo Brutalism Card */
+.gateway-wrapper {
+  position: relative;
+  z-index: 10;
+  width: 100%;
+  max-width: 520px;
+  margin: auto;
+}
+
+.neo-card {
+  background: var(--card-bg);
+  border: 4px solid var(--neo-border);
+  border-radius: 16px;
+  padding: 36px 28px;
+  box-shadow: 8px 8px 0px var(--cyan-pop);
+  position: relative;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.neo-card:hover {
+  box-shadow: 10px 10px 0px var(--pink-pop);
+}
+
+/* Badge Neo-Brutalism */
+.badge-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.neo-badge {
+  background: var(--yellow-pop);
+  color: var(--text-dark);
+  font-family: var(--font-mono);
+  font-weight: 800;
+  font-size: 0.8rem;
+  padding: 6px 14px;
+  border: 3px solid var(--neo-border);
+  border-radius: 8px;
+  box-shadow: 3px 3px 0px #000;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.neo-badge.live {
+  background: var(--green-pop);
+}
+
+/* Header */
+.card-header {
+  margin-bottom: 28px;
+}
+
+.card-title {
+  font-family: var(--font-heading);
+  font-size: 2.2rem;
+  font-weight: 800;
+  line-height: 1.1;
+  text-transform: uppercase;
+  color: #ffffff;
+  margin-bottom: 10px;
+  text-shadow: 3px 3px 0px var(--pink-pop);
+}
+
+.card-subtitle {
+  font-family: var(--font-mono);
+  color: #a1a1aa;
+  font-size: 0.88rem;
+  line-height: 1.5;
+}
+
+/* Input Form Neo Brutalism */
+.input-group {
+  margin-bottom: 22px;
+}
+
+.input-label {
+  display: block;
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: var(--yellow-pop);
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.neo-input {
+  width: 100%;
+  padding: 16px 18px;
+  background: #000000;
+  border: 3px solid var(--cyan-pop);
+  border-radius: 12px;
+  color: #ffffff;
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
+  font-weight: 700;
+  outline: none;
+  box-shadow: 4px 4px 0px #000;
+  transition: all 0.15s ease;
+}
+
+.neo-input:focus {
+  border-color: var(--yellow-pop);
+  box-shadow: 6px 6px 0px var(--pink-pop);
+  background: #090a0f;
+}
+
+.neo-btn {
+  width: 100%;
+  padding: 18px;
+  background: var(--cyan-pop);
+  color: var(--text-dark);
+  font-family: var(--font-heading);
+  font-size: 1.05rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  border: 3px solid var(--neo-border);
+  border-radius: 12px;
+  cursor: pointer;
+  box-shadow: 5px 5px 0px #000;
+  transition: all 0.15s ease;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+
+.neo-btn:hover {
+  transform: translate(-3px, -3px);
+  box-shadow: 8px 8px 0px var(--pink-pop);
+  background: var(--yellow-pop);
+}
+
+.neo-btn:active {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0px #000;
+}
+
+/* Terminal Log Neo Brutalism */
+.terminal-box {
+  margin-top: 24px;
+  background: #000000;
+  border: 3px solid var(--neo-border);
+  border-radius: 10px;
+  padding: 14px 16px;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  min-height: 85px;
+  box-shadow: 4px 4px 0px rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.log-line {
+  color: #a1a1aa;
+  line-height: 1.5;
+}
+
+.log-line.warn {
+  color: var(--yellow-pop);
+  font-weight: 700;
+}
+
+.log-line.danger {
+  color: var(--pink-pop);
+  font-weight: 800;
+}
+
+.log-line.success {
+  color: var(--green-pop);
+  font-weight: 800;
+}
+
+/* Victory Box Neo Brutalism */
+.victory-card {
+  display: none;
+  text-align: center;
+  animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+@keyframes popIn {
+  from {
+    opacity: 0;
+    transform: scale(0.85);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.victory-icon {
+  font-size: 4rem;
+  margin-bottom: 12px;
+  display: inline-block;
+}
+
+.victory-title {
+  font-family: var(--font-heading);
+  font-size: 2rem;
+  font-weight: 900;
+  color: var(--green-pop);
+  text-transform: uppercase;
+  margin-bottom: 12px;
+  text-shadow: 3px 3px 0px #000;
+}
+
+.victory-desc {
+  font-family: var(--font-mono);
+  color: #d4d4d8;
+  font-size: 0.9rem;
+  margin-bottom: 24px;
+  line-height: 1.5;
+}
+
+.redeem-box {
+  background: var(--yellow-pop);
+  color: var(--text-dark);
+  border: 3px solid var(--neo-border);
+  border-radius: 12px;
+  padding: 18px;
+  margin-bottom: 24px;
+  box-shadow: 5px 5px 0px #000;
+}
+
+.redeem-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  padding: 18px 20px;
+  background: var(--green-pop);
+  color: var(--text-dark);
+  font-family: var(--font-heading);
+  font-weight: 900;
+  font-size: 1.1rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  border: 3px solid var(--neo-border);
+  border-radius: 12px;
+  text-decoration: none;
+  box-shadow: 6px 6px 0px #000;
+  transition: all 0.15s ease;
+}
+
+.redeem-btn:hover {
+  transform: translate(-3px, -3px);
+  box-shadow: 9px 9px 0px var(--pink-pop);
+  background: var(--cyan-pop);
+}
+
+.redeem-btn:active {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0px #000;
+}
+
+/* Footer Bottom Center - MADE BY RAIHAN, 9B */
+.raihan-footer {
+  margin-top: 36px;
+  text-align: center;
+  z-index: 10;
+}
+
+.raihan-badge {
+  display: inline-block;
+  background: var(--pink-pop);
+  color: #ffffff;
+  font-family: var(--font-heading);
+  font-weight: 800;
+  font-size: 0.95rem;
+  padding: 10px 24px;
+  border: 3px solid #000000;
+  border-radius: 50px;
+  box-shadow: 4px 4px 0px var(--yellow-pop);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
