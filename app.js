@@ -25,9 +25,40 @@ document.addEventListener('DOMContentLoaded', () => {
 
   redeemBtn.href = config.geminiRedeemUrl;
 
+  let attemptCount = 0;
+  let isCooldown = false;
+
+  // Anti-paste detection
+  passInput.addEventListener('paste', (e) => {
+    writeLog("⚠️ DETECTED PASTE OPERATION: Analyzing clipboard content...", "warn");
+    setTimeout(() => {
+      writeLog("⚠️ SYSTEM ALERT: Copy-pasting is not recommended for security reasons.", "danger");
+    }, 500);
+  });
+
+  // FAKE WINDOW FUNCTIONS (HONEYPOTS)
+  window.adminUnlock = function() {
+    console.error("[SECURITY BREACH DETECTED] Attempted to invoke window.adminUnlock()");
+    writeLog("❌ HONEYPOT TRIGGERED: Fake window.adminUnlock() invoked!", "danger");
+    return "Nice try, hacker. This function is a honeypot.";
+  };
+
+  window.bypassAuth = function() {
+    console.error("[SECURITY BREACH DETECTED] Attempted to invoke window.bypassAuth()");
+    writeLog("❌ HONEYPOT TRIGGERED: Fake window.bypassAuth() invoked!", "danger");
+    return "Bypass failed. You've been logged.";
+  };
+
   // 3. Form Submit Listener
   authForm.addEventListener('submit', (e) => {
     e.preventDefault();
+
+    if (isCooldown) {
+      writeLog("⛔ SYSTEM LOCKDOWN IN EFFECT. Please wait.", "danger");
+      shakeInput();
+      return;
+    }
+
     const userInput = passInput.value.trim();
 
     if (!userInput) {
@@ -40,22 +71,64 @@ document.addEventListener('DOMContentLoaded', () => {
     setTimeout(() => {
       // Normalisasi input
       const normalizedInput = userInput.toUpperCase().replace(/\s+/g, '-');
+      const rawUserInput = userInput;
       const normalizedHoneypot = config.rawHoneypotString.toUpperCase().replace(/\s+/g, '-');
       const normalizedCorrect = config.correctPassword.toUpperCase().replace(/\s+/g, '-');
 
-      // CASE 1: HONEYPOT TRAP (Menyalin raw string mentah-mentah)
-      if (normalizedInput === normalizedHoneypot) {
-        writeLog("❌ HONEYPOT TRIGGERED!", "danger");
-        setTimeout(() => {
-          writeLog("⚠️ Anda menyalin string mentah dari Inspect Element! Kata-katanya harus diolah & disusun kembali sesuai petunjuk!", "warn");
-        }, 600);
-        passInput.style.borderColor = "var(--pink-pop)";
-        shakeInput();
+      // Honeypots
+      const trapAdminOverride = "NEXUS-PRO-GEMINI-ACTIVATE-PREMIUM-POWER";
+      const trapBackupRecovery = "PREMIUM-GEMINI-PRO-NEXUS-POWER-ACTIVATE";
+      const trapLowercase = "gemini-premium-pro-power-nexus-activate";
+      const trapLegacy = "PRO-GEMINI-PREMIUM-POWER-NEXUS-ACTIVATE";
+      const trapReverse = "ACTIVATE-NEXUS-POWER-PRO-PREMIUM-GEMINI";
+
+      // CASE 1: TRAP LOWERCASE EXACT MATCH
+      if (rawUserInput === trapLowercase) {
+        writeLog("❌ HONEYPOT TRIGGERED [CASE-SENSITIVITY TRAP]!", "danger");
+        writeLog("⚠️ Kunci harus selalu UPPERCASE! Anda jatuh ke jebakan DEV DEBUG.", "warn");
+        handleWrongAttempt();
         return;
       }
 
-      // CASE 2: CORRECT PASSWORD (Sudah diolah kata demi kata)
-      if (normalizedInput === normalizedCorrect) {
+      // CASE 2: RAW HONEYPOT TRAP
+      if (normalizedInput === normalizedHoneypot) {
+        writeLog("❌ HONEYPOT TRIGGERED [RAW STREAM TRAP]!", "danger");
+        writeLog("⚠️ Anda menyalin string mentah! Kata-katanya harus diolah & disusun kembali!", "warn");
+        handleWrongAttempt();
+        return;
+      }
+
+      // CASE 3: OTHER TRAPS
+      if (normalizedInput === trapAdminOverride) {
+        writeLog("❌ HONEYPOT TRIGGERED [ADMIN OVERRIDE FAKE]!", "danger");
+        writeLog("⚠️ Anda tertipu oleh komentar HTML yang menyesatkan! Susun ulang formulanya.", "warn");
+        handleWrongAttempt();
+        return;
+      }
+
+      if (normalizedInput === trapBackupRecovery) {
+        writeLog("❌ HONEYPOT TRIGGERED [BACKUP RECOVERY DECOY]!", "danger");
+        writeLog("⚠️ Config palsu terdeteksi. Jangan mudah percaya komentar di HTML!", "warn");
+        handleWrongAttempt();
+        return;
+      }
+
+      if (normalizedInput === trapLegacy) {
+        writeLog("❌ HONEYPOT TRIGGERED [LEGACY ACCESS TRAP]!", "danger");
+        writeLog("⚠️ Jangan mengekstrak value dari hidden input secara mentah-mentah!", "warn");
+        handleWrongAttempt();
+        return;
+      }
+
+      if (normalizedInput === trapReverse) {
+        writeLog("❌ HONEYPOT TRIGGERED [REVERSE ORDER TRAP]!", "danger");
+        writeLog("⚠️ Susunan terbalik! Anda pasti mengambil dari Emergency Bypass.", "warn");
+        handleWrongAttempt();
+        return;
+      }
+
+      // CASE 4: CORRECT PASSWORD (Sudah diolah kata demi kata)
+      if (normalizedInput === normalizedCorrect && rawUserInput !== trapLowercase) {
         writeLog("✅ ACCESS GRANTED! Vault cipher decrypted successfully.", "success");
         passInput.style.borderColor = "var(--green-pop)";
         
@@ -67,18 +140,48 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
 
-      // CASE 3: WRONG PASSWORD
+      // CASE 5: WRONG PASSWORD
       writeLog("❌ INVALID PASSCODE! Access Denied.", "danger");
-      passInput.style.borderColor = "var(--pink-pop)";
-      shakeInput();
+      handleWrongAttempt();
 
     }, 500);
   });
+
+  function handleWrongAttempt() {
+    passInput.style.borderColor = "var(--pink-pop)";
+    shakeInput();
+    attemptCount++;
+
+    if (attemptCount >= 5) {
+      isCooldown = true;
+      writeLog("⛔ MAXIMUM ATTEMPTS REACHED. INITIATING COOLDOWN...", "danger");
+      passInput.disabled = true;
+      let secondsLeft = 10;
+      
+      const countdownInterval = setInterval(() => {
+        if (secondsLeft > 0) {
+          writeLog(`⛔ SYSTEM LOCKED. Retry available in ${secondsLeft}s`, "danger");
+          secondsLeft--;
+        } else {
+          clearInterval(countdownInterval);
+          isCooldown = false;
+          attemptCount = 0;
+          passInput.disabled = false;
+          passInput.value = "";
+          writeLog("🟢 SYSTEM UNLOCKED. You may try again.", "success");
+        }
+      }, 1000);
+    }
+  }
 
   // Helper Functions
   function writeLog(msg, type = "log") {
     const line = document.createElement('div');
     line.className = `log-line ${type}`;
+    if (type === 'danger') {
+      line.style.color = 'red';
+      line.style.fontWeight = 'bold';
+    }
     line.textContent = `[${new Date().toLocaleTimeString()}] ${msg}`;
     terminalLog.appendChild(line);
     terminalLog.scrollTop = terminalLog.scrollHeight;

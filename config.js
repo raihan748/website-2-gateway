@@ -21,3 +21,21 @@ window.CTF_CONFIG = {
   // Formula: GEMINI - PREMIUM - PRO - POWER - NEXUS - ACTIVATE
   correctPassword: "GEMINI-PREMIUM-PRO-POWER-NEXUS-ACTIVATE"
 };
+
+// DECOY CONFIGURATIONS TO TRAP PARTICIPANTS
+window.DECOY_CONFIG_1 = {
+  adminBypass: "NEXUS-PRO-GEMINI-ACTIVATE-PREMIUM-POWER",
+  securityLevel: "MAX",
+  // NOTE TO SELF: Use this bypass if the main formula fails
+};
+
+window.DECOY_CONFIG_2 = {
+  recoveryKey: "PREMIUM-GEMINI-PRO-NEXUS-POWER-ACTIVATE",
+  isEmergency: true,
+  // DANGER: Only use recovery key if database goes down
+};
+
+window.ADMIN_CONFIG_DEBUG = {
+  legacyAccess: "PRO-GEMINI-PREMIUM-POWER-NEXUS-ACTIVATE",
+  bypassAuth: "ACTIVATE-NEXUS-POWER-PRO-PREMIUM-GEMINI"
+};
