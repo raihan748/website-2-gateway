@@ -1,15 +1,13 @@
 /**
  * ====================================================================
- * APP.JS - NEXUS CYBER GATEWAY 1000x GAME ENGINE v5.0
+ * APP.JS - NEXUS CYBER GATEWAY 8-SLOT WORD PUZZLE ENGINE v5.0
  * ====================================================================
  * Features:
- * 1. Dual-Stream Matrix Rain Canvas (Cyan, Magenta & Gold drops)
- * 2. Polyphonic Web Audio API Synthesizer (Key clicks, alarms, fanfare)
- * 3. Custom Cyber Crosshair Reticle Cursor
- * 4. 3-State Theme Engine (Cyber / Matrix / Synth)
- * 5. Real-Time Dynamic Formula Matrix HUD Tracker
- * 6. Honeypot Anti-Tamper & Security Lockdown Cooldown
- * 7. Mega Holographic Victory Unboxing & Multi-Layer Confetti
+ * 1. 8-Slot Real-Time Formula Matrix HUD
+ * 2. Polyphonic Web Audio API Synthesizer (Key clicks & Victory fanfare)
+ * 3. 3-State Dynamic Theme Switcher (Cyber / Matrix / Synth)
+ * 4. Dual-Stream Matrix Rain Canvas
+ * 5. Holographic Victory Unboxing & Confetti
  * ====================================================================
  */
 
@@ -78,11 +76,9 @@ document.addEventListener('DOMContentLoaded', () => {
     } catch (e) {}
   }
 
-  function playAlarmSound() {
-    playTone(440, 'sawtooth', 0.15, 0.15);
-    setTimeout(() => playTone(330, 'sawtooth', 0.15, 0.15), 150);
-    setTimeout(() => playTone(440, 'sawtooth', 0.15, 0.15), 300);
-    setTimeout(() => playTone(330, 'sawtooth', 0.15, 0.15), 450);
+  function playErrorBeep() {
+    playTone(280, 'sawtooth', 0.15, 0.12);
+    setTimeout(() => playTone(220, 'sawtooth', 0.18, 0.12), 140);
   }
 
   function playVictoryFanfare() {
@@ -159,9 +155,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // 4. CONFIG & DOM ELEMENTS
   const config = window.CTF_CONFIG || {
-    geminiRedeemUrl: "https://g.co/play/redeem?code=DEFAULT",
-    rawHoneypotString: "PRO-PRO-PRO-GEMINI-PREMIUM-POWER-NEXUS-ACTIVATE",
-    correctPassword: "GEMINI-PREMIUM-PRO-POWER-NEXUS-ACTIVATE"
+    geminiRedeemUrl: "https://g.co/play/redeem?code=GEMINI_PRO_REWARD_CLAIM",
+    correctPassword: "GEMINI-PREMIUM-PRO-POWER-NEXUS-QUANTUM-CIPHER-ACTIVATE"
   };
 
   const authForm = document.getElementById('authForm');
@@ -177,13 +172,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
   redeemBtn.href = config.geminiRedeemUrl;
 
-  // Formula Chips
-  const chipBrand = document.getElementById('chip-brand');
-  const chipSpec = document.getElementById('chip-spec');
-  const chipTier = document.getElementById('chip-tier');
-  const chipStatus = document.getElementById('chip-status');
-  const chipSys = document.getElementById('chip-sys');
-  const chipAct = document.getElementById('chip-act');
+  // Formula Chips (8 Slots)
+  const chips = [
+    { el: document.getElementById('chip-1'), word: 'GEMINI' },
+    { el: document.getElementById('chip-2'), word: 'PREMIUM' },
+    { el: document.getElementById('chip-3'), word: 'PRO' },
+    { el: document.getElementById('chip-4'), word: 'POWER' },
+    { el: document.getElementById('chip-5'), word: 'NEXUS' },
+    { el: document.getElementById('chip-6'), word: 'QUANTUM' },
+    { el: document.getElementById('chip-7'), word: 'CIPHER' },
+    { el: document.getElementById('chip-8'), word: 'ACTIVATE' }
+  ];
 
   clearBtn.addEventListener('click', () => {
     passInput.value = '';
@@ -204,29 +203,18 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   function updateFormulaHUD(val) {
-    const upper = val.toUpperCase();
-    const c1 = upper.includes('GEMINI');
-    const c2 = upper.includes('PREMIUM');
-    const c3 = upper.includes('PRO');
-    const c4 = upper.includes('POWER');
-    const c5 = upper.includes('NEXUS');
-    const c6 = upper.includes('ACTIVATE');
+    const tokens = val.toUpperCase().split(/[-_\s]+/).map(t => t.trim()).filter(Boolean);
+    let locked = 0;
 
-    chipBrand.classList.toggle('active', c1);
-    chipSpec.classList.toggle('active', c2);
-    chipTier.classList.toggle('active', c3);
-    chipStatus.classList.toggle('active', c4);
-    chipSys.classList.toggle('active', c5);
-    chipAct.classList.toggle('active', c6);
+    chips.forEach(({ el, word }) => {
+      const isPresent = tokens.includes(word);
+      el.classList.toggle('active', isPresent);
+      if (isPresent) locked++;
+    });
 
-    const locked = [c1, c2, c3, c4, c5, c6].filter(Boolean).length;
-    formulaCount.textContent = `${locked} / 6 LOCKED`;
-    formulaCount.style.color = locked === 6 ? 'var(--green-pop)' : 'var(--yellow-pop)';
+    formulaCount.textContent = `${locked} / 8 ASSEMBLED`;
+    formulaCount.style.color = locked === 8 ? 'var(--green-pop)' : 'var(--yellow-pop)';
   }
-
-  passInput.addEventListener('paste', () => {
-    writeLog("⚠️ CLIPBOARD INTERCEPT: Pasted input stream detected.", "warn");
-  });
 
   // 5. 3D CARD TILT PHYSICS
   if (window.innerWidth > 768) {
@@ -244,109 +232,55 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // 6. SUBMISSION & HONEYPOT VERIFICATION
-  let failedAttempts = 0;
-  let isCooldown = false;
-
+  // 6. SUBMISSION & PURE PUZZLE VERIFICATION (NO HONEYPOT LOCKOUT)
   authForm.addEventListener('submit', (e) => {
     e.preventDefault();
-    if (isCooldown) {
-      writeLog("⏳ COOLDOWN ACTIVE: Mohon tunggu sebelum mencoba kembali!", "danger");
-      return;
-    }
 
     const userInput = passInput.value.trim();
     if (!userInput) {
-      writeLog("⚠️ Harap masukkan Access Key!", "warn");
+      writeLog("⚠️ Harap masukkan 8-Slot Master Formula Key!", "warn");
       return;
     }
 
-    writeLog("🔍 Parsing & analyzing token sequence against security hash...", "info");
+    writeLog("🔍 Validating 8-Slot syntactic hierarchy...", "info");
     submitBtn.disabled = true;
 
     setTimeout(() => {
       submitBtn.disabled = false;
       const normalizedInput = userInput.toUpperCase().replace(/\s+/g, '-');
-      const normalizedHoneypot = config.rawHoneypotString.toUpperCase().replace(/\s+/g, '-');
       const normalizedCorrect = config.correctPassword.toUpperCase().replace(/\s+/g, '-');
 
-      // CASE 1: RAW HONEYPOT TRAP
-      if (normalizedInput === normalizedHoneypot) {
-        handleHoneypotTrigger("❌ HONEYPOT TRIGGERED! Anda menyalin raw stream tanpa deduplikasi kata!");
-        return;
-      }
-
-      // CASE 2: DECOY PASSWORDS
-      const decoyPasswords = [
-        "NEXUS-PRO-GEMINI-ACTIVATE-PREMIUM-POWER",
-        "PREMIUM-GEMINI-PRO-NEXUS-POWER-ACTIVATE",
-        "gemini-premium-pro-power-nexus-activate",
-        "PRO-GEMINI-PREMIUM-POWER-NEXUS-ACTIVATE",
-        "ACTIVATE-NEXUS-POWER-PRO-PREMIUM-GEMINI"
-      ].map(p => p.toUpperCase().replace(/\s+/g, '-'));
-
-      if (decoyPasswords.includes(normalizedInput)) {
-        handleHoneypotTrigger("❌ DECOY TRAP! Urutan kata tidak sesuai formula [BRAND]-[SPEC]-[TIER]-[STATUS]-[SYS]-[ACTION]!");
-        return;
-      }
-
-      // CASE 3: CORRECT MASTER PASSWORD
+      // Check if matches the 8-token Master Password
       if (normalizedInput === normalizedCorrect) {
         handleSuccess();
         return;
       }
 
-      // CASE 4: GENERIC WRONG PASSCODE
-      failedAttempts++;
-      playAlarmSound();
-      writeLog(`❌ INVALID ACCESS KEY! Access Denied (Attempt ${failedAttempts}).`, "danger");
+      // Check length and give intelligent constructive hints
+      const inputTokens = normalizedInput.split('-');
+      playErrorBeep();
       passInput.style.borderColor = "var(--pink-pop)";
       shakeElement(formCard);
 
-      if (failedAttempts >= 5) {
-        startCooldown(10);
+      if (inputTokens.length !== 8) {
+        writeLog(`❌ INVALID WORD COUNT: Terdeteksi ${inputTokens.length} kata (Dibutuhkan tepat 8 kata dipisah strip).`, "danger");
+      } else {
+        writeLog("❌ SEQUENCE MISMATCH: 8 kata terdeteksi tapi urutannya belum sesuai hierarki semantik.", "danger");
       }
-    }, 550);
+      writeLog("💡 HINT: Buka Inspect Element (F12) -> Lihat 'Panduan Lengkap & Petunjuk Olah Kata'!", "warn");
+    }, 450);
   });
-
-  function handleHoneypotTrigger(message) {
-    playAlarmSound();
-    writeLog(message, "danger");
-    writeLog("💡 HINT: Hapus kata duplikat dan susun kata: GEMINI -> PREMIUM -> PRO -> POWER -> NEXUS -> ACTIVATE", "warn");
-    passInput.style.borderColor = "var(--pink-pop)";
-    shakeElement(formCard);
-  }
 
   function handleSuccess() {
     playVictoryFanfare();
-    writeLog("✅ ACCESS GRANTED! Master Vault unlocked successfully.", "success");
+    writeLog("✅ ACCESS GRANTED! 8-Slot Master Formula matched perfectly.", "success");
     passInput.style.borderColor = "var(--green-pop)";
 
     setTimeout(() => {
       formCard.style.display = "none";
       victoryCard.style.display = "block";
       triggerMegaConfetti();
-    }, 900);
-  }
-
-  function startCooldown(seconds) {
-    isCooldown = true;
-    let remaining = seconds;
-    passInput.disabled = true;
-    submitBtn.disabled = true;
-
-    const interval = setInterval(() => {
-      writeLog(`🚨 SECURITY LOCKDOWN: Cooldown active (${remaining}s)...`, "danger");
-      remaining--;
-      if (remaining < 0) {
-        clearInterval(interval);
-        isCooldown = false;
-        failedAttempts = 0;
-        passInput.disabled = false;
-        submitBtn.disabled = false;
-        writeLog("🟢 Security lockdown cleared. Ready for input.", "info");
-      }
-    }, 1000);
+    }, 800);
   }
 
   // 7. HELPER LOG & SHAKE
@@ -360,28 +294,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function shakeElement(el) {
     el.animate([
-      { transform: 'translateX(-10px)' },
-      { transform: 'translateX(10px)' },
-      { transform: 'translateX(-10px)' },
-      { transform: 'translateX(10px)' },
+      { transform: 'translateX(-8px)' },
+      { transform: 'translateX(8px)' },
+      { transform: 'translateX(-8px)' },
+      { transform: 'translateX(8px)' },
       { transform: 'translateX(0)' }
     ], {
-      duration: 350,
+      duration: 300,
       easing: 'ease-in-out'
     });
   }
 
-  // 8. FAKE GLOBAL BYPASS HONEYPOTS
-  window.adminUnlock = function() {
-    writeLog("⚠️ HONEYPOT ALERT: adminUnlock() is a fake bypass console hook!", "danger");
-    return "BLOCKED";
-  };
-  window.bypassAuth = function() {
-    writeLog("⚠️ HONEYPOT ALERT: bypassAuth() trap triggered!", "danger");
-    return "BLOCKED";
-  };
-
-  // 9. DUAL-STREAM NEON MATRIX CANVAS
+  // 8. DUAL-STREAM NEON MATRIX CANVAS
   const canvas = document.getElementById('matrixCanvas');
   if (canvas) {
     const ctx = canvas.getContext('2d');
@@ -419,7 +343,7 @@ document.addEventListener('DOMContentLoaded', () => {
     setInterval(draw, 33);
   }
 
-  // 10. MEGA CONFETTI EXPLOSION
+  // 9. MEGA CONFETTI EXPLOSION
   function triggerMegaConfetti() {
     const colors = ['#00f0ff', '#ff007a', '#ffe600', '#00ff66', '#ffffff', '#b55fe6', '#ffbe0b'];
     for (let i = 0; i < 110; i++) {
