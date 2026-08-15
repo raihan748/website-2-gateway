@@ -8,8 +8,27 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body data-admin-override="NEXUS-PRO-GEMINI-ACTIVATE-PREMIUM-POWER" data-fallback-hash="PREMIUM-GEMINI-PRO-NEXUS-POWER-ACTIVATE">
-  <!-- Canvas Matrix Background -->
+  <!-- Canvas Matrix Dual-Stream Background -->
   <canvas id="matrixCanvas"></canvas>
+
+  <!-- SCANLINE RETRO OVERLAY -->
+  <div class="scanlines"></div>
+
+  <!-- TOP RUNNING MARQUEE TICKER -->
+  <div class="marquee-bar top">
+    <div class="marquee-content">
+      <span>🔐 NEXUS GATEWAY STAGE 2</span>
+      <span>⚡ LIVE CIPHER VERIFICATION</span>
+      <span>⚡ DEDUPLICATE RAW STREAM</span>
+      <span>⚡ REWARD: GEMINI PRO</span>
+      <span>⚡ AUTHOR: RAIHAN, 9B</span>
+      <span>🔐 NEXUS GATEWAY STAGE 2</span>
+      <span>⚡ LIVE CIPHER VERIFICATION</span>
+      <span>⚡ DEDUPLICATE RAW STREAM</span>
+      <span>⚡ REWARD: GEMINI PRO</span>
+      <span>⚡ AUTHOR: RAIHAN, 9B</span>
+    </div>
+  </div>
 
   <!-- ADMIN OVERRIDE KEY: NEXUS-PRO-GEMINI-ACTIVATE-PREMIUM-POWER -->
   
@@ -52,34 +71,64 @@
 
   <!-- DEV DEBUG PASSWORD: gemini-premium-pro-power-nexus-activate -->
 
-  <main class="gateway-wrapper">
+  <main class="gateway-wrapper" id="tiltContainer">
+    <!-- SOUND FX TOGGLE -->
+    <div class="sound-control-wrapper">
+      <button type="button" id="soundToggleBtn" class="sound-btn" title="Toggle 8-bit Audio Synth">
+        <span id="soundIcon">🔊</span> <span id="soundLabel">SFX: ON</span>
+      </button>
+    </div>
+
     <!-- LOGIN / PUZZLE FORM CARD (NEO BRUTALISM STYLE) -->
     <div class="neo-card" id="formCard" data-secret-token="ACTIVATE-NEXUS-POWER-PRO-PREMIUM-GEMINI">
       <div class="badge-container">
-        <span class="neo-badge live">● STAGE 2 ACTIVE</span>
-        <span class="neo-badge">CTF 2026</span>
+        <span class="neo-badge live pulse-glow">● STAGE 2 ACTIVE</span>
+        <span class="neo-badge cyan">CTF 2026</span>
+        <span class="neo-badge pink">VAULT PORTAL</span>
       </div>
 
       <div class="card-header">
-        <h1 class="card-title">AUTHENTICATION GATEWAY</h1>
-        <p class="card-subtitle">Cek Inspect Element (F12) & olah kata demi kata untuk membuka portal!</p>
+        <h1 class="card-title glitch" data-text="AUTHENTICATION GATEWAY">AUTHENTICATION GATEWAY</h1>
+        <p class="card-subtitle">Cek <b>Inspect Element (F12)</b>, temukan RAW Stream & olah kata demi kata untuk membuka portal!</p>
       </div>
 
       <!-- LEGACY ACCESS KEY: PRO-GEMINI-PREMIUM-POWER-NEXUS-ACTIVATE -->
 
+      <!-- FORMULA TRACKER HUD (REAL-TIME KEYWORD VALIDATOR) -->
+      <div class="formula-tracker" id="formulaTracker">
+        <div class="formula-title">FORMULA MAPPING STATUS:</div>
+        <div class="formula-chips">
+          <span class="chip" id="chip-brand" data-word="GEMINI">1. BRAND</span>
+          <span class="chip-sep">-</span>
+          <span class="chip" id="chip-spec" data-word="PREMIUM">2. SPEC</span>
+          <span class="chip-sep">-</span>
+          <span class="chip" id="chip-tier" data-word="PRO">3. TIER</span>
+          <span class="chip-sep">-</span>
+          <span class="chip" id="chip-status" data-word="POWER">4. STATUS</span>
+          <span class="chip-sep">-</span>
+          <span class="chip" id="chip-sys" data-word="NEXUS">5. SYS</span>
+          <span class="chip-sep">-</span>
+          <span class="chip" id="chip-act" data-word="ACTIVATE">6. ACTION</span>
+        </div>
+      </div>
+
       <form id="authForm" autocomplete="off">
         <div class="input-group">
           <label class="input-label" for="passInput">🔑 MASTER ACCESS KEY:</label>
-          <input 
-            type="text" 
-            id="passInput" 
-            class="neo-input" 
-            placeholder="GEMINI-PREMIUM-PRO-..." 
-            required
-          >
+          <div class="input-wrapper">
+            <input 
+              type="text" 
+              id="passInput" 
+              class="neo-input" 
+              placeholder="GEMINI-PREMIUM-PRO-..." 
+              required
+            >
+            <button type="button" id="clearBtn" class="clear-btn" title="Clear input">✕</button>
+          </div>
         </div>
 
-        <button type="submit" class="neo-btn">
+        <button type="submit" class="neo-btn" id="submitBtn">
+          <span class="btn-shine"></span>
           <span>UNLOCK PORTAL GATEWAY</span>
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
             <path d="M5 12h14M12 5l7 7-7 7"/>
@@ -89,32 +138,45 @@
 
       <!-- TERMINAL LOG -->
       <div class="terminal-box" id="terminalLog">
-        <div class="log-line">[SYSTEM] Gateway Initialized. Awaiting Access Key input...</div>
-        <div class="log-line warn">[HINT] Inspect Element (F12) -> Temukan RAW Stream & Olah Kata demi kata!</div>
+        <div class="terminal-header">
+          <div class="terminal-dots">
+            <span class="dot red"></span>
+            <span class="dot yellow"></span>
+            <span class="dot green"></span>
+          </div>
+          <span class="terminal-title">GATEWAY CONSOLE v4.0</span>
+        </div>
+        <div class="terminal-content" id="logContent">
+          <div class="log-line info">[SYSTEM] Gateway Initialized. Awaiting Access Key input...</div>
+          <div class="log-line warn">[HINT] Inspect Element (F12) -> Temukan RAW Stream & Olah Kata demi kata!</div>
+        </div>
       </div>
     </div>
 
     <!-- EMERGENCY BYPASS: ACTIVATE-NEXUS-POWER-PRO-PREMIUM-GEMINI -->
 
-    <!-- VICTORY REWARD CARD (NEO BRUTALISM STYLE) -->
+    <!-- VICTORY REWARD CARD (NEO BRUTALISM CELEBRATION STYLE) -->
     <div class="neo-card victory-card" id="victoryCard">
-      <div class="victory-icon">⚡</div>
-      <h2 class="victory-title">VAULT UNLOCKED!</h2>
+      <div class="victory-header">
+        <div class="victory-icon pulse-glow">⚡</div>
+        <h2 class="victory-title glitch" data-text="VAULT UNLOCKED!">VAULT UNLOCKED!</h2>
+        <div class="victory-badge">ACCESS AUTHORIZED • LEVEL 15 CLEAR</div>
+      </div>
+
       <p class="victory-desc">
-        Hebat! Kamu telah memecahkan tantangan CTF, menghindari Honeypot, dan menyusun kata-katanya dengan tepat!
+        Hebat! Kamu telah berhasil memecahkan seluruh tantangan CTF, menghindari Honeypot, dan menyusun formula kata dengan sempurna!
       </p>
 
       <div class="redeem-box">
-        <div style="font-family: var(--font-mono); font-weight: 800; font-size: 0.85rem; text-transform: uppercase; margin-bottom: 6px;">
-          🎁 REWARD UNLOCKED:
-        </div>
-        <div style="font-family: var(--font-heading); font-size: 1.4rem; font-weight: 900; text-transform: uppercase;">
-          GEMINI PRO SUBSCRIPTION
-        </div>
+        <div class="reward-tag">🎁 REWARD UNLOCKED:</div>
+        <div class="reward-title">GEMINI PRO SUBSCRIPTION</div>
+        <div class="reward-subtitle">Official Voucher Code Access</div>
       </div>
 
       <a href="#" id="redeemBtn" target="_blank" rel="noopener noreferrer" class="redeem-btn">
-        <span>🎁 KLAIM GEMINI PRO SEKARANG</span>
+        <span class="btn-shine"></span>
+        <span class="redeem-icon">🎁</span>
+        <span>KLAIM GEMINI PRO SEKARANG</span>
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
           <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3"/>
         </svg>
@@ -124,10 +186,26 @@
     <!-- FOOTER CENTER: MADE BY RAIHAN, 9B -->
     <footer class="raihan-footer">
       <div class="raihan-badge">
-        🚀 Made by RAIHAN, 9B
+        <span class="footer-dot"></span>
+        <span>🚀 Made by RAIHAN, 9B</span>
+        <span class="footer-dot"></span>
       </div>
     </footer>
   </main>
+
+  <!-- BOTTOM RUNNING MARQUEE TICKER -->
+  <div class="marquee-bar bottom">
+    <div class="marquee-content reverse">
+      <span>🔑 VERIFIED ACCESS</span>
+      <span>⚡ DUAL CREST CONNECTED</span>
+      <span>🛡️ STAGE 2 GATEWAY</span>
+      <span>🚀 MADE BY RAIHAN, 9B</span>
+      <span>🔑 VERIFIED ACCESS</span>
+      <span>⚡ DUAL CREST CONNECTED</span>
+      <span>🛡️ STAGE 2 GATEWAY</span>
+      <span>🚀 MADE BY RAIHAN, 9B</span>
+    </div>
+  </div>
 
   <!-- FAKE SCRIPT BLOCK WITH DECOY VARIABLES -->
   <script>
