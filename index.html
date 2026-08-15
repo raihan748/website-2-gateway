@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="id" data-theme="cyber">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,27 +8,54 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body data-admin-override="NEXUS-PRO-GEMINI-ACTIVATE-PREMIUM-POWER" data-fallback-hash="PREMIUM-GEMINI-PRO-NEXUS-POWER-ACTIVATE">
-  <!-- Canvas Matrix Dual-Stream Background -->
+  <!-- CUSTOM CYBER CROSSHAIR CURSOR -->
+  <div id="cyberCursor" class="cyber-cursor"></div>
+  <div id="cursorDot" class="cursor-dot"></div>
+
+  <!-- DUAL-STREAM NEON MATRIX BACKGROUND CANVAS -->
   <canvas id="matrixCanvas"></canvas>
 
-  <!-- SCANLINE RETRO OVERLAY -->
+  <!-- CRT SCREEN VIGNETTE & SCANLINES -->
+  <div class="crt-overlay"></div>
   <div class="scanlines"></div>
 
   <!-- TOP RUNNING MARQUEE TICKER -->
   <div class="marquee-bar top">
     <div class="marquee-content">
       <span>🔐 NEXUS GATEWAY STAGE 2</span>
-      <span>⚡ LIVE CIPHER VERIFICATION</span>
+      <span>⚡ LIVE FORMULA VALIDATION ENGINE</span>
       <span>⚡ DEDUPLICATE RAW STREAM</span>
-      <span>⚡ REWARD: GEMINI PRO</span>
-      <span>⚡ AUTHOR: RAIHAN, 9B</span>
+      <span>⚡ REWARD: GEMINI PRO ACCESS</span>
+      <span>⚡ CREATED BY: RAIHAN, 9B</span>
       <span>🔐 NEXUS GATEWAY STAGE 2</span>
-      <span>⚡ LIVE CIPHER VERIFICATION</span>
+      <span>⚡ LIVE FORMULA VALIDATION ENGINE</span>
       <span>⚡ DEDUPLICATE RAW STREAM</span>
-      <span>⚡ REWARD: GEMINI PRO</span>
-      <span>⚡ AUTHOR: RAIHAN, 9B</span>
+      <span>⚡ REWARD: GEMINI PRO ACCESS</span>
+      <span>⚡ CREATED BY: RAIHAN, 9B</span>
     </div>
   </div>
+
+  <!-- FLOATING CONTROL DOCK (SOUND & THEME SWITCHER) -->
+  <header class="top-dock">
+    <div class="dock-left">
+      <div class="threat-meter-badge">
+        <span class="threat-dot"></span>
+        <span id="threatLabel">DEFENSE: SECURE</span>
+      </div>
+    </div>
+    <div class="dock-right">
+      <!-- THEME SWITCHER -->
+      <div class="theme-selector">
+        <button type="button" class="theme-btn active" data-theme="cyber" title="Cyber Neon Theme">CYBER</button>
+        <button type="button" class="theme-btn" data-theme="matrix" title="Matrix Green Theme">MATRIX</button>
+        <button type="button" class="theme-btn" data-theme="synth" title="Synth Gold Theme">SYNTH</button>
+      </div>
+      <!-- SOUND FX TOGGLE -->
+      <button type="button" id="soundToggleBtn" class="dock-btn sound-btn" title="Toggle 8-bit Web Audio Synth">
+        <span id="soundIcon">🔊</span> <span id="soundLabel">SFX: ON</span>
+      </button>
+    </div>
+  </header>
 
   <!-- ADMIN OVERRIDE KEY: NEXUS-PRO-GEMINI-ACTIVATE-PREMIUM-POWER -->
   
@@ -72,19 +99,13 @@
   <!-- DEV DEBUG PASSWORD: gemini-premium-pro-power-nexus-activate -->
 
   <main class="gateway-wrapper" id="tiltContainer">
-    <!-- SOUND FX TOGGLE -->
-    <div class="sound-control-wrapper">
-      <button type="button" id="soundToggleBtn" class="sound-btn" title="Toggle 8-bit Audio Synth">
-        <span id="soundIcon">🔊</span> <span id="soundLabel">SFX: ON</span>
-      </button>
-    </div>
-
     <!-- LOGIN / PUZZLE FORM CARD (NEO BRUTALISM STYLE) -->
     <div class="neo-card" id="formCard" data-secret-token="ACTIVATE-NEXUS-POWER-PRO-PREMIUM-GEMINI">
       <div class="badge-container">
         <span class="neo-badge live pulse-glow">● STAGE 2 ACTIVE</span>
         <span class="neo-badge cyan">CTF 2026</span>
-        <span class="neo-badge pink">VAULT PORTAL</span>
+        <span class="neo-badge yellow">VAULT PORTAL</span>
+        <span class="neo-badge pink">AUTHENTICATOR</span>
       </div>
 
       <div class="card-header">
@@ -96,18 +117,21 @@
 
       <!-- FORMULA TRACKER HUD (REAL-TIME KEYWORD VALIDATOR) -->
       <div class="formula-tracker" id="formulaTracker">
-        <div class="formula-title">FORMULA MAPPING STATUS:</div>
+        <div class="formula-title">
+          <span>REAL-TIME FORMULA MATRIX HUD:</span>
+          <span class="formula-count" id="formulaCount">0 / 6 LOCKED</span>
+        </div>
         <div class="formula-chips">
           <span class="chip" id="chip-brand" data-word="GEMINI">1. BRAND</span>
-          <span class="chip-sep">-</span>
+          <span class="chip-sep">➔</span>
           <span class="chip" id="chip-spec" data-word="PREMIUM">2. SPEC</span>
-          <span class="chip-sep">-</span>
+          <span class="chip-sep">➔</span>
           <span class="chip" id="chip-tier" data-word="PRO">3. TIER</span>
-          <span class="chip-sep">-</span>
+          <span class="chip-sep">➔</span>
           <span class="chip" id="chip-status" data-word="POWER">4. STATUS</span>
-          <span class="chip-sep">-</span>
+          <span class="chip-sep">➔</span>
           <span class="chip" id="chip-sys" data-word="NEXUS">5. SYS</span>
-          <span class="chip-sep">-</span>
+          <span class="chip-sep">➔</span>
           <span class="chip" id="chip-act" data-word="ACTIVATE">6. ACTION</span>
         </div>
       </div>
@@ -129,14 +153,15 @@
 
         <button type="submit" class="neo-btn" id="submitBtn">
           <span class="btn-shine"></span>
+          <span class="btn-bolt">⚡</span>
           <span>UNLOCK PORTAL GATEWAY</span>
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+          <svg class="btn-arrow" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
             <path d="M5 12h14M12 5l7 7-7 7"/>
           </svg>
         </button>
       </form>
 
-      <!-- TERMINAL LOG -->
+      <!-- INTERACTIVE TERMINAL LOG -->
       <div class="terminal-box" id="terminalLog">
         <div class="terminal-header">
           <div class="terminal-dots">
@@ -144,7 +169,8 @@
             <span class="dot yellow"></span>
             <span class="dot green"></span>
           </div>
-          <span class="terminal-title">GATEWAY CONSOLE v4.0</span>
+          <span class="terminal-title">NEXUS GATEWAY SHELL v4.0</span>
+          <button type="button" id="clearTermBtn" class="term-mini-btn">CLEAR</button>
         </div>
         <div class="terminal-content" id="logContent">
           <div class="log-line info">[SYSTEM] Gateway Initialized. Awaiting Access Key input...</div>
@@ -167,7 +193,9 @@
         Hebat! Kamu telah berhasil memecahkan seluruh tantangan CTF, menghindari Honeypot, dan menyusun formula kata dengan sempurna!
       </p>
 
-      <div class="redeem-box">
+      <!-- HOLOGRAPHIC REWARD CARD -->
+      <div class="redeem-box holo-card">
+        <div class="holo-shine"></div>
         <div class="reward-tag">🎁 REWARD UNLOCKED:</div>
         <div class="reward-title">GEMINI PRO SUBSCRIPTION</div>
         <div class="reward-subtitle">Official Voucher Code Access</div>
@@ -177,7 +205,7 @@
         <span class="btn-shine"></span>
         <span class="redeem-icon">🎁</span>
         <span>KLAIM GEMINI PRO SEKARANG</span>
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
           <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3"/>
         </svg>
       </a>
