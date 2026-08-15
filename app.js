@@ -1,13 +1,14 @@
 /**
  * ====================================================================
- * APP.JS - NEXUS CYBER GATEWAY 8-SLOT WORD PUZZLE ENGINE v5.0
+ * APP.JS - NEXUS CYBER GATEWAY DETECTIVE LOGIC GRID ENGINE v5.0
  * ====================================================================
  * Features:
- * 1. 8-Slot Real-Time Formula Matrix HUD
- * 2. Polyphonic Web Audio API Synthesizer (Key clicks & Victory fanfare)
- * 3. 3-State Dynamic Theme Switcher (Cyber / Matrix / Synth)
- * 4. Dual-Stream Matrix Rain Canvas
- * 5. Holographic Victory Unboxing & Confetti
+ * 1. 8-Slot Real-Time Detective Logic Grid HUD
+ * 2. On-Screen Detective Clue Drawer (Notepad)
+ * 3. Polyphonic Web Audio API Synthesizer (Key clicks & Fanfare)
+ * 4. 3-State Dynamic Theme Switcher (Cyber / Matrix / Synth)
+ * 5. Dual-Stream Matrix Rain Canvas
+ * 6. Holographic Victory Unboxing & Confetti
  * ====================================================================
  */
 
@@ -145,7 +146,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   renderCursor();
 
-  document.querySelectorAll('a, button, input').forEach(el => {
+  document.querySelectorAll('a, button, input, .helper-header').forEach(el => {
     el.addEventListener('mouseenter', () => {
       cursor.classList.add('hovered');
       playTone(1100, 'sine', 0.02, 0.04);
@@ -169,6 +170,20 @@ document.addEventListener('DOMContentLoaded', () => {
   const redeemBtn = document.getElementById('redeemBtn');
   const submitBtn = document.getElementById('submitBtn');
   const formulaCount = document.getElementById('formulaCount');
+
+  // Detective Clue Drawer
+  const toggleClueBtn = document.getElementById('toggleClueBtn');
+  const clueBody = document.getElementById('clueBody');
+  const clueArrow = document.getElementById('clueArrow');
+
+  if (toggleClueBtn && clueBody && clueArrow) {
+    toggleClueBtn.addEventListener('click', () => {
+      const isOpen = clueBody.style.display === 'block';
+      clueBody.style.display = isOpen ? 'none' : 'block';
+      clueArrow.classList.toggle('open', !isOpen);
+      playKeyClick();
+    });
+  }
 
   redeemBtn.href = config.geminiRedeemUrl;
 
@@ -220,8 +235,8 @@ document.addEventListener('DOMContentLoaded', () => {
   if (window.innerWidth > 768) {
     document.addEventListener('mousemove', (e) => {
       const { innerWidth, innerHeight } = window;
-      const x = (e.clientX / innerWidth - 0.5) * 16;
-      const y = (e.clientY / innerHeight - 0.5) * 16;
+      const x = (e.clientX / innerWidth - 0.5) * 14;
+      const y = (e.clientY / innerHeight - 0.5) * 14;
       const targetCard = formCard.style.display === 'none' ? victoryCard : formCard;
       targetCard.style.transform = `rotateY(${x}deg) rotateX(${-y}deg)`;
     });
@@ -232,7 +247,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // 6. SUBMISSION & PURE PUZZLE VERIFICATION (NO HONEYPOT LOCKOUT)
+  // 6. SUBMISSION & DETECTIVE LOGIC VERIFICATION
   authForm.addEventListener('submit', (e) => {
     e.preventDefault();
 
@@ -242,7 +257,7 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    writeLog("🔍 Validating 8-Slot syntactic hierarchy...", "info");
+    writeLog("🔍 Menguji deret kata terhadap 5 Aturan Posisi Logic Grid...", "info");
     submitBtn.disabled = true;
 
     setTimeout(() => {
@@ -263,17 +278,25 @@ document.addEventListener('DOMContentLoaded', () => {
       shakeElement(formCard);
 
       if (inputTokens.length !== 8) {
-        writeLog(`❌ INVALID WORD COUNT: Terdeteksi ${inputTokens.length} kata (Dibutuhkan tepat 8 kata dipisah strip).`, "danger");
+        writeLog(`❌ ATURAN DERET: Terdeteksi ${inputTokens.length} kata (Dibutuhkan tepat 8 kata dipisah strip).`, "danger");
       } else {
-        writeLog("❌ SEQUENCE MISMATCH: 8 kata terdeteksi tapi urutannya belum sesuai hierarki semantik.", "danger");
+        const expectedLengths = [6, 7, 3, 5, 5, 7, 6, 8];
+        const actualLengths = inputTokens.map(t => t.length);
+        const lengthMatch = JSON.stringify(expectedLengths) === JSON.stringify(actualLengths);
+
+        if (!lengthMatch) {
+          writeLog(`❌ CHECKSUM PANJANG HURUF TIDAK COCOK: Deret panjang huruf harus [6, 7, 3, 5, 5, 7, 6, 8]!`, "danger");
+        } else {
+          writeLog("❌ RELATIONAL ORDER ERROR: Panjang huruf cocok tetapi urutan kata belum memenuhi 5 Aturan Posisi!", "danger");
+        }
       }
-      writeLog("💡 HINT: Buka Inspect Element (F12) -> Lihat 'Panduan Lengkap & Petunjuk Olah Kata'!", "warn");
+      writeLog("💡 HINT: Buka 'Detective Clue Dossier' di atas untuk cek Aturan 1 s/d 5!", "warn");
     }, 450);
   });
 
   function handleSuccess() {
     playVictoryFanfare();
-    writeLog("✅ ACCESS GRANTED! 8-Slot Master Formula matched perfectly.", "success");
+    writeLog("✅ ACCESS GRANTED! Seluruh 8 teka-teki kata & aturan posisi terpecahkan sempurna.", "success");
     passInput.style.borderColor = "var(--green-pop)";
 
     setTimeout(() => {
