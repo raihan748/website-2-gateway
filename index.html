@@ -25,26 +25,32 @@
       <span>🔐 NEXUS GATEWAY STAGE 2</span>
       <span>🧩 DETECTIVE LOGIC GRID PUZZLE</span>
       <span>⚡ DECRYPT 8 MYSTERY WORDS & POSITIONAL RULES</span>
-      <span>⚡ REWARD: GEMINI PRO ACCESS</span>
-      <span>⚡ CREATED BY: RAIHAN, 9B</span>
+      <span>💎 REWARD: GEMINI PRO SUBSCRIPTION</span>
+      <span>🛡️ DUAL-CREST KEYSTONE: RIGHT VAULT</span>
+      <span>🚀 MADE BY RAIHAN, 9B</span>
       <span>🔐 NEXUS GATEWAY STAGE 2</span>
       <span>🧩 DETECTIVE LOGIC GRID PUZZLE</span>
       <span>⚡ DECRYPT 8 MYSTERY WORDS & POSITIONAL RULES</span>
-      <span>⚡ REWARD: GEMINI PRO ACCESS</span>
-      <span>⚡ CREATED BY: RAIHAN, 9B</span>
+      <span>💎 REWARD: GEMINI PRO SUBSCRIPTION</span>
+      <span>🛡️ DUAL-CREST KEYSTONE: RIGHT VAULT</span>
+      <span>🚀 MADE BY RAIHAN, 9B</span>
     </div>
   </div>
 
-  <!-- FLOATING CONTROL DOCK (SOUND & THEME SWITCHER) -->
+  <!-- FLOATING CONTROL DOCK (LATENCY, THEME SWITCHER & SFX TOGGLE) -->
   <header class="top-dock">
     <div class="dock-left">
       <div class="threat-meter-badge">
         <span class="threat-dot"></span>
         <span id="threatLabel">LOGIC GRID: ACTIVE</span>
       </div>
+      <div class="ping-badge">
+        <span class="ping-dot"></span>
+        <span id="pingCounter">PING: 12ms</span>
+      </div>
     </div>
     <div class="dock-right">
-      <!-- THEME SWITCHER -->
+      <!-- 3-STATE THEME SWITCHER -->
       <div class="theme-selector">
         <button type="button" class="theme-btn active" data-theme="cyber" title="Cyber Neon Theme">CYBER</button>
         <button type="button" class="theme-btn" data-theme="matrix" title="Matrix Green Theme">MATRIX</button>
@@ -120,11 +126,14 @@
   <main class="gateway-wrapper" id="tiltContainer">
     <!-- LOGIN / PUZZLE FORM CARD (NEO BRUTALISM STYLE) -->
     <div class="neo-card" id="formCard">
+      <!-- SPECULAR GLARE -->
+      <div class="card-glare" id="cardGlare"></div>
+
       <div class="badge-container">
         <span class="neo-badge live pulse-glow">● STAGE 2 ACTIVE</span>
         <span class="neo-badge cyan">CTF 2026</span>
         <span class="neo-badge yellow">LOGIC GRID PUZZLE</span>
-        <span class="neo-badge pink">VAULT PORTAL</span>
+        <span class="neo-badge pink">KEYSTONE: RIGHT</span>
       </div>
 
       <div class="card-header">
@@ -137,8 +146,10 @@
       <!-- ON-SCREEN DETECTIVE CLUES NOTEPAD (DRAWER) -->
       <div class="cipher-helper-drawer" id="clueDrawer">
         <div class="helper-header" id="toggleClueBtn">
-          <span class="helper-icon">🔍</span>
-          <span class="helper-title">DETECTIVE CLUE DOSSIER (PETUNJUK TEKA-TEKI)</span>
+          <div class="helper-header-left">
+            <span class="helper-icon">🔍</span>
+            <span class="helper-title">DETECTIVE CLUE DOSSIER (PETUNJUK TEKA-TEKI)</span>
+          </div>
           <span class="helper-arrow" id="clueArrow">▼</span>
         </div>
         <div class="helper-body" id="clueBody">
@@ -162,6 +173,27 @@
             <li>📌 <b>Aturan 4:</b> Kata aksi <code>ACTIVATE</code> selalu berada di posisi terakhir (Slot 8).</li>
             <li>📌 <b>Checksum Panjang:</b> Deret jumlah huruf Slot 1-8 adalah: <code>[6, 7, 3, 5, 5, 7, 6, 8]</code>.</li>
           </ul>
+        </div>
+      </div>
+
+      <!-- INTERACTIVE WORD BUILDER POOL (CLICKABLE CHIPS) -->
+      <div class="word-builder-pool">
+        <div class="pool-header">
+          <span>📦 RECOVERED WORD FRAGMENTS (KLIK UNTUK MEMASUKKAN):</span>
+        </div>
+        <div class="pool-chips" id="poolChips">
+          <button type="button" class="pool-chip" data-insert="GEMINI">GEMINI</button>
+          <button type="button" class="pool-chip" data-insert="PREMIUM">PREMIUM</button>
+          <button type="button" class="pool-chip" data-insert="PRO">PRO</button>
+          <button type="button" class="pool-chip" data-insert="POWER">POWER</button>
+          <button type="button" class="pool-chip" data-insert="NEXUS">NEXUS</button>
+          <button type="button" class="pool-chip" data-insert="QUANTUM">QUANTUM</button>
+          <button type="button" class="pool-chip" data-insert="CIPHER">CIPHER</button>
+          <button type="button" class="pool-chip" data-insert="ACTIVATE">ACTIVATE</button>
+          <button type="button" class="pool-chip distractor" data-insert="MATRIX">MATRIX</button>
+          <button type="button" class="pool-chip distractor" data-insert="VECTOR">VECTOR</button>
+          <button type="button" class="pool-chip distractor" data-insert="SHIELD">SHIELD</button>
+          <button type="button" class="pool-chip distractor" data-insert="BINARY">BINARY</button>
         </div>
       </div>
 
@@ -223,12 +255,12 @@
             <span class="dot yellow"></span>
             <span class="dot green"></span>
           </div>
-          <span class="terminal-title">NEXUS GATEWAY SHELL v5.0</span>
+          <span class="terminal-title">NEXUS GATEWAY SHELL v6.0</span>
           <button type="button" id="clearTermBtn" class="term-mini-btn">CLEAR</button>
         </div>
         <div class="terminal-content" id="logContent">
           <div class="log-line info">[SYSTEM] Gateway Initialized. Detective Logic Grid online.</div>
-          <div class="log-line warn">[HINT] Buka "Detective Clue Dossier" di atas atau Inspect Element (F12) untuk petunjuk lengkap!</div>
+          <div class="log-line warn">[HINT] Buka "Detective Clue Dossier" di atas atau klik chip kata untuk menyusun!</div>
         </div>
       </div>
     </div>

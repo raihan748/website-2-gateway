@@ -1,14 +1,16 @@
 /**
  * ====================================================================
- * APP.JS - NEXUS CYBER GATEWAY DETECTIVE LOGIC GRID ENGINE v5.0
+ * APP.JS - NEXUS CYBER GATEWAY 100.000x DETECTIVE LOGIC ENGINE v6.0
  * ====================================================================
  * Features:
- * 1. 8-Slot Real-Time Detective Logic Grid HUD
- * 2. On-Screen Detective Clue Drawer (Notepad)
- * 3. Polyphonic Web Audio API Synthesizer (Key clicks & Fanfare)
- * 4. 3-State Dynamic Theme Switcher (Cyber / Matrix / Synth)
- * 5. Dual-Stream Matrix Rain Canvas
- * 6. Holographic Victory Unboxing & Confetti
+ * 1. 8-Slot Real-Time Detective Logic Grid HUD & Live Slot Validator
+ * 2. Clickable Word Fragment Builder Chips (Auto-appends with hyphen)
+ * 3. On-Screen Detective Clue Drawer (Notepad)
+ * 4. Polyphonic Web Audio API Synthesizer (Key clicks, sweeps & fanfare)
+ * 5. 3-State Dynamic Theme Switcher (Cyber / Matrix / Synth)
+ * 6. Dual-Stream Neon Matrix Rain Canvas
+ * 7. 3D Specular Card Glare & Magnetic Parallax Physics
+ * 8. Holographic Victory Unboxing & Multi-Layer Confetti
  * ====================================================================
  */
 
@@ -121,7 +123,16 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // 3. CUSTOM CYBER CURSOR
+  // 3. PING MONITOR
+  const pingCounter = document.getElementById('pingCounter');
+  if (pingCounter) {
+    setInterval(() => {
+      const ping = Math.floor(Math.random() * 5) + 11;
+      pingCounter.textContent = `PING: ${ping}ms`;
+    }, 3500);
+  }
+
+  // 4. CUSTOM CYBER CURSOR
   const cursor = document.getElementById('cyberCursor');
   const cursorDot = document.getElementById('cursorDot');
 
@@ -146,7 +157,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   renderCursor();
 
-  document.querySelectorAll('a, button, input, .helper-header').forEach(el => {
+  document.querySelectorAll('a, button, input, .helper-header, .pool-chip').forEach(el => {
     el.addEventListener('mouseenter', () => {
       cursor.classList.add('hovered');
       playTone(1100, 'sine', 0.02, 0.04);
@@ -154,7 +165,7 @@ document.addEventListener('DOMContentLoaded', () => {
     el.addEventListener('mouseleave', () => cursor.classList.remove('hovered'));
   });
 
-  // 4. CONFIG & DOM ELEMENTS
+  // 5. CONFIG & DOM ELEMENTS
   const config = window.CTF_CONFIG || {
     geminiRedeemUrl: "https://g.co/play/redeem?code=GEMINI_PRO_REWARD_CLAIM",
     correctPassword: "GEMINI-PREMIUM-PRO-POWER-NEXUS-QUANTUM-CIPHER-ACTIVATE"
@@ -184,6 +195,23 @@ document.addEventListener('DOMContentLoaded', () => {
       playKeyClick();
     });
   }
+
+  // Interactive Word Builder Pool Chips
+  const poolChips = document.querySelectorAll('.pool-chip');
+  poolChips.forEach(chip => {
+    chip.addEventListener('click', () => {
+      const wordToInsert = chip.getAttribute('data-insert');
+      let currentVal = passInput.value.trim();
+      if (currentVal) {
+        passInput.value = `${currentVal}-${wordToInsert}`;
+      } else {
+        passInput.value = wordToInsert;
+      }
+      playKeyClick();
+      updateFormulaHUD(passInput.value);
+      passInput.focus();
+    });
+  });
 
   redeemBtn.href = config.geminiRedeemUrl;
 
@@ -231,14 +259,20 @@ document.addEventListener('DOMContentLoaded', () => {
     formulaCount.style.color = locked === 8 ? 'var(--green-pop)' : 'var(--yellow-pop)';
   }
 
-  // 5. 3D CARD TILT PHYSICS
-  if (window.innerWidth > 768) {
+  // 6. 3D SPECULAR GLARE & PARALLAX TILT
+  if (window.innerWidth > 768 && formCard) {
     document.addEventListener('mousemove', (e) => {
       const { innerWidth, innerHeight } = window;
       const x = (e.clientX / innerWidth - 0.5) * 14;
       const y = (e.clientY / innerHeight - 0.5) * 14;
       const targetCard = formCard.style.display === 'none' ? victoryCard : formCard;
       targetCard.style.transform = `rotateY(${x}deg) rotateX(${-y}deg)`;
+
+      const rect = targetCard.getBoundingClientRect();
+      const glareX = ((e.clientX - rect.left) / rect.width) * 100;
+      const glareY = ((e.clientY - rect.top) / rect.height) * 100;
+      targetCard.style.setProperty('--glare-x', `${glareX}%`);
+      targetCard.style.setProperty('--glare-y', `${glareY}%`);
     });
 
     document.addEventListener('mouseleave', () => {
@@ -247,7 +281,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // 6. SUBMISSION & DETECTIVE LOGIC VERIFICATION
+  // 7. SUBMISSION & DETECTIVE LOGIC VERIFICATION
   authForm.addEventListener('submit', (e) => {
     e.preventDefault();
 
@@ -306,7 +340,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 800);
   }
 
-  // 7. HELPER LOG & SHAKE
+  // 8. HELPER LOG & SHAKE
   function writeLog(msg, type = "info") {
     const line = document.createElement('div');
     line.className = `log-line ${type}`;
@@ -328,7 +362,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // 8. DUAL-STREAM NEON MATRIX CANVAS
+  // 9. DUAL-STREAM NEON MATRIX CANVAS
   const canvas = document.getElementById('matrixCanvas');
   if (canvas) {
     const ctx = canvas.getContext('2d');
@@ -366,10 +400,10 @@ document.addEventListener('DOMContentLoaded', () => {
     setInterval(draw, 33);
   }
 
-  // 9. MEGA CONFETTI EXPLOSION
+  // 10. MEGA CONFETTI EXPLOSION
   function triggerMegaConfetti() {
     const colors = ['#00f0ff', '#ff007a', '#ffe600', '#00ff66', '#ffffff', '#b55fe6', '#ffbe0b'];
-    for (let i = 0; i < 110; i++) {
+    for (let i = 0; i < 120; i++) {
       const p = document.createElement('div');
       p.style.position = 'fixed';
       p.style.left = Math.random() * 100 + 'vw';
