@@ -1,16 +1,14 @@
 /**
  * ====================================================================
- * APP.JS - NEXUS CYBER GATEWAY 100.000x DETECTIVE LOGIC ENGINE v6.0
+ * APP.JS - NEXUS CYBER GATEWAY PENGOLAHAN KATA ENGINE v6.0
  * ====================================================================
  * Features:
- * 1. 8-Slot Real-Time Detective Logic Grid HUD & Live Slot Validator
- * 2. Clickable Word Fragment Builder Chips (Auto-appends with hyphen)
- * 3. On-Screen Detective Clue Drawer (Notepad)
- * 4. Polyphonic Web Audio API Synthesizer (Key clicks, sweeps & fanfare)
- * 5. 3-State Dynamic Theme Switcher (Cyber / Matrix / Synth)
- * 6. Dual-Stream Neon Matrix Rain Canvas
- * 7. 3D Specular Card Glare & Magnetic Parallax Physics
- * 8. Holographic Victory Unboxing & Multi-Layer Confetti
+ * 1. 8-Slot Real-Time Formula Matrix HUD & Live Slot Validator
+ * 2. Polyphonic Web Audio API Synthesizer (Key clicks, sweeps & fanfare)
+ * 3. 3-State Dynamic Theme Switcher (Cyber / Matrix / Synth)
+ * 4. Dual-Stream Neon Matrix Rain Canvas
+ * 5. 3D Specular Card Glare & Magnetic Parallax Physics
+ * 6. Holographic Victory Unboxing & Multi-Layer Confetti
  * ====================================================================
  */
 
@@ -157,7 +155,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   renderCursor();
 
-  document.querySelectorAll('a, button, input, .helper-header, .pool-chip').forEach(el => {
+  document.querySelectorAll('a, button, input').forEach(el => {
     el.addEventListener('mouseenter', () => {
       cursor.classList.add('hovered');
       playTone(1100, 'sine', 0.02, 0.04);
@@ -181,37 +179,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const redeemBtn = document.getElementById('redeemBtn');
   const submitBtn = document.getElementById('submitBtn');
   const formulaCount = document.getElementById('formulaCount');
-
-  // Detective Clue Drawer
-  const toggleClueBtn = document.getElementById('toggleClueBtn');
-  const clueBody = document.getElementById('clueBody');
-  const clueArrow = document.getElementById('clueArrow');
-
-  if (toggleClueBtn && clueBody && clueArrow) {
-    toggleClueBtn.addEventListener('click', () => {
-      const isOpen = clueBody.style.display === 'block';
-      clueBody.style.display = isOpen ? 'none' : 'block';
-      clueArrow.classList.toggle('open', !isOpen);
-      playKeyClick();
-    });
-  }
-
-  // Interactive Word Builder Pool Chips
-  const poolChips = document.querySelectorAll('.pool-chip');
-  poolChips.forEach(chip => {
-    chip.addEventListener('click', () => {
-      const wordToInsert = chip.getAttribute('data-insert');
-      let currentVal = passInput.value.trim();
-      if (currentVal) {
-        passInput.value = `${currentVal}-${wordToInsert}`;
-      } else {
-        passInput.value = wordToInsert;
-      }
-      playKeyClick();
-      updateFormulaHUD(passInput.value);
-      passInput.focus();
-    });
-  });
 
   redeemBtn.href = config.geminiRedeemUrl;
 
@@ -324,7 +291,7 @@ document.addEventListener('DOMContentLoaded', () => {
           writeLog("❌ RELATIONAL ORDER ERROR: Panjang huruf cocok tetapi urutan kata belum memenuhi 5 Aturan Posisi!", "danger");
         }
       }
-      writeLog("💡 HINT: Buka 'Detective Clue Dossier' di atas untuk cek Aturan 1 s/d 5!", "warn");
+      writeLog("💡 HINT: Buka Inspect Element (F12) untuk melihat petunjuk lengkap!", "warn");
     }, 450);
   });
 
