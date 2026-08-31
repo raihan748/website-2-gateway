@@ -6,8 +6,11 @@
  */
 
 window.CTF_CONFIG = {
-  // Link Redeem Hadiah Gemini Pro:
+  // [CUSTOMIZE] Link Redeem Hadiah Gemini Pro (Ganti dengan link Anda kapan saja):
   geminiRedeemUrl: "https://g.co/play/redeem?code=GEMINI_PRO_REWARD_CLAIM",
+
+  // [CUSTOMIZE] Sumber Video Ucapan Selamat (Ganti dengan file lokal 'congrats.mp4' atau URL video online):
+  videoSource: "congrats.mp4",
 
   // Judul Event:
   eventTitle: "NEXUS CYBER GATEWAY v5.0 - DETECTIVE LOGIC EDITION",
@@ -26,3 +29,4 @@ window.CTF_CONFIG = {
   // Expected Word Length Sequence:
   expectedLengths: [6, 7, 3, 5, 5, 7, 6, 8]
 };
+

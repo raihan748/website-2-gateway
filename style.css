@@ -758,6 +758,187 @@ body::before {
   background: var(--accent-primary);
 }
 
+/* CAPACITY LOCKED NOTICE BANNER */
+.capacity-banner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: rgba(239, 68, 68, 0.12);
+  color: #f87171;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  padding: 12px 18px;
+  border-radius: 12px;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-weight: 700;
+  margin-bottom: 22px;
+  letter-spacing: 0.5px;
+  animation: pulse-border 2s infinite ease-in-out;
+}
+
+@keyframes pulse-border {
+  0%, 100% { border-color: rgba(239, 68, 68, 0.3); }
+  50% { border-color: rgba(239, 68, 68, 0.6); }
+}
+
+.neo-btn.disabled {
+  background: rgba(255, 255, 255, 0.05) !important;
+  color: var(--text-dim) !important;
+  border-color: var(--border-subtle) !important;
+  box-shadow: none !important;
+  cursor: not-allowed !important;
+  pointer-events: none;
+  opacity: 0.6;
+}
+
+/* MANDATORY VIDEO PLAYER */
+.video-container {
+  margin-bottom: 24px;
+}
+
+.video-wrapper {
+  position: relative;
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid var(--border-subtle);
+  background: #000000;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+  margin-bottom: 12px;
+}
+
+.video-wrapper video {
+  width: 100%;
+  max-height: 380px;
+  display: block;
+  object-fit: contain;
+  background: #000;
+}
+
+.video-guard-notice {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: rgba(245, 158, 11, 0.1);
+  color: #fbbf24;
+  border: 1px solid rgba(245, 158, 11, 0.25);
+  padding: 10px 16px;
+  border-radius: 10px;
+  font-family: var(--font-mono);
+  font-size: 0.76rem;
+  font-weight: 600;
+}
+
+.video-guard-notice.completed {
+  background: rgba(16, 185, 129, 0.1);
+  color: var(--accent-success-light);
+  border-color: rgba(16, 185, 129, 0.25);
+}
+
+/* 10-SECOND REDIRECT BAN COUNTDOWN */
+.claim-countdown-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: rgba(239, 68, 68, 0.12);
+  color: #fca5a5;
+  border: 1px solid rgba(239, 68, 68, 0.35);
+  padding: 14px 20px;
+  border-radius: 12px;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  margin-top: 16px;
+  animation: slideDown 0.3s ease;
+}
+
+.claim-countdown-box b {
+  color: #ef4444;
+  font-size: 1.1rem;
+}
+
+/* IP BANNED / ACCESS DENIED FULL-SCREEN OVERLAY */
+.banned-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(9, 13, 22, 0.95);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  z-index: 10000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 24px;
+}
+
+.banned-modal {
+  background: rgba(15, 23, 42, 0.9);
+  border: 1px solid rgba(239, 68, 68, 0.4);
+  border-radius: 20px;
+  box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.8), 0 0 30px rgba(239, 68, 68, 0.15);
+  max-width: 520px;
+  width: 100%;
+  padding: 40px 32px;
+  text-align: center;
+  animation: pop-in 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.banned-icon {
+  font-size: 3.5rem;
+  margin-bottom: 16px;
+}
+
+.banned-title {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: #f87171;
+  letter-spacing: -0.01em;
+  margin-bottom: 12px;
+}
+
+.banned-desc {
+  font-size: 0.92rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+  margin-bottom: 24px;
+}
+
+.banned-timer-box {
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 24px;
+}
+
+.timer-label {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--text-dim);
+  font-weight: 600;
+  margin-bottom: 6px;
+  letter-spacing: 0.5px;
+}
+
+.timer-value {
+  font-family: var(--font-mono);
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #fbbf24;
+}
+
+.banned-footer-badge {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--text-dim);
+  font-weight: 600;
+}
+
 /* RESPONSIVE */
 @media (max-width: 680px) {
   body { padding: 24px 14px; }
@@ -767,4 +948,6 @@ body::before {
   .neo-btn, .redeem-btn { font-size: 0.95rem; padding: 14px 18px; }
   .top-dock { flex-direction: column; gap: 12px; align-items: stretch; }
   .dock-left, .dock-right { justify-content: center; }
+  .banned-modal { padding: 32px 20px; }
 }
+

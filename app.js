@@ -159,6 +159,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // 5. CONFIG & DOM ELEMENTS
   const config = window.CTF_CONFIG || {
     geminiRedeemUrl: "https://g.co/play/redeem?code=GEMINI_PRO_REWARD_CLAIM",
+    videoSource: "congrats.mp4",
     correctPassword: "GEMINI-PREMIUM-PRO-POWER-NEXUS-QUANTUM-CIPHER-ACTIVATE"
   };
 
@@ -171,10 +172,32 @@ document.addEventListener('DOMContentLoaded', () => {
   const victoryCard = document.getElementById('victoryCard');
   const redeemBtn = document.getElementById('redeemBtn');
   const submitBtn = document.getElementById('submitBtn');
+  const submitBtnText = document.getElementById('submitBtnText');
+  const submitBolt = document.getElementById('submitBolt');
   const formulaCount = document.getElementById('formulaCount');
+  const capacityBanner = document.getElementById('capacityBanner');
+  const stageBadge = document.getElementById('stageBadge');
+  const congratsVideo = document.getElementById('congratsVideo');
+  const videoNotice = document.getElementById('videoNotice');
+  const videoNoticeText = document.getElementById('videoNoticeText');
+  const bannedOverlay = document.getElementById('bannedOverlay');
+  const bannedReason = document.getElementById('bannedReason');
+  const bannedExpiry = document.getElementById('bannedExpiry');
+  const claimCountdownBox = document.getElementById('claimCountdownBox');
+  const countdownSec = document.getElementById('countdownSec');
+
+  let isCurrentWinner = false;
+  let isLockedOut = false;
 
   if (redeemBtn) {
     redeemBtn.href = config.geminiRedeemUrl;
+  }
+
+  // Set Video Source
+  if (congratsVideo && config.videoSource) {
+    const sourceEl = congratsVideo.querySelector('source');
+    if (sourceEl) sourceEl.src = config.videoSource;
+    congratsVideo.load();
   }
 
   // Formula Chips (8 Slots)
@@ -248,10 +271,11 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // 7. SUBMISSION & DETECTIVE LOGIC VERIFICATION
+  // 7. SUBMISSION & DETECTIVE LOGIC VERIFICATION (WITH 1/1 CAPACITY LOCK)
   if (authForm) {
-    authForm.addEventListener('submit', (e) => {
+    authForm.addEventListener('submit', async (e) => {
       e.preventDefault();
+      if (isLockedOut) return;
 
       const userInput = passInput ? passInput.value.trim() : '';
       if (!userInput) {
@@ -262,18 +286,37 @@ document.addEventListener('DOMContentLoaded', () => {
       writeLog("Menguji deret kata terhadap 5 Aturan Posisi Logic Grid...", "info");
       if (submitBtn) submitBtn.disabled = true;
 
-      setTimeout(() => {
-        if (submitBtn) submitBtn.disabled = false;
-        const normalizedInput = userInput.toUpperCase().replace(/\s+/g, '-');
-        const normalizedCorrect = config.correctPassword.toUpperCase().replace(/\s+/g, '-');
+      const normalizedInput = userInput.toUpperCase().replace(/\s+/g, '-');
+      const normalizedCorrect = config.correctPassword.toUpperCase().replace(/\s+/g, '-');
 
-        // Check if matches the 8-token Master Password
-        if (normalizedInput === normalizedCorrect) {
+      // Check if matches the 8-token Master Password
+      if (normalizedInput === normalizedCorrect) {
+        // Attempt to claim 1/1 winner slot on database
+        if (window.CTF_BACKEND) {
+          writeLog("Memverifikasi ketersediaan kuota pemenang 1/1 ke server...", "info");
+          const claimRes = await window.CTF_BACKEND.claimWinner("Peserta 9B");
+
+          if (claimRes.success) {
+            isCurrentWinner = true;
+            handleSuccess();
+          } else if (claimRes.reason === 'capacity_full') {
+            playErrorBeep();
+            writeLog(`❌ KAPASITAS 1/1 SUDAH TERCAPAI: Peserta lain baru saja mendahului Anda!`, "danger");
+            lockFormForCapacity();
+          } else {
+            writeLog("Gagal verifikasi klaim: " + (claimRes.reason || 'Server error'), "danger");
+            if (submitBtn) submitBtn.disabled = false;
+          }
+        } else {
+          // Fallback if no backend
           handleSuccess();
-          return;
         }
+        return;
+      }
 
-        // Check length and give constructive hints
+      // If incorrect password
+      setTimeout(() => {
+        if (submitBtn && !isLockedOut) submitBtn.disabled = false;
         const inputTokens = normalizedInput.split('-');
         playErrorBeep();
         if (passInput) {
@@ -310,10 +353,135 @@ document.addEventListener('DOMContentLoaded', () => {
       if (formCard) formCard.style.display = "none";
       if (victoryCard) victoryCard.style.display = "block";
       triggerSubtleConfetti();
+
+      // Start Video
+      if (congratsVideo) {
+        congratsVideo.play().catch(() => {});
+      }
     }, 600);
   }
 
-  // 8. HELPER LOG & SHAKE
+  function lockFormForCapacity() {
+    isLockedOut = true;
+    if (capacityBanner) capacityBanner.style.display = "flex";
+    if (submitBtn) {
+      submitBtn.classList.add("disabled");
+      submitBtn.disabled = true;
+    }
+    if (submitBolt) submitBolt.textContent = "🔒";
+    if (submitBtnText) submitBtnText.textContent = "KAPASITAS 1/1 SUDAH TERCAPAI";
+    if (stageBadge) {
+      stageBadge.textContent = "● 1/1 CLAIMED";
+      stageBadge.className = "neo-badge yellow";
+    }
+  }
+
+  function showBannedScreen(reason = null, expiry = null) {
+    if (bannedOverlay) {
+      bannedOverlay.style.display = "flex";
+      if (bannedReason && reason) bannedReason.textContent = reason;
+      if (bannedExpiry && expiry) {
+        const d = new Date(expiry);
+        bannedExpiry.textContent = isNaN(d) ? '7 Hari ke Depan' : d.toLocaleString('id-ID');
+      }
+    }
+  }
+
+  // 8. MANDATORY VIDEO ENDED LISTENER (REVEALS REDEEM BUTTON)
+  if (congratsVideo) {
+    congratsVideo.addEventListener('ended', () => {
+      playVictoryFanfare();
+      if (videoNotice) {
+        videoNotice.className = "video-guard-notice completed";
+      }
+      if (videoNoticeText) {
+        videoNoticeText.textContent = "✅ Video selesai! Tombol klaim hadiah resmi dibuka di bawah.";
+      }
+      if (redeemBtn) {
+        redeemBtn.style.display = "flex";
+        redeemBtn.animate([
+          { opacity: 0, transform: 'translateY(10px)' },
+          { opacity: 1, transform: 'translateY(0)' }
+        ], { duration: 400 });
+      }
+    });
+  }
+
+  // 9. REDEEM BUTTON CLICK (TRIGGERS 1-WEEK BAN & 10s COUNTDOWN FOR WINNER)
+  if (redeemBtn) {
+    redeemBtn.addEventListener('click', async (e) => {
+      e.preventDefault();
+      redeemBtn.style.pointerEvents = 'none';
+
+      // 1. Open Gemini Pro link in new window
+      window.open(config.geminiRedeemUrl, '_blank');
+
+      // 2. Trigger mass IP ban on backend
+      if (window.CTF_BACKEND) {
+        window.CTF_BACKEND.triggerMassBan();
+      }
+
+      // 3. Show 10-second countdown for winner
+      if (claimCountdownBox && countdownSec) {
+        claimCountdownBox.style.display = "flex";
+        let timeLeft = 10;
+
+        const countdownInterval = setInterval(() => {
+          timeLeft--;
+          countdownSec.textContent = timeLeft;
+
+          if (timeLeft <= 0) {
+            clearInterval(countdownInterval);
+            showBannedScreen(
+              "Selamat! Hadiah Gemini Pro 18 Bulan Anda telah diklaim. Sesi ini telah selesai dan akses website dikunci selama 1 minggu.",
+              new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString()
+            );
+          }
+        }, 1000);
+      }
+    });
+  }
+
+  // 10. BACKEND VISITOR SCANNING & REALTIME SUBSCRIPTION
+  if (window.CTF_BACKEND) {
+    // 1. Scan Visitor IP
+    window.CTF_BACKEND.scanVisitor().then(res => {
+      if (res && res.banned) {
+        showBannedScreen(res.ban_reason, res.banned_until);
+      }
+    });
+
+    // 2. Check Initial State
+    window.CTF_BACKEND.fetchState().then(state => {
+      if (state && state.winner_name && !isCurrentWinner) {
+        lockFormForCapacity();
+      }
+    });
+
+    // 3. Realtime Listener
+    window.CTF_BACKEND.subscribeToUpdates(
+      // On ctf_state change
+      (state) => {
+        if (state && state.winner_name && !isCurrentWinner) {
+          lockFormForCapacity();
+        }
+      },
+      // On ctf_participants change
+      (participantPayload) => {
+        const record = participantPayload.new;
+        if (record && record.is_banned && !isCurrentWinner) {
+          // Check if this matches current client IP
+          window.CTF_BACKEND.getClientIP().then(myIp => {
+            if (record.ip_address === myIp) {
+              showBannedScreen(record.ban_reason, record.banned_until);
+            }
+          });
+        }
+      }
+    );
+  }
+
+  // 11. HELPER LOG & SHAKE
   function writeLog(msg, type = "info") {
     if (!logContent) return;
     const line = document.createElement('div');
@@ -337,7 +505,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // 9. AMBIENT MATRIX CANVAS (SUBTLE)
+  // 12. AMBIENT MATRIX CANVAS (SUBTLE)
   const canvas = document.getElementById('matrixCanvas');
   if (canvas) {
     const ctx = canvas.getContext('2d');
@@ -375,7 +543,7 @@ document.addEventListener('DOMContentLoaded', () => {
     setInterval(draw, 40);
   }
 
-  // 10. SUBTLE VICTORY CONFETTI
+  // 13. SUBTLE VICTORY CONFETTI
   function triggerSubtleConfetti() {
     const colors = ['#60a5fa', '#34d399', '#fbbf24', '#a78bfa', '#f8fafc'];
     for (let i = 0; i < 60; i++) {

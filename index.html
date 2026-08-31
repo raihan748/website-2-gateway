@@ -87,6 +87,24 @@
     ================================================================================
   -->
 
+  <!-- IP BANNED / ACCESS DENIED OVERLAY MODAL -->
+  <div id="bannedOverlay" class="banned-overlay" style="display: none;">
+    <div class="banned-modal">
+      <div class="banned-icon">🚫</div>
+      <h2 class="banned-title">ACCESS DENIED / IP BANNED</h2>
+      <p class="banned-desc" id="bannedReason">
+        Sesi kompetisi ini telah selesai dan hadiah Gemini Pro telah diklaim. Akses dari IP Anda diblokir sementara selama 1 minggu.
+      </p>
+      <div class="banned-timer-box">
+        <span class="timer-label">MASA BLOKIR BERLAKU HINGGA:</span>
+        <span class="timer-value" id="bannedExpiry">7 Hari ke Depan</span>
+      </div>
+      <div class="banned-footer-badge">
+        <span>🛡️ NEXUS SECURITY ENFORCEMENT</span>
+      </div>
+    </div>
+  </div>
+
   <main class="gateway-wrapper" id="tiltContainer">
     <!-- LOGIN / PUZZLE FORM CARD (NEO BRUTALISM STYLE) -->
     <div class="neo-card" id="formCard">
@@ -94,7 +112,7 @@
       <div class="card-glare" id="cardGlare"></div>
 
       <div class="badge-container">
-        <span class="neo-badge live pulse-glow">● STAGE 2 ACTIVE</span>
+        <span class="neo-badge live pulse-glow" id="stageBadge">● STAGE 2 ACTIVE</span>
         <span class="neo-badge cyan">CTF 2026</span>
         <span class="neo-badge yellow">PENGOLAHAN KATA</span>
         <span class="neo-badge pink">KEYSTONE: RIGHT</span>
@@ -105,6 +123,12 @@
         <p class="card-subtitle">
           Selamat datang di fase ke 2, dan kalian harus mengolah kata demi kata untuk masuk ke portal aktivasi hadiah di akun kalian. Buka <b>Inspect Element (F12)</b> untuk menemukan petunjuknya!
         </p>
+      </div>
+
+      <!-- CAPACITY LOCKED NOTICE BANNER -->
+      <div id="capacityBanner" class="capacity-banner" style="display: none;">
+        <span class="cap-icon">🔒</span>
+        <span id="capacityText">KAPASITAS 1/1 SUDAH TERCAPAI (PEMENANG SEDANG MENGKLAIM)</span>
       </div>
 
       <!-- FORMULA TRACKER HUD (REAL-TIME 8-SLOT KEYWORD VALIDATOR) -->
@@ -149,8 +173,8 @@
 
         <button type="submit" class="neo-btn" id="submitBtn">
           <span class="btn-shine"></span>
-          <span class="btn-bolt">⚡</span>
-          <span>SUBMIT & UNLOCK GATEWAY</span>
+          <span class="btn-bolt" id="submitBolt">⚡</span>
+          <span id="submitBtnText">SUBMIT & UNLOCK GATEWAY</span>
           <svg class="btn-arrow" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
             <path d="M5 12h14M12 5l7 7-7 7"/>
           </svg>
@@ -178,24 +202,39 @@
     <!-- VICTORY REWARD CARD (NEO BRUTALISM CELEBRATION STYLE) -->
     <div class="neo-card victory-card" id="victoryCard">
       <div class="victory-header">
-        <div class="victory-icon pulse-glow">⚡</div>
-        <h2 class="victory-title glitch" data-text="PORTAL DIBUKA!">PORTAL DIBUKA!</h2>
-        <div class="victory-badge">ACCESS AUTHORIZED • PENGOLAHAN KATA SUKSES</div>
+        <div class="victory-icon pulse-glow">🏆</div>
+        <h2 class="victory-title glitch" data-text="PORTAL DIBUKA!">SELAMAT, KAMU PEMENANGNYA!</h2>
+        <div class="victory-badge">ACCESS AUTHORIZED • 1/1 SLOT TERKUNCI</div>
       </div>
 
       <p class="victory-desc">
-        Luar biasa! Kamu telah berhasil memecahkan seluruh 8 teka-teki kriptografi dari Inspect Element, menganalisa aturan posisi, dan mengolah kata demi kata dengan sempurna!
+        Luar biasa! Kamu telah berhasil menjadi orang pertama yang memecahkan seluruh 8 teka-teki kriptografi dan aturan posisi! Silakan tonton video pesan ucapan selamat di bawah ini hingga selesai untuk mengklaim hadiah.
       </p>
 
+      <!-- MANDATORY VIDEO PLAYER SECTION -->
+      <div class="video-container" id="videoContainer">
+        <div class="video-wrapper">
+          <video id="congratsVideo" controls playsinline preload="auto">
+            <source id="videoSrc" src="congrats.mp4" type="video/mp4">
+            Browser Anda tidak mendukung pemutar video HTML5.
+          </video>
+        </div>
+        <div class="video-guard-notice" id="videoNotice">
+          <span class="guard-icon">⏳</span>
+          <span id="videoNoticeText">Tonton video hingga selesai untuk membuka tombol klaim hadiah Gemini Pro.</span>
+        </div>
+      </div>
+
       <!-- HOLOGRAPHIC REWARD CARD -->
-      <div class="redeem-box holo-card">
+      <div class="redeem-box holo-card" id="rewardInfoBox">
         <div class="holo-shine"></div>
         <div class="reward-tag">🎁 REWARD UNLOCKED:</div>
-        <div class="reward-title">GEMINI PRO SUBSCRIPTION</div>
+        <div class="reward-title">GEMINI PRO 18 BULAN</div>
         <div class="reward-subtitle">Official Voucher Code Access Ready</div>
       </div>
 
-      <a href="#" id="redeemBtn" target="_blank" rel="noopener noreferrer" class="redeem-btn">
+      <!-- CLAIM BUTTON (REVEALED AFTER VIDEO ENDS) -->
+      <a href="#" id="redeemBtn" target="_blank" rel="noopener noreferrer" class="redeem-btn" style="display: none;">
         <span class="btn-shine"></span>
         <span class="redeem-icon">🎁</span>
         <span>KLAIM GEMINI PRO SEKARANG</span>
@@ -203,6 +242,15 @@
           <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3"/>
         </svg>
       </a>
+
+      <!-- 10-SECOND REDIRECT BAN COUNTDOWN NOTICE -->
+      <div id="claimCountdownBox" class="claim-countdown-box" style="display: none;">
+        <span class="countdown-icon">⚠️</span>
+        <div class="countdown-text">
+          <span>Hadiah sedang dibuka di tab baru! Akses website ini akan dikunci dalam: </span>
+          <b id="countdownSec">10</b> detik.
+        </div>
+      </div>
     </div>
 
     <!-- FOOTER CENTER: MADE BY RAIHAN, 9B -->
@@ -214,7 +262,9 @@
     </footer>
   </main>
 
-  <!-- External Scripts -->
+  <!-- External & Backend Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase-client.js"></script>
   <script src="config.js"></script>
   <script src="app.js"></script>
 </body>
