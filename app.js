@@ -1,19 +1,11 @@
 /**
  * ====================================================================
- * APP.JS - NEXUS CYBER GATEWAY PENGOLAHAN KATA ENGINE v6.0
- * ====================================================================
- * Features:
- * 1. 8-Slot Real-Time Formula Matrix HUD & Live Slot Validator
- * 2. Polyphonic Web Audio API Synthesizer (Key clicks, sweeps & fanfare)
- * 3. 3-State Dynamic Theme Switcher (Cyber / Matrix / Synth)
- * 4. Dual-Stream Neon Matrix Rain Canvas
- * 5. 3D Specular Card Glare & Magnetic Parallax Physics
- * 6. Holographic Victory Unboxing & Multi-Layer Confetti
+ * APP.JS - NEXUS CYBER GATEWAY PENGOLAHAN KATA ENGINE
  * ====================================================================
  */
 
 document.addEventListener('DOMContentLoaded', () => {
-  // 1. POLYPHONIC WEB AUDIO SYNTHESIZER
+  // 1. WEB AUDIO SYNTHESIZER (SOFT AMBIENT TONES)
   let sfxEnabled = true;
   let audioCtx = null;
 
@@ -26,7 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  function playTone(freq, type = 'sine', duration = 0.08, gainVal = 0.12, decay = true) {
+  function playTone(freq, type = 'sine', duration = 0.06, gainVal = 0.03, decay = true) {
     if (!sfxEnabled) return;
     try {
       initAudio();
@@ -43,7 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       gain.gain.setValueAtTime(gainVal, audioCtx.currentTime);
       if (decay) {
-        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+        gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + duration);
       }
 
       osc.connect(gain);
@@ -55,7 +47,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function playKeyClick() {
-    playTone(1300 + Math.random() * 500, 'triangle', 0.02, 0.08);
+    playTone(800 + Math.random() * 200, 'sine', 0.015, 0.02);
   }
 
   function playLaserSweep() {
@@ -65,27 +57,27 @@ document.addEventListener('DOMContentLoaded', () => {
       if (!audioCtx) return;
       const osc = audioCtx.createOscillator();
       const gain = audioCtx.createGain();
-      osc.type = 'sawtooth';
-      osc.frequency.setValueAtTime(1600, audioCtx.currentTime);
-      osc.frequency.exponentialRampToValueAtTime(250, audioCtx.currentTime + 0.12);
-      gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.12);
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(700, audioCtx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(300, audioCtx.currentTime + 0.08);
+      gain.gain.setValueAtTime(0.03, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.08);
       osc.connect(gain);
       gain.connect(audioCtx.destination);
       osc.start();
-      osc.stop(audioCtx.currentTime + 0.12);
+      osc.stop(audioCtx.currentTime + 0.08);
     } catch (e) {}
   }
 
   function playErrorBeep() {
-    playTone(280, 'sawtooth', 0.15, 0.12);
-    setTimeout(() => playTone(220, 'sawtooth', 0.18, 0.12), 140);
+    playTone(280, 'sine', 0.12, 0.04);
+    setTimeout(() => playTone(220, 'sine', 0.14, 0.04), 120);
   }
 
   function playVictoryFanfare() {
-    const notes = [523.25, 659.25, 783.99, 1046.50, 1318.51, 1567.98];
+    const notes = [523.25, 659.25, 783.99, 1046.50];
     notes.forEach((freq, idx) => {
-      setTimeout(() => playTone(freq, 'triangle', 0.28, 0.14), idx * 95);
+      setTimeout(() => playTone(freq, 'sine', 0.25, 0.04), idx * 100);
     });
   }
 
@@ -94,20 +86,20 @@ document.addEventListener('DOMContentLoaded', () => {
   const soundIcon = document.getElementById('soundIcon');
   const soundLabel = document.getElementById('soundLabel');
 
-  soundToggleBtn.addEventListener('click', () => {
-    initAudio();
-    sfxEnabled = !sfxEnabled;
-    if (sfxEnabled) {
-      soundIcon.textContent = '🔊';
-      soundLabel.textContent = 'SFX: ON';
-      soundToggleBtn.style.borderColor = 'var(--pink-pop)';
-      playVictoryFanfare();
-    } else {
-      soundIcon.textContent = '🔇';
-      soundLabel.textContent = 'SFX: OFF';
-      soundToggleBtn.style.borderColor = '#555';
-    }
-  });
+  if (soundToggleBtn) {
+    soundToggleBtn.addEventListener('click', () => {
+      initAudio();
+      sfxEnabled = !sfxEnabled;
+      if (sfxEnabled) {
+        soundIcon.textContent = '🔊';
+        soundLabel.textContent = 'SFX: ON';
+        playVictoryFanfare();
+      } else {
+        soundIcon.textContent = '🔇';
+        soundLabel.textContent = 'SFX: OFF';
+      }
+    });
+  }
 
   // 2. THEME SWITCHER
   const themeButtons = document.querySelectorAll('.theme-btn');
@@ -130,38 +122,39 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 3500);
   }
 
-  // 4. CUSTOM CYBER CURSOR
+  // 4. SUBTLE CURSOR
   const cursor = document.getElementById('cyberCursor');
   const cursorDot = document.getElementById('cursorDot');
 
-  let mouseX = window.innerWidth / 2;
-  let mouseY = window.innerHeight / 2;
-  let cursorX = mouseX;
-  let cursorY = mouseY;
+  if (cursor && cursorDot) {
+    let mouseX = window.innerWidth / 2;
+    let mouseY = window.innerHeight / 2;
+    let cursorX = mouseX;
+    let cursorY = mouseY;
 
-  document.addEventListener('mousemove', (e) => {
-    mouseX = e.clientX;
-    mouseY = e.clientY;
-    cursorDot.style.left = mouseX + 'px';
-    cursorDot.style.top = mouseY + 'px';
-  });
-
-  function renderCursor() {
-    cursorX += (mouseX - cursorX) * 0.22;
-    cursorY += (mouseY - cursorY) * 0.22;
-    cursor.style.left = cursorX + 'px';
-    cursor.style.top = cursorY + 'px';
-    requestAnimationFrame(renderCursor);
-  }
-  renderCursor();
-
-  document.querySelectorAll('a, button, input').forEach(el => {
-    el.addEventListener('mouseenter', () => {
-      cursor.classList.add('hovered');
-      playTone(1100, 'sine', 0.02, 0.04);
+    document.addEventListener('mousemove', (e) => {
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+      cursorDot.style.left = mouseX + 'px';
+      cursorDot.style.top = mouseY + 'px';
     });
-    el.addEventListener('mouseleave', () => cursor.classList.remove('hovered'));
-  });
+
+    function renderCursor() {
+      cursorX += (mouseX - cursorX) * 0.25;
+      cursorY += (mouseY - cursorY) * 0.25;
+      cursor.style.left = cursorX + 'px';
+      cursor.style.top = cursorY + 'px';
+      requestAnimationFrame(renderCursor);
+    }
+    renderCursor();
+
+    document.querySelectorAll('a, button, input').forEach(el => {
+      el.addEventListener('mouseenter', () => {
+        cursor.classList.add('hovered');
+      });
+      el.addEventListener('mouseleave', () => cursor.classList.remove('hovered'));
+    });
+  }
 
   // 5. CONFIG & DOM ELEMENTS
   const config = window.CTF_CONFIG || {
@@ -180,7 +173,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const submitBtn = document.getElementById('submitBtn');
   const formulaCount = document.getElementById('formulaCount');
 
-  redeemBtn.href = config.geminiRedeemUrl;
+  if (redeemBtn) {
+    redeemBtn.href = config.geminiRedeemUrl;
+  }
 
   // Formula Chips (8 Slots)
   const chips = [
@@ -194,121 +189,133 @@ document.addEventListener('DOMContentLoaded', () => {
     { el: document.getElementById('chip-8'), word: 'ACTIVATE' }
   ];
 
-  clearBtn.addEventListener('click', () => {
-    passInput.value = '';
-    passInput.focus();
-    updateFormulaHUD('');
-    playKeyClick();
-  });
+  if (clearBtn && passInput) {
+    clearBtn.addEventListener('click', () => {
+      passInput.value = '';
+      passInput.focus();
+      updateFormulaHUD('');
+      playKeyClick();
+    });
+  }
 
-  clearTermBtn.addEventListener('click', () => {
-    logContent.innerHTML = '';
-    writeLog("Terminal buffer cleared.", "info");
-    playKeyClick();
-  });
+  if (clearTermBtn && logContent) {
+    clearTermBtn.addEventListener('click', () => {
+      logContent.innerHTML = '';
+      writeLog("Terminal buffer cleared.", "info");
+      playKeyClick();
+    });
+  }
 
-  passInput.addEventListener('input', (e) => {
-    playKeyClick();
-    updateFormulaHUD(e.target.value);
-  });
+  if (passInput) {
+    passInput.addEventListener('input', (e) => {
+      playKeyClick();
+      updateFormulaHUD(e.target.value);
+    });
+  }
 
   function updateFormulaHUD(val) {
     const tokens = val.toUpperCase().split(/[-_\s]+/).map(t => t.trim()).filter(Boolean);
     let locked = 0;
 
     chips.forEach(({ el, word }) => {
+      if (!el) return;
       const isPresent = tokens.includes(word);
       el.classList.toggle('active', isPresent);
       if (isPresent) locked++;
     });
 
-    formulaCount.textContent = `${locked} / 8 ASSEMBLED`;
-    formulaCount.style.color = locked === 8 ? 'var(--green-pop)' : 'var(--yellow-pop)';
+    if (formulaCount) {
+      formulaCount.textContent = `${locked} / 8 ASSEMBLED`;
+      formulaCount.style.color = locked === 8 ? 'var(--accent-success-light)' : '#fbbf24';
+    }
   }
 
-  // 6. 3D SPECULAR GLARE & PARALLAX TILT
+  // 6. GENTLE PARALLAX TILT
   if (window.innerWidth > 768 && formCard) {
     document.addEventListener('mousemove', (e) => {
       const { innerWidth, innerHeight } = window;
-      const x = (e.clientX / innerWidth - 0.5) * 14;
-      const y = (e.clientY / innerHeight - 0.5) * 14;
+      const x = (e.clientX / innerWidth - 0.5) * 6;
+      const y = (e.clientY / innerHeight - 0.5) * 6;
       const targetCard = formCard.style.display === 'none' ? victoryCard : formCard;
-      targetCard.style.transform = `rotateY(${x}deg) rotateX(${-y}deg)`;
-
-      const rect = targetCard.getBoundingClientRect();
-      const glareX = ((e.clientX - rect.left) / rect.width) * 100;
-      const glareY = ((e.clientY - rect.top) / rect.height) * 100;
-      targetCard.style.setProperty('--glare-x', `${glareX}%`);
-      targetCard.style.setProperty('--glare-y', `${glareY}%`);
+      if (targetCard) {
+        targetCard.style.transform = `rotateY(${x}deg) rotateX(${-y}deg)`;
+      }
     });
 
     document.addEventListener('mouseleave', () => {
-      formCard.style.transform = `rotateY(0deg) rotateX(0deg)`;
-      victoryCard.style.transform = `rotateY(0deg) rotateX(0deg)`;
+      if (formCard) formCard.style.transform = `rotateY(0deg) rotateX(0deg)`;
+      if (victoryCard) victoryCard.style.transform = `rotateY(0deg) rotateX(0deg)`;
     });
   }
 
   // 7. SUBMISSION & DETECTIVE LOGIC VERIFICATION
-  authForm.addEventListener('submit', (e) => {
-    e.preventDefault();
+  if (authForm) {
+    authForm.addEventListener('submit', (e) => {
+      e.preventDefault();
 
-    const userInput = passInput.value.trim();
-    if (!userInput) {
-      writeLog("⚠️ Harap masukkan 8-Slot Master Formula Key!", "warn");
-      return;
-    }
-
-    writeLog("🔍 Menguji deret kata terhadap 5 Aturan Posisi Logic Grid...", "info");
-    submitBtn.disabled = true;
-
-    setTimeout(() => {
-      submitBtn.disabled = false;
-      const normalizedInput = userInput.toUpperCase().replace(/\s+/g, '-');
-      const normalizedCorrect = config.correctPassword.toUpperCase().replace(/\s+/g, '-');
-
-      // Check if matches the 8-token Master Password
-      if (normalizedInput === normalizedCorrect) {
-        handleSuccess();
+      const userInput = passInput ? passInput.value.trim() : '';
+      if (!userInput) {
+        writeLog("Harap masukkan 8-Slot Master Formula Key!", "warn");
         return;
       }
 
-      // Check length and give intelligent constructive hints
-      const inputTokens = normalizedInput.split('-');
-      playErrorBeep();
-      passInput.style.borderColor = "var(--pink-pop)";
-      shakeElement(formCard);
+      writeLog("Menguji deret kata terhadap 5 Aturan Posisi Logic Grid...", "info");
+      if (submitBtn) submitBtn.disabled = true;
 
-      if (inputTokens.length !== 8) {
-        writeLog(`❌ ATURAN DERET: Terdeteksi ${inputTokens.length} kata (Dibutuhkan tepat 8 kata dipisah strip).`, "danger");
-      } else {
-        const expectedLengths = [6, 7, 3, 5, 5, 7, 6, 8];
-        const actualLengths = inputTokens.map(t => t.length);
-        const lengthMatch = JSON.stringify(expectedLengths) === JSON.stringify(actualLengths);
+      setTimeout(() => {
+        if (submitBtn) submitBtn.disabled = false;
+        const normalizedInput = userInput.toUpperCase().replace(/\s+/g, '-');
+        const normalizedCorrect = config.correctPassword.toUpperCase().replace(/\s+/g, '-');
 
-        if (!lengthMatch) {
-          writeLog(`❌ CHECKSUM PANJANG HURUF TIDAK COCOK: Deret panjang huruf harus [6, 7, 3, 5, 5, 7, 6, 8]!`, "danger");
-        } else {
-          writeLog("❌ RELATIONAL ORDER ERROR: Panjang huruf cocok tetapi urutan kata belum memenuhi 5 Aturan Posisi!", "danger");
+        // Check if matches the 8-token Master Password
+        if (normalizedInput === normalizedCorrect) {
+          handleSuccess();
+          return;
         }
-      }
-      writeLog("💡 HINT: Buka Inspect Element (F12) untuk melihat petunjuk lengkap!", "warn");
-    }, 450);
-  });
+
+        // Check length and give constructive hints
+        const inputTokens = normalizedInput.split('-');
+        playErrorBeep();
+        if (passInput) {
+          passInput.style.borderColor = "#ef4444";
+        }
+        shakeElement(formCard);
+
+        if (inputTokens.length !== 8) {
+          writeLog(`ATURAN DERET: Terdeteksi ${inputTokens.length} kata (Dibutuhkan tepat 8 kata dipisah strip).`, "danger");
+        } else {
+          const expectedLengths = [6, 7, 3, 5, 5, 7, 6, 8];
+          const actualLengths = inputTokens.map(t => t.length);
+          const lengthMatch = JSON.stringify(expectedLengths) === JSON.stringify(actualLengths);
+
+          if (!lengthMatch) {
+            writeLog(`CHECKSUM PANJANG HURUF: Deret panjang huruf harus [6, 7, 3, 5, 5, 7, 6, 8]!`, "danger");
+          } else {
+            writeLog("RELATIONAL ORDER ERROR: Panjang huruf cocok tetapi urutan kata belum memenuhi 5 Aturan Posisi!", "danger");
+          }
+        }
+        writeLog("HINT: Buka Inspect Element (F12) untuk melihat petunjuk lengkap!", "warn");
+      }, 400);
+    });
+  }
 
   function handleSuccess() {
     playVictoryFanfare();
-    writeLog("✅ ACCESS GRANTED! Seluruh 8 teka-teki kata & aturan posisi terpecahkan sempurna.", "success");
-    passInput.style.borderColor = "var(--green-pop)";
+    writeLog("ACCESS GRANTED! Seluruh 8 teka-teki kata & aturan posisi terpecahkan sempurna.", "success");
+    if (passInput) {
+      passInput.style.borderColor = "var(--accent-success)";
+    }
 
     setTimeout(() => {
-      formCard.style.display = "none";
-      victoryCard.style.display = "block";
-      triggerMegaConfetti();
-    }, 800);
+      if (formCard) formCard.style.display = "none";
+      if (victoryCard) victoryCard.style.display = "block";
+      triggerSubtleConfetti();
+    }, 600);
   }
 
   // 8. HELPER LOG & SHAKE
   function writeLog(msg, type = "info") {
+    if (!logContent) return;
     const line = document.createElement('div');
     line.className = `log-line ${type}`;
     line.textContent = `[${new Date().toLocaleTimeString()}] ${msg}`;
@@ -317,19 +324,20 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function shakeElement(el) {
+    if (!el) return;
     el.animate([
-      { transform: 'translateX(-8px)' },
-      { transform: 'translateX(8px)' },
-      { transform: 'translateX(-8px)' },
-      { transform: 'translateX(8px)' },
+      { transform: 'translateX(-5px)' },
+      { transform: 'translateX(5px)' },
+      { transform: 'translateX(-5px)' },
+      { transform: 'translateX(5px)' },
       { transform: 'translateX(0)' }
     ], {
-      duration: 300,
+      duration: 250,
       easing: 'ease-in-out'
     });
   }
 
-  // 9. DUAL-STREAM NEON MATRIX CANVAS
+  // 9. AMBIENT MATRIX CANVAS (SUBTLE)
   const canvas = document.getElementById('matrixCanvas');
   if (canvas) {
     const ctx = canvas.getContext('2d');
@@ -341,56 +349,55 @@ document.addEventListener('DOMContentLoaded', () => {
     resize();
     window.addEventListener('resize', resize);
 
-    const chars = '01ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%&*<>/=+-';
+    const chars = '0101010101ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
     const fontSize = 14;
     const columns = Math.floor(canvas.width / fontSize);
     const drops = Array(columns).fill(1);
 
     function draw() {
-      ctx.fillStyle = 'rgba(6, 8, 19, 0.15)';
+      ctx.fillStyle = 'rgba(9, 13, 22, 0.18)';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
       ctx.font = `${fontSize}px 'Fira Code', monospace`;
+      ctx.fillStyle = 'rgba(96, 165, 250, 0.25)';
 
       for (let i = 0; i < drops.length; i++) {
         const text = chars.charAt(Math.floor(Math.random() * chars.length));
-        ctx.fillStyle = i % 3 === 0 ? '#ff007a' : (i % 7 === 0 ? '#ffe600' : '#00f0ff');
         ctx.fillText(text, i * fontSize, drops[i] * fontSize);
 
-        if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+        if (drops[i] * fontSize > canvas.height && Math.random() > 0.98) {
           drops[i] = 0;
         }
         drops[i]++;
       }
     }
 
-    setInterval(draw, 33);
+    setInterval(draw, 40);
   }
 
-  // 10. MEGA CONFETTI EXPLOSION
-  function triggerMegaConfetti() {
-    const colors = ['#00f0ff', '#ff007a', '#ffe600', '#00ff66', '#ffffff', '#b55fe6', '#ffbe0b'];
-    for (let i = 0; i < 120; i++) {
+  // 10. SUBTLE VICTORY CONFETTI
+  function triggerSubtleConfetti() {
+    const colors = ['#60a5fa', '#34d399', '#fbbf24', '#a78bfa', '#f8fafc'];
+    for (let i = 0; i < 60; i++) {
       const p = document.createElement('div');
       p.style.position = 'fixed';
       p.style.left = Math.random() * 100 + 'vw';
-      p.style.top = '-15px';
-      p.style.width = Math.random() * 12 + 6 + 'px';
-      p.style.height = Math.random() * 18 + 8 + 'px';
+      p.style.top = '-10px';
+      p.style.width = Math.random() * 8 + 4 + 'px';
+      p.style.height = Math.random() * 12 + 6 + 'px';
       p.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-      p.style.border = '2px solid #000';
-      p.style.borderRadius = '3px';
+      p.style.borderRadius = '2px';
       p.style.zIndex = '9999';
       p.style.pointerEvents = 'none';
 
       document.body.appendChild(p);
 
-      const fallDuration = Math.random() * 3.5 + 2.5;
-      const rotationSpeed = Math.random() * 800 - 400;
+      const fallDuration = Math.random() * 2.5 + 2.0;
+      const rotationSpeed = Math.random() * 600 - 300;
 
       p.animate([
-        { transform: 'translateY(0vh) rotate(0deg)', opacity: 1 },
-        { transform: `translateY(105vh) rotate(${rotationSpeed}deg)`, opacity: 0.15 }
+        { transform: 'translateY(0vh) rotate(0deg)', opacity: 0.9 },
+        { transform: `translateY(105vh) rotate(${rotationSpeed}deg)`, opacity: 0.0 }
       ], {
         duration: fallDuration * 1000,
         easing: 'cubic-bezier(0.25, 0.46, 0.45, 0.94)'
