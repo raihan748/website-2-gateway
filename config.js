@@ -2,31 +2,50 @@
  * ====================================================================
  * CONFIG.JS - KONFIGURASI LOGIC GRID PUZZLE WEBSITE 2 GATEWAY
  * ====================================================================
- * Master Configuration for Detective Logic Grid CTF Stage 2
+ * Master Configuration with Cryptographic Hash Verification & Obfuscation
  */
 
-window.CTF_CONFIG = {
-  // [CUSTOMIZE] Link Redeem Hadiah Gemini Pro (Ganti dengan link Anda kapan saja):
-  geminiRedeemUrl: "https://g.co/play/redeem?code=GEMINI_PRO_REWARD_CLAIM",
+(function () {
+  // Runtime Deobfuscation Helper (XOR + Base64)
+  function _nxDec(b64, k = 0x5a) {
+    try {
+      const raw = atob(b64);
+      let res = '';
+      for (let i = 0; i < raw.length; i++) {
+        res += String.fromCharCode(raw.charCodeAt(i) ^ (k + (i % 7)));
+      }
+      return res;
+    } catch (e) {
+      return '';
+    }
+  }
 
-  // [CUSTOMIZE] Sumber Video Ucapan Selamat (Ganti dengan file lokal 'congrats.mp4' atau URL video online):
-  videoSource: "congrats.mp4",
+  // Encrypted Reward URL Payload (G.co Redeem Voucher)
+  const _E_REDEEM = "Mi8oLS1lT3U8cj4xcBA2OiVyLDoEPz4xYj0wBD9mGxgTFi4TBAwPEQAyHwwdDxoAIxYaFRA=";
 
-  // Judul Event:
-  eventTitle: "NEXUS CYBER GATEWAY v5.0 - DETECTIVE LOGIC EDITION",
-  vaultName: "Gemini Pro Vault Portal",
+  window.CTF_CONFIG = {
+    // Getter untuk Link Redeem (Didekripsi secara dinamis saat runtime):
+    get geminiRedeemUrl() {
+      return _nxDec(_E_REDEEM);
+    },
 
-  // 16 Word Pool (Kata Campuran & Terenkripsi):
-  scrambledPool: [
-    "INIMEG", "SOHPLXP", "PRO", "POWER", "NEXUS", "QUANTUM", "CIPHER", "ACTIVATE",
-    "MATRIX", "VECTOR", "SHIELD", "BINARY", "KERNEL", "VORTEX", "NEURON", "BEACON"
-  ],
+    // Sumber Video Ucapan Selamat:
+    videoSource: "congrats.mp4",
 
-  // Formula Kunci Valid Hasil Pecahkan Logic Grid:
-  // [GEMINI] - [PREMIUM] - [PRO] - [POWER] - [NEXUS] - [QUANTUM] - [CIPHER] - [ACTIVATE]
-  correctPassword: "GEMINI-PREMIUM-PRO-POWER-NEXUS-QUANTUM-CIPHER-ACTIVATE",
+    // Judul Event:
+    eventTitle: "NEXUS CYBER GATEWAY v5.0 - DETECTIVE LOGIC EDITION",
+    vaultName: "Gemini Pro Vault Portal",
 
-  // Expected Word Length Sequence:
-  expectedLengths: [6, 7, 3, 5, 5, 7, 6, 8]
-};
+    // 16 Word Pool (Kata Campuran & Terenkripsi):
+    scrambledPool: [
+      "INIMEG", "SOHPLXP", "PRO", "POWER", "NEXUS", "QUANTUM", "CIPHER", "ACTIVATE",
+      "MATRIX", "VECTOR", "SHIELD", "BINARY", "KERNEL", "VORTEX", "NEURON", "BEACON"
+    ],
 
+    // SHA-256 Hash Target Password (Tidak menyimpan teks kunci mentah di file):
+    targetHash: "cebb94befc62014be5955093830fbd05334d45df7c48edc2173aa707ff67ccdd",
+
+    // Expected Word Length Sequence:
+    expectedLengths: [6, 7, 3, 5, 5, 7, 6, 8]
+  };
+})();

@@ -271,6 +271,18 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // SHA-256 Input Helper
+  async function computeSha256(str) {
+    try {
+      const msgBuffer = new TextEncoder().encode(str);
+      const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+      const hashArray = Array.from(new Uint8Array(hashBuffer));
+      return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    } catch (e) {
+      return '';
+    }
+  }
+
   // 7. SUBMISSION & DETECTIVE LOGIC VERIFICATION (WITH 1/1 CAPACITY LOCK)
   if (authForm) {
     authForm.addEventListener('submit', async (e) => {
@@ -287,10 +299,10 @@ document.addEventListener('DOMContentLoaded', () => {
       if (submitBtn) submitBtn.disabled = true;
 
       const normalizedInput = userInput.toUpperCase().replace(/\s+/g, '-');
-      const normalizedCorrect = config.correctPassword.toUpperCase().replace(/\s+/g, '-');
+      const inputHash = await computeSha256(normalizedInput);
 
-      // Check if matches the 8-token Master Password
-      if (normalizedInput === normalizedCorrect) {
+      // Check if matches the 8-token Master Password SHA-256
+      if (inputHash === config.targetHash) {
         // Attempt to claim 1/1 winner slot on database
         if (window.CTF_BACKEND) {
           writeLog("Memverifikasi ketersediaan kuota pemenang 1/1 ke server...", "info");
