@@ -1,7 +1,7 @@
 /**
  * SUPABASE-CLIENT.JS - NEXUS CTF STAGE 2 (GATEWAY)
- * Participant scanning, 1/1 capacity lock, victory video verification & mass 1-week IP banning
- * Encrypted endpoints and secure hash-based verification
+ * Participant scanning, 1/1 capacity lock, victory video verification,
+ * Survey Voting System for CTF Episode 2 & Mass 1-Week IP Banning
  */
 
 (function () {
@@ -164,6 +164,126 @@
       }
     },
 
+    // Submit Survey Vote (1 Soal CTF Episode 2)
+    async submitSurveyVote(answerKey, answerText) {
+      const sb = this.client;
+      const ip = await this.getClientIP();
+      localStorage.setItem("nexus_survey_voted", "true");
+
+      if (!sb) return { success: true };
+
+      try {
+        const { data, error } = await sb
+          .from("ctf_survey_votes")
+          .upsert({
+            ip_address: ip,
+            answer_key: answerKey,
+            answer_text: answerText,
+            created_at: new Date().toISOString()
+          }, { onConflict: "ip_address" })
+          .select();
+
+        if (error) {
+          console.warn("Survey vote table notice:", error.message);
+          return { success: false, error: error.message };
+        }
+        return { success: true, data };
+      } catch (err) {
+        console.warn("Survey submit error:", err);
+        return { success: false, error: err.message };
+      }
+    },
+
+    // Fetch All Survey Results (For Admin Analytics)
+    async fetchSurveyResults() {
+      const sb = this.client;
+      if (!sb) return null;
+
+      try {
+        const { data, error } = await sb
+          .from("ctf_survey_votes")
+          .select("*")
+          .order("created_at", { ascending: false });
+
+        if (error) {
+          console.error("Error fetching survey results:", error);
+          return null;
+        }
+
+        const votes = data || [];
+        const total = votes.length;
+        const counts = {
+          HARDER: 0,
+          CONTINUE_SAME: 0,
+          DISLIKE_STOP: 0
+        };
+
+        votes.forEach(v => {
+          if (counts[v.answer_key] !== undefined) {
+            counts[v.answer_key]++;
+          }
+        });
+
+        // Determine Dominant Option
+        let dominantKey = 'NONE';
+        let maxCount = 0;
+        for (const [k, count] of Object.entries(counts)) {
+          if (count > maxCount) {
+            maxCount = count;
+            dominantKey = k;
+          }
+        }
+
+        const labelMap = {
+          HARDER: "Iya, persulit",
+          CONTINUE_SAME: "Tidak, lanjutkan",
+          DISLIKE_STOP: "Tidak, saya tidak suka game CTF ini, stop",
+          NONE: "Belum ada vote"
+        };
+
+        return {
+          total,
+          counts,
+          percentages: {
+            HARDER: total > 0 ? Math.round((counts.HARDER / total) * 100) : 0,
+            CONTINUE_SAME: total > 0 ? Math.round((counts.CONTINUE_SAME / total) * 100) : 0,
+            DISLIKE_STOP: total > 0 ? Math.round((counts.DISLIKE_STOP / total) * 100) : 0
+          },
+          dominant: {
+            key: dominantKey,
+            label: labelMap[dominantKey],
+            count: maxCount,
+            percentage: total > 0 ? Math.round((maxCount / total) * 100) : 0
+          },
+          votes
+        };
+      } catch (err) {
+        console.error("Survey fetch error:", err);
+        return null;
+      }
+    },
+
+    // Reset Survey Votes (Admin Only)
+    async resetSurveyVotes() {
+      const isAuth = await this.isAdmin();
+      if (!isAuth) return { success: false, error: "Unauthorized" };
+
+      const sb = this.client;
+      if (!sb) return { success: false, error: "No DB connection" };
+
+      try {
+        const { error } = await sb
+          .from("ctf_survey_votes")
+          .delete()
+          .neq("id", -1);
+
+        if (error) return { success: false, error: error.message };
+        return { success: true };
+      } catch (err) {
+        return { success: false, error: err.message };
+      }
+    },
+
     // Admin Reset Session
     async resetSession(newTitle = "Sesi Putri 9B") {
       const isAuth = await this.isAdmin();
@@ -206,8 +326,8 @@
       }
     },
 
-    // Subscribe to Realtime Updates on ctf_state & ctf_participants
-    subscribeToUpdates(onStateChange, onParticipantChange) {
+    // Subscribe to Realtime Updates on ctf_state, ctf_participants, and ctf_survey_votes
+    subscribeToUpdates(onStateChange, onParticipantChange, onSurveyChange) {
       const sb = this.client;
       if (!sb) return null;
 
@@ -225,6 +345,13 @@
           { event: "*", schema: "public", table: "ctf_participants" },
           (payload) => {
             if (onParticipantChange) onParticipantChange(payload);
+          }
+        )
+        .on(
+          "postgres_changes",
+          { event: "*", schema: "public", table: "ctf_survey_votes" },
+          (payload) => {
+            if (onSurveyChange) onSurveyChange(payload);
           }
         )
         .subscribe();

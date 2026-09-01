@@ -41,51 +41,122 @@
     </div>
   </header>
 
-  <!--
-    ================================================================================
-     ____  _____ _   _  ____  ___  _        _    _   _    _    _   _   _  __    _  _____  _    
-    |  _ \| ____| \ | |/ ___|/ _ \| |      / \  | | | |  / \  | \ | | | |/ /   / \|_   _|/ \   
-    | |_) |  _| |  \| | |  _| | | | |     / _ \ | |_| | / _ \ |  \| | | ' /   / _ \ | | / _ \  
-    |  __/| |___| |\  | |_| | |_| | |___ / ___ \|  _  |/ ___ \| |\  | | . \  / ___ \| |/ ___ \ 
-    |_|   |_____|_| \_|\____|\___/|_____/_/   \_\_| |_/_/   \_\_| \_| |_|\_\/_/   \_\_/_/   \_\
-    ================================================================================
-    [ PENGOLAHAN KATA - STAGE 2: NEXUS GATEWAY ]
-    
-    Selamat datang di fase ke 2, dan kalian harus mengolah kata demi kata untuk masuk
-    ke portal aktivasi hadiah di akun kalian.
-    ================================================================================
+  <!-- ADMIN SURVEY & RECAP DASHBOARD (TRIGGER VIA ?admin=NEXUS_ADMIN_2026) -->
+  <div id="adminGatewayPanel" class="admin-dock admin-survey-dock" style="display: none;">
+    <div class="admin-dock-inner survey-analytics-box">
+      <div class="survey-header-row">
+        <div class="survey-badge-cluster">
+          <span class="admin-badge">👑 ADMIN ANALYTICS</span>
+          <span class="dominant-badge" id="dominantBadge">DOMINAN: MEMUAT...</span>
+        </div>
+        <div class="survey-total-badge">
+          <span>TOTAL VOTE: </span><b id="totalVotesCount">0</b>
+        </div>
+      </div>
 
-    +------------------------------------------------------------------------------+
-    | 🧩 DOSSIER LOGIKA PENGOLAHAN KATA (8 MYSTERY WORDS & POSITIONAL RULES)        |
-    +------------------------------------------------------------------------------+
+      <!-- VOTE BREAKDOWN STATS -->
+      <div class="vote-breakdown-grid">
+        <div class="vote-stat-card harder">
+          <div class="stat-top">
+            <span class="stat-label">⚡ Iya, persulit</span>
+            <span class="stat-count" id="countHarder">0 (0%)</span>
+          </div>
+          <div class="stat-progress-bg">
+            <div class="stat-progress-bar harder" id="barHarder" style="width: 0%;"></div>
+          </div>
+        </div>
 
-    FASE 1: PECAHKAN 8 KATA MISTERI DI BAWAH INI
-    --------------------------------------------------------------------------------
-    [1] KATA A (Anagram AI)         : Susun huruf dari "INIMEG" (Nama AI Google)
-    [2] KATA B (Caesar Shift -3)    : Geser mundur 3 huruf pada sandi "SOHPLXP"
-    [3] KATA C (Akronim Huruf Depan): Huruf awal dari kalimat "Pengaman Ruang Otorisasi"
-    [4] KATA D (Riddle Karakter)    : Kata 5 huruf dengan huruf tengah 'W' (Tenaga/Daya)
-    [5] KATA E (Simpul Cyber)       : Simpul jaringan 5 huruf dengan pola "N _ X _ S"
-    [6] KATA F (Fisika Komputasi)   : Istilah fisika 7 huruf berawalan 'Q' & berakhiran 'M'
-    [7] KATA G (Istilah Sandi)      : Kata 6 huruf untuk kunci sandi / algoritma enkripsi
-    [8] KATA H (Lawan Kata)         : Lawan kata bahasa Inggris dari "DEACTIVATE"
+        <div class="vote-stat-card continue">
+          <div class="stat-top">
+            <span class="stat-label">🎯 Tidak, lanjutkan</span>
+            <span class="stat-count" id="countContinue">0 (0%)</span>
+          </div>
+          <div class="stat-progress-bg">
+            <div class="stat-progress-bar continue" id="barContinue" style="width: 0%;"></div>
+          </div>
+        </div>
 
-    --------------------------------------------------------------------------------
-    FASE 2: ATURAN POSISI LOGIC GRID (SUSUN POSISI SLOT 1 S/D 8)
-    --------------------------------------------------------------------------------
-    * ATURAN 1 : Kata hasil Anagram (Kata A) menempati Slot 1 paling depan.
-    * ATURAN 2 : Dua kata berpanjang 7 huruf (Kata B & Kata F) TIDAK BOLEH bersebelahan.
-    * ATURAN 3 : Kata D (POWER) berada tepat di antara kata 3 huruf (Kata C) dan kata 5 huruf berakhiran 'S' (Kata E).
-    * ATURAN 4 : Rangkaian [Kata E] -> [Kata F] -> [Kata G] selalu bersambung secara berurutan.
-    * ATURAN 5 : Kata perintah aksi (Kata H) menempati Slot 8 paling akhir.
-    
-    +------------------------------------------------------------------------------+
-    | CHECKSUM PANJANG HURUF SLOT 1 S/D 8: [ 6, 7, 3, 5, 5, 7, 6, 8 ]              |
-    +------------------------------------------------------------------------------+
-    Format penulisan kunci dipisah dengan tanda strip (-):
-    KATA1-KATA2-KATA3-KATA4-KATA5-KATA6-KATA7-KATA8
-    ================================================================================
-  -->
+        <div class="vote-stat-card stop">
+          <div class="stat-top">
+            <span class="stat-label">🛑 Tidak, saya tidak suka / stop</span>
+            <span class="stat-count" id="countStop">0 (0%)</span>
+          </div>
+          <div class="stat-progress-bg">
+            <div class="stat-progress-bar stop" id="barStop" style="width: 0%;"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ADMIN ACTION BUTTONS -->
+      <div class="admin-survey-actions">
+        <button type="button" id="copyReportBtn" class="admin-btn copy-btn">
+          📋 SALIN LAPORAN VOTE (UNTUK LAPORAN AI)
+        </button>
+        <button type="button" id="resetVotesBtn" class="admin-btn reset">
+          🔄 RESET HASIL VOTE
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SURVEI EVALUASI CTF EPISODE 2 MODAL -->
+  <div id="surveyModal" class="survey-modal-overlay" style="display: none;">
+    <div class="survey-modal-card">
+      <div class="survey-icon">🧩</div>
+      <h2 class="survey-title">SURVEI CTF EPISODE 2</h2>
+      <p class="survey-subtitle">
+        Permainan telah selesai! Sebelum sesi ditutup, mohon berikan pendapat Anda untuk pembuatan tantangan CTF episode berikutnya:
+      </p>
+
+      <div class="survey-question-box">
+        <span class="question-badge">1 PERTANYAAN SINGKAT:</span>
+        <h3 class="question-text">"Mau game nya dipersulit atau jenis seperti ini saja?"</h3>
+      </div>
+
+      <form id="surveyForm" class="survey-options-form">
+        <label class="survey-option-item" for="optHarder">
+          <input type="radio" name="surveyVote" id="optHarder" value="HARDER" required>
+          <div class="option-content">
+            <span class="opt-indicator">⚡</span>
+            <div class="opt-texts">
+              <strong class="opt-title">Iya, persulit</strong>
+              <span class="opt-desc">Buat teka-teki lebih menantang & kriptografi lebih kompleks di Episode 2!</span>
+            </div>
+          </div>
+        </label>
+
+        <label class="survey-option-item" for="optContinue">
+          <input type="radio" name="surveyVote" id="optContinue" value="CONTINUE_SAME" required>
+          <div class="option-content">
+            <span class="opt-indicator">🎯</span>
+            <div class="opt-texts">
+              <strong class="opt-title">Tidak, lanjutkan</strong>
+              <span class="opt-desc">Tingkat kesulitan sudah pas, lanjutkan format dan model seperti ini!</span>
+            </div>
+          </div>
+        </label>
+
+        <label class="survey-option-item" for="optStop">
+          <input type="radio" name="surveyVote" id="optStop" value="DISLIKE_STOP" required>
+          <div class="option-content">
+            <span class="opt-indicator">🛑</span>
+            <div class="opt-texts">
+              <strong class="opt-title">Tidak, saya tidak suka game CTF ini, stop</strong>
+              <span class="opt-desc">Saya kurang cocok dengan tipe permainan CTF atau pemecahan sandi.</span>
+            </div>
+          </div>
+        </label>
+
+        <button type="submit" id="submitSurveyBtn" class="neo-btn survey-submit-btn">
+          <span class="btn-shine"></span>
+          <span>KIRIM VOTE & SELESAI</span>
+          <svg class="btn-arrow" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+            <path d="M5 12h14M12 5l7 7-7 7"/>
+          </svg>
+        </button>
+      </form>
+    </div>
+  </div>
 
   <!-- IP BANNED / ACCESS DENIED OVERLAY MODAL -->
   <div id="bannedOverlay" class="banned-overlay" style="display: none;">

@@ -388,18 +388,69 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+  // 8. SURVEY MODAL & BANNED SCREEN HANDLERS
+  const surveyModal = document.getElementById('surveyModal');
+  const surveyForm = document.getElementById('surveyForm');
+  const submitSurveyBtn = document.getElementById('submitSurveyBtn');
+  let pendingBanInfo = null;
+
   function showBannedScreen(reason = null, expiry = null) {
+    pendingBanInfo = { reason, expiry };
+
+    // Check if user has already voted in the survey
+    const alreadyVoted = localStorage.getItem("nexus_survey_voted") === "true";
+    if (!alreadyVoted && surveyModal) {
+      surveyModal.style.display = "flex";
+    } else {
+      displayFinalBanOverlay();
+    }
+  }
+
+  function displayFinalBanOverlay() {
+    if (surveyModal) surveyModal.style.display = "none";
     if (bannedOverlay) {
       bannedOverlay.style.display = "flex";
-      if (bannedReason && reason) bannedReason.textContent = reason;
-      if (bannedExpiry && expiry) {
-        const d = new Date(expiry);
+      if (bannedReason && pendingBanInfo?.reason) {
+        bannedReason.textContent = pendingBanInfo.reason;
+      }
+      if (bannedExpiry && pendingBanInfo?.expiry) {
+        const d = new Date(pendingBanInfo.expiry);
         bannedExpiry.textContent = isNaN(d) ? '7 Hari ke Depan' : d.toLocaleString('id-ID');
       }
     }
   }
 
-  // 8. MANDATORY VIDEO ENDED LISTENER (REVEALS REDEEM BUTTON)
+  // Survey Form Submission Handler
+  if (surveyForm) {
+    surveyForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const selectedOpt = surveyForm.querySelector('input[name="surveyVote"]:checked');
+      if (!selectedOpt) return;
+
+      const answerKey = selectedOpt.value;
+      const labelMap = {
+        HARDER: "Iya, persulit",
+        CONTINUE_SAME: "Tidak, lanjutkan",
+        DISLIKE_STOP: "Tidak, saya tidak suka game CTF ini, stop"
+      };
+      const answerText = labelMap[answerKey] || answerKey;
+
+      if (submitSurveyBtn) {
+        submitSurveyBtn.disabled = true;
+        submitSurveyBtn.textContent = "⏳ Mengirim Vote...";
+      }
+
+      // Submit vote to backend
+      if (window.CTF_BACKEND) {
+        await window.CTF_BACKEND.submitSurveyVote(answerKey, answerText);
+      }
+
+      playVictoryFanfare();
+      displayFinalBanOverlay();
+    });
+  }
+
+  // 9. MANDATORY VIDEO ENDED LISTENER (REVEALS REDEEM BUTTON)
   if (congratsVideo) {
     congratsVideo.addEventListener('ended', () => {
       playVictoryFanfare();
@@ -419,7 +470,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // 9. REDEEM BUTTON CLICK (TRIGGERS 1-WEEK BAN & 10s COUNTDOWN FOR WINNER)
+  // 10. REDEEM BUTTON CLICK (TRIGGERS 1-WEEK BAN & 10s COUNTDOWN FOR WINNER)
   if (redeemBtn) {
     redeemBtn.addEventListener('click', async (e) => {
       e.preventDefault();
@@ -454,8 +505,107 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // 10. BACKEND VISITOR SCANNING & REALTIME SUBSCRIPTION
+  // 11. ADMIN SURVEY ANALYTICS DASHBOARD
+  const adminGatewayPanel = document.getElementById('adminGatewayPanel');
+  const dominantBadge = document.getElementById('dominantBadge');
+  const totalVotesCount = document.getElementById('totalVotesCount');
+  const countHarder = document.getElementById('countHarder');
+  const barHarder = document.getElementById('barHarder');
+  const countContinue = document.getElementById('countContinue');
+  const barContinue = document.getElementById('barContinue');
+  const countStop = document.getElementById('countStop');
+  const barStop = document.getElementById('barStop');
+  const copyReportBtn = document.getElementById('copyReportBtn');
+  const resetVotesBtn = document.getElementById('resetVotesBtn');
+
+  let currentSurveyData = null;
+
+  async function updateSurveyDashboard() {
+    if (!window.CTF_BACKEND) return;
+    const data = await window.CTF_BACKEND.fetchSurveyResults();
+    if (!data) return;
+    currentSurveyData = data;
+
+    if (totalVotesCount) totalVotesCount.textContent = data.total;
+    if (dominantBadge) {
+      dominantBadge.textContent = `DOMINAN: ${data.dominant.label.toUpperCase()} (${data.dominant.percentage}%)`;
+    }
+
+    if (countHarder && barHarder) {
+      countHarder.textContent = `${data.counts.HARDER} (${data.percentages.HARDER}%)`;
+      barHarder.style.width = `${data.percentages.HARDER}%`;
+    }
+
+    if (countContinue && barContinue) {
+      countContinue.textContent = `${data.counts.CONTINUE_SAME} (${data.percentages.CONTINUE_SAME}%)`;
+      barContinue.style.width = `${data.percentages.CONTINUE_SAME}%`;
+    }
+
+    if (countStop && barStop) {
+      countStop.textContent = `${data.counts.DISLIKE_STOP} (${data.percentages.DISLIKE_STOP}%)`;
+      barStop.style.width = `${data.percentages.DISLIKE_STOP}%`;
+    }
+  }
+
+  if (copyReportBtn) {
+    copyReportBtn.addEventListener('click', () => {
+      playKeyClick();
+      if (!currentSurveyData) {
+        alert("Belum ada data vote yang termuat.");
+        return;
+      }
+
+      const d = currentSurveyData;
+      const reportText = [
+        "==================================================",
+        "📊 LAPORAN HASIL VOTE SURVEI CTF EPISODE 2",
+        "==================================================",
+        `Total Responden : ${d.total} Siswa`,
+        `Pilihan Dominan : ${d.dominant.label} (${d.dominant.percentage}%)`,
+        "",
+        "Rincian Perolehan Suara:",
+        `1. ⚡ Iya, persulit                   : ${d.counts.HARDER} vote (${d.percentages.HARDER}%)`,
+        `2. 🎯 Tidak, lanjutkan                : ${d.counts.CONTINUE_SAME} vote (${d.percentages.CONTINUE_SAME}%)`,
+        `3. 🛑 Tidak, saya tidak suka CTF, stop : ${d.counts.DISLIKE_STOP} vote (${d.percentages.DISLIKE_STOP}%)`,
+        "==================================================",
+        "Laporan siap dikirim ke AI untuk perencanaan CTF selanjutnya!"
+      ].join("\n");
+
+      navigator.clipboard.writeText(reportText).then(() => {
+        alert("📋 Laporan Hasil Vote berhasil disalin ke clipboard! Anda bisa langsung menempelkannya (Ctrl+V) ke chat!");
+      }).catch(() => {
+        prompt("Salin manual laporan di bawah ini:", reportText);
+      });
+    });
+  }
+
+  if (resetVotesBtn) {
+    resetVotesBtn.addEventListener('click', async () => {
+      const confirmReset = confirm("Apakah Anda yakin ingin mereset seluruh data survei vote?");
+      if (!confirmReset) return;
+
+      resetVotesBtn.disabled = true;
+      const res = await window.CTF_BACKEND.resetSurveyVotes();
+      resetVotesBtn.disabled = false;
+      if (res.success) {
+        alert("✅ Seluruh data survei berhasil di-reset!");
+        updateSurveyDashboard();
+      } else {
+        alert("Gagal reset data survei: " + (res.error || "Akses ditolak"));
+      }
+    });
+  }
+
+  // 12. BACKEND VISITOR SCANNING & REALTIME SUBSCRIPTION
   if (window.CTF_BACKEND) {
+    // Check Admin status asynchronously
+    window.CTF_BACKEND.isAdmin().then(isAdminUser => {
+      if (isAdminUser && adminGatewayPanel) {
+        adminGatewayPanel.style.display = "block";
+        updateSurveyDashboard();
+      }
+    });
+
     // 1. Scan Visitor IP
     window.CTF_BACKEND.scanVisitor().then(res => {
       if (res && res.banned) {
@@ -489,11 +639,15 @@ document.addEventListener('DOMContentLoaded', () => {
             }
           });
         }
+      },
+      // On ctf_survey_votes change (Live updates for Admin Dashboard)
+      () => {
+        updateSurveyDashboard();
       }
     );
   }
 
-  // 11. HELPER LOG & SHAKE
+  // 13. HELPER LOG & SHAKE
   function writeLog(msg, type = "info") {
     if (!logContent) return;
     const line = document.createElement('div');
@@ -517,7 +671,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // 12. AMBIENT MATRIX CANVAS (SUBTLE)
+  // 14. AMBIENT MATRIX CANVAS (SUBTLE)
   const canvas = document.getElementById('matrixCanvas');
   if (canvas) {
     const ctx = canvas.getContext('2d');
@@ -555,7 +709,7 @@ document.addEventListener('DOMContentLoaded', () => {
     setInterval(draw, 40);
   }
 
-  // 13. SUBTLE VICTORY CONFETTI
+  // 15. SUBTLE VICTORY CONFETTI
   function triggerSubtleConfetti() {
     const colors = ['#60a5fa', '#34d399', '#fbbf24', '#a78bfa', '#f8fafc'];
     for (let i = 0; i < 60; i++) {
