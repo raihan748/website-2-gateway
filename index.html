@@ -41,60 +41,112 @@
     </div>
   </header>
 
+  <!--
+    ================================================================================
+     ____  _____ _   _  ____  ___  _        _    _   _    _    _   _   _  __    _  _____  _    
+    |  _ \| ____| \ | |/ ___|/ _ \| |      / \  | | | |  / \  | \ | | | |/ /   / \|_   _|/ \   
+    | |_) |  _| |  \| | |  _| | | | |     / _ \ | |_| | / _ \ |  \| | | ' /   / _ \ | | / _ \  
+    |  __/| |___| |\  | |_| | |_| | |___ / ___ \|  _  |/ ___ \| |\  | | . \  / ___ \| |/ ___ \ 
+    |_|   |_____|_| \_|\____|\___/|_____/_/   \_\_| |_/_/   \_\_| \_| |_|\_\/_/   \_\_/_/   \_\
+    ================================================================================
+    [ PENGOLAHAN KATA - STAGE 2: NEXUS GATEWAY ]
+    
+    Selamat datang di fase ke 2, dan kalian harus mengolah kata demi kata untuk masuk
+    ke portal aktivasi hadiah di akun kalian.
+    ================================================================================
+
+    +------------------------------------------------------------------------------+
+    | 🧩 DOSSIER LOGIKA PENGOLAHAN KATA (8 MYSTERY WORDS & POSITIONAL RULES)        |
+    +------------------------------------------------------------------------------+
+
+    FASE 1: PECAHKAN 8 KATA MISTERI DI BAWAH INI
+    --------------------------------------------------------------------------------
+    [1] KATA A (Anagram AI)         : Susun huruf dari "INIMEG" (Nama AI Google)
+    [2] KATA B (Caesar Shift -3)    : Geser mundur 3 huruf pada sandi "SOHPLXP"
+    [3] KATA C (Akronim Huruf Depan): Huruf awal dari kalimat "Pengaman Ruang Otorisasi"
+    [4] KATA D (Riddle Karakter)    : Kata 5 huruf dengan huruf tengah 'W' (Tenaga/Daya)
+    [5] KATA E (Simpul Cyber)       : Simpul jaringan 5 huruf dengan pola "N _ X _ S"
+    [6] KATA F (Fisika Komputasi)   : Istilah fisika 7 huruf berawalan 'Q' & berakhiran 'M'
+    [7] KATA G (Istilah Sandi)      : Kata 6 huruf untuk kunci sandi / algoritma enkripsi
+    [8] KATA H (Lawan Kata)         : Lawan kata bahasa Inggris dari "DEACTIVATE"
+
+    --------------------------------------------------------------------------------
+    FASE 2: ATURAN POSISI LOGIC GRID (SUSUN POSISI SLOT 1 S/D 8)
+    --------------------------------------------------------------------------------
+    * ATURAN 1 : Kata hasil Anagram (Kata A) menempati Slot 1 paling depan.
+    * ATURAN 2 : Dua kata berpanjang 7 huruf (Kata B & Kata F) TIDAK BOLEH bersebelahan.
+    * ATURAN 3 : Kata D (POWER) berada tepat di antara kata 3 huruf (Kata C) dan kata 5 huruf berakhiran 'S' (Kata E).
+    * ATURAN 4 : Rangkaian [Kata E] -> [Kata F] -> [Kata G] selalu bersambung secara berurutan.
+    * ATURAN 5 : Kata perintah aksi (Kata H) menempati Slot 8 paling akhir.
+    
+    +------------------------------------------------------------------------------+
+    | CHECKSUM PANJANG HURUF SLOT 1 S/D 8: [ 6, 7, 3, 5, 5, 7, 6, 8 ]              |
+    +------------------------------------------------------------------------------+
+    Format penulisan kunci dipisah dengan tanda strip (-):
+    KATA1-KATA2-KATA3-KATA4-KATA5-KATA6-KATA7-KATA8
+    ================================================================================
+  -->
+
   <!-- ADMIN SURVEY & RECAP DASHBOARD (TRIGGER VIA ?admin=NEXUS_ADMIN_2026) -->
-  <div id="adminGatewayPanel" class="admin-dock admin-survey-dock" style="display: none;">
-    <div class="admin-dock-inner survey-analytics-box">
+  <div id="adminGatewayPanel" class="admin-survey-dock" style="display: none;">
+    <div class="survey-analytics-box">
       <div class="survey-header-row">
         <div class="survey-badge-cluster">
           <span class="admin-badge">👑 ADMIN ANALYTICS</span>
           <span class="dominant-badge" id="dominantBadge">DOMINAN: MEMUAT...</span>
         </div>
-        <div class="survey-total-badge">
-          <span>TOTAL VOTE: </span><b id="totalVotesCount">0</b>
+        <div class="survey-controls-right">
+          <div class="survey-total-badge">
+            <span>TOTAL VOTE: </span><b id="totalVotesCount">0</b>
+          </div>
+          <button type="button" id="toggleAdminViewBtn" class="admin-mini-toggle" title="Minimize/Maximize Admin Box">−</button>
         </div>
       </div>
 
-      <!-- VOTE BREAKDOWN STATS -->
-      <div class="vote-breakdown-grid">
-        <div class="vote-stat-card harder">
-          <div class="stat-top">
-            <span class="stat-label">⚡ Iya, persulit</span>
-            <span class="stat-count" id="countHarder">0 (0%)</span>
+      <!-- COLLAPSIBLE BODY -->
+      <div id="adminPanelBody" class="admin-collapsible-body">
+        <!-- VOTE BREAKDOWN STATS -->
+        <div class="vote-breakdown-grid">
+          <div class="vote-stat-card harder">
+            <div class="stat-top">
+              <span class="stat-label">⚡ Iya, persulit</span>
+              <span class="stat-count" id="countHarder">0 (0%)</span>
+            </div>
+            <div class="stat-progress-bg">
+              <div class="stat-progress-bar harder" id="barHarder" style="width: 0%;"></div>
+            </div>
           </div>
-          <div class="stat-progress-bg">
-            <div class="stat-progress-bar harder" id="barHarder" style="width: 0%;"></div>
+
+          <div class="vote-stat-card continue">
+            <div class="stat-top">
+              <span class="stat-label">🎯 Tidak, lanjutkan</span>
+              <span class="stat-count" id="countContinue">0 (0%)</span>
+            </div>
+            <div class="stat-progress-bg">
+              <div class="stat-progress-bar continue" id="barContinue" style="width: 0%;"></div>
+            </div>
+          </div>
+
+          <div class="vote-stat-card stop">
+            <div class="stat-top">
+              <span class="stat-label">🛑 Tidak, saya tidak suka / stop</span>
+              <span class="stat-count" id="countStop">0 (0%)</span>
+            </div>
+            <div class="stat-progress-bg">
+              <div class="stat-progress-bar stop" id="barStop" style="width: 0%;"></div>
+            </div>
           </div>
         </div>
 
-        <div class="vote-stat-card continue">
-          <div class="stat-top">
-            <span class="stat-label">🎯 Tidak, lanjutkan</span>
-            <span class="stat-count" id="countContinue">0 (0%)</span>
-          </div>
-          <div class="stat-progress-bg">
-            <div class="stat-progress-bar continue" id="barContinue" style="width: 0%;"></div>
-          </div>
+        <!-- ADMIN ACTION BUTTONS -->
+        <div class="admin-survey-actions">
+          <button type="button" id="copyReportBtn" class="admin-btn copy-btn">
+            📋 SALIN LAPORAN VOTE (UNTUK LAPORAN AI)
+          </button>
+          <button type="button" id="resetVotesBtn" class="admin-btn reset">
+            🔄 RESET HASIL VOTE
+          </button>
         </div>
-
-        <div class="vote-stat-card stop">
-          <div class="stat-top">
-            <span class="stat-label">🛑 Tidak, saya tidak suka / stop</span>
-            <span class="stat-count" id="countStop">0 (0%)</span>
-          </div>
-          <div class="stat-progress-bg">
-            <div class="stat-progress-bar stop" id="barStop" style="width: 0%;"></div>
-          </div>
-        </div>
-      </div>
-
-      <!-- ADMIN ACTION BUTTONS -->
-      <div class="admin-survey-actions">
-        <button type="button" id="copyReportBtn" class="admin-btn copy-btn">
-          📋 SALIN LAPORAN VOTE (UNTUK LAPORAN AI)
-        </button>
-        <button type="button" id="resetVotesBtn" class="admin-btn reset">
-          🔄 RESET HASIL VOTE
-        </button>
       </div>
     </div>
   </div>

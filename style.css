@@ -943,23 +943,23 @@ body::before {
 .admin-survey-dock {
   width: 100%;
   max-width: 680px;
-  margin: 0 auto 16px auto;
+  margin: 0 auto 24px auto;
   position: relative;
   z-index: 100;
   animation: slideDown 0.3s ease;
 }
 
 .survey-analytics-box {
-  background: rgba(15, 23, 42, 0.9);
+  background: rgba(15, 23, 42, 0.94);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border: 1px solid rgba(59, 130, 246, 0.35);
   box-shadow: 0 10px 30px -5px rgba(59, 130, 246, 0.2);
   border-radius: 16px;
-  padding: 18px 22px;
+  padding: 16px 20px;
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 12px;
 }
 
 .survey-header-row {
@@ -968,7 +968,7 @@ body::before {
   align-items: center;
   flex-wrap: wrap;
   gap: 10px;
-  padding-bottom: 10px;
+  padding-bottom: 8px;
   border-bottom: 1px solid var(--border-subtle);
 }
 
@@ -976,6 +976,41 @@ body::before {
   display: flex;
   align-items: center;
   gap: 8px;
+}
+
+.survey-controls-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.admin-mini-toggle {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-main);
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  font-weight: 800;
+  font-size: 1rem;
+  transition: all 0.2s;
+}
+
+.admin-mini-toggle:hover {
+  background: var(--accent-primary);
+  border-color: var(--accent-primary-light);
+  color: #fff;
+}
+
+.admin-collapsible-body {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  transition: all 0.3s ease;
 }
 
 .dominant-badge {

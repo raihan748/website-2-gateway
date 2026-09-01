@@ -5,6 +5,42 @@
  */
 
 document.addEventListener('DOMContentLoaded', () => {
+  // 0. PRINT DOSSIER TO DEVTOOLS CONSOLE (INSPECT ELEMENT / F12)
+  console.log(
+    `%c` +
+    `================================================================================\n` +
+    ` ____  _____ _   _  ____  ___  _        _    _   _    _    _   _   _  __    _  _____  _    \n` +
+    `|  _ \\| ____| \\ | |/ ___|/ _ \\| |      / \\  | | | |  / \\  | \\ | | | |/ /   / \\|_   _|/ \\   \n` +
+    `| |_) |  _| |  \\| | |  _| | | | |     / _ \\ | |_| | / _ \\ |  \\| | | ' /   / _ \\ | | / _ \\  \n` +
+    `|  __/| |___| |\\  | |_| | |_| | |___ / ___ \\|  _  |/ ___ \\| |\\  | | . \\  / ___ \\| |/ ___ \\ \n` +
+    `|_|   |_____|_| \\_|\\____|\\___/|_____/_/   \\_\\_| |_/_/   \\_\\_| \\_| |_|\\_\\/_/   \\_\\_/_/   \\_\\\n` +
+    `================================================================================\n` +
+    `[ PENGOLAHAN KATA - STAGE 2: NEXUS GATEWAY ]\n\n` +
+    `+------------------------------------------------------------------------------+\n` +
+    `| 🧩 DOSSIER LOGIKA PENGOLAHAN KATA (8 MYSTERY WORDS & POSITIONAL RULES)        |\n` +
+    `+------------------------------------------------------------------------------+\n\n` +
+    `FASE 1: PECAHKAN 8 KATA MISTERI DI BAWAH INI:\n` +
+    `[1] KATA A (Anagram AI)         : Susun huruf dari "INIMEG" (Nama AI Google)\n` +
+    `[2] KATA B (Caesar Shift -3)    : Geser mundur 3 huruf pada sandi "SOHPLXP"\n` +
+    `[3] KATA C (Akronim Huruf Depan): Huruf awal dari kalimat "Pengaman Ruang Otorisasi"\n` +
+    `[4] KATA D (Riddle Karakter)    : Kata 5 huruf dengan huruf tengah 'W' (Tenaga/Daya)\n` +
+    `[5] KATA E (Simpul Cyber)       : Simpul jaringan 5 huruf dengan pola "N _ X _ S"\n` +
+    `[6] KATA F (Fisika Komputasi)   : Istilah fisika 7 huruf berawalan 'Q' & berakhiran 'M'\n` +
+    `[7] KATA G (Istilah Sandi)      : Kata 6 huruf untuk kunci sandi / algoritma enkripsi\n` +
+    `[8] KATA H (Lawan Kata)         : Lawan kata bahasa Inggris dari "DEACTIVATE"\n\n` +
+    `--------------------------------------------------------------------------------\n` +
+    `FASE 2: ATURAN POSISI LOGIC GRID (SUSUN POSISI SLOT 1 S/D 8):\n` +
+    `* ATURAN 1 : Kata hasil Anagram (Kata A) menempati Slot 1 paling depan.\n` +
+    `* ATURAN 2 : Dua kata berpanjang 7 huruf (Kata B & Kata F) TIDAK BOLEH bersebelahan.\n` +
+    `* ATURAN 3 : Kata D (POWER) berada tepat di antara kata 3 huruf (Kata C) dan kata 5 huruf berakhiran 'S' (Kata E).\n` +
+    `* ATURAN 4 : Rangkaian [Kata E] -> [Kata F] -> [Kata G] selalu bersambung secara berurutan.\n` +
+    `* ATURAN 5 : Kata perintah aksi (Kata H) menempati Slot 8 paling akhir.\n\n` +
+    `CHECKSUM PANJANG HURUF SLOT 1 S/D 8: [ 6, 7, 3, 5, 5, 7, 6, 8 ]\n` +
+    `Format Kunci: KATA1-KATA2-KATA3-KATA4-KATA5-KATA6-KATA7-KATA8\n` +
+    `================================================================================`,
+    'color: #60a5fa; font-family: monospace; font-weight: bold;'
+  );
+
   // 1. WEB AUDIO SYNTHESIZER (SOFT AMBIENT TONES)
   let sfxEnabled = true;
   let audioCtx = null;
@@ -545,6 +581,20 @@ document.addEventListener('DOMContentLoaded', () => {
       countStop.textContent = `${data.counts.DISLIKE_STOP} (${data.percentages.DISLIKE_STOP}%)`;
       barStop.style.width = `${data.percentages.DISLIKE_STOP}%`;
     }
+  }
+
+  // ADMIN PANEL MINIMIZE / EXPAND TOGGLE
+  const toggleAdminViewBtn = document.getElementById('toggleAdminViewBtn');
+  const adminPanelBody = document.getElementById('adminPanelBody');
+
+  if (toggleAdminViewBtn && adminPanelBody) {
+    toggleAdminViewBtn.addEventListener('click', () => {
+      playKeyClick();
+      const isCollapsed = adminPanelBody.style.display === 'none';
+      adminPanelBody.style.display = isCollapsed ? 'flex' : 'none';
+      toggleAdminViewBtn.textContent = isCollapsed ? '−' : '+';
+      toggleAdminViewBtn.title = isCollapsed ? 'Minimize Box' : 'Expand Box';
+    });
   }
 
   if (copyReportBtn) {
