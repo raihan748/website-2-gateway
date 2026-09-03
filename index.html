@@ -105,6 +105,18 @@
 
       <!-- COLLAPSIBLE BODY -->
       <div id="adminPanelBody" class="admin-collapsible-body">
+        <!-- EXCLUSIVE ADMIN WINNER CARD (HIDDEN FROM NORMAL STUDENTS) -->
+        <div class="admin-winner-card" id="adminWinnerCard" style="display: none;">
+          <div class="admin-winner-header">
+            <span class="winner-trophy">🏆</span>
+            <span class="winner-title">STATUS PEMENANG GEMINI PRO (DATABASE ONLY)</span>
+          </div>
+          <div class="admin-winner-info">
+            <div class="winner-class-highlight" id="adminWinnerClassText">KELAS: MENUNGGU PEMENANG...</div>
+            <div class="winner-ip-meta" id="adminWinnerIpText">IP: -</div>
+          </div>
+        </div>
+
         <!-- VOTE BREAKDOWN STATS -->
         <div class="vote-breakdown-grid">
           <div class="vote-stat-card harder">
@@ -141,10 +153,13 @@
         <!-- ADMIN ACTION BUTTONS -->
         <div class="admin-survey-actions">
           <button type="button" id="copyReportBtn" class="admin-btn copy-btn">
-            📋 SALIN LAPORAN VOTE (UNTUK LAPORAN AI)
+            📋 SALIN LAPORAN VOTE & PEMENANG
           </button>
           <button type="button" id="resetVotesBtn" class="admin-btn reset">
             🔄 RESET HASIL VOTE
+          </button>
+          <button type="button" id="adminSealBtn" class="admin-btn seal" title="Keluar dari sesi Admin & Kunci Token">
+            🔒 SEAL / KELUAR ADMIN
           </button>
         </div>
       </div>

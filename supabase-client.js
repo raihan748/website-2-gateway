@@ -1,7 +1,7 @@
 /**
  * SUPABASE-CLIENT.JS - NEXUS CTF STAGE 2 (GATEWAY)
  * Participant scanning, 1/1 capacity lock, victory video verification,
- * Survey Voting System for CTF Episode 2 & Mass 1-Week IP Banning
+ * Survey Voting System for CTF Episode 2, IP-to-Class Winner Resolution & Mass 1-Week IP Banning
  */
 
 (function () {
@@ -64,17 +64,32 @@
     },
 
     // Check if Current User is Admin via Hash Comparison
+    // Uses URL query or temporary sessionStorage (Seals out persistent localStorage)
     async isAdmin() {
       const urlParams = new URLSearchParams(window.location.search);
-      const inputSecret = urlParams.get("admin") || localStorage.getItem("nexus_admin_token");
+      const inputSecret = urlParams.get("admin") || sessionStorage.getItem("nexus_admin_session");
+
+      // Clean persistent storage to keep token sealed
+      localStorage.removeItem("nexus_admin_token");
+
       if (!inputSecret) return false;
 
       const inputHash = await _sha256(inputSecret.trim());
       const isValid = (inputHash === _ADMIN_HASH);
       if (isValid) {
-        localStorage.setItem("nexus_admin_token", inputSecret.trim());
+        sessionStorage.setItem("nexus_admin_session", inputSecret.trim());
+      } else {
+        sessionStorage.removeItem("nexus_admin_session");
       }
       return isValid;
+    },
+
+    // Seal Token & Exit Admin Mode
+    sealAdmin() {
+      sessionStorage.removeItem("nexus_admin_session");
+      localStorage.removeItem("nexus_admin_token");
+      // Strip ?admin= parameter and reload clean
+      window.location.href = window.location.pathname;
     },
 
     // Scan and register visitor IP in database, returns ban status
@@ -89,7 +104,9 @@
       }
 
       const ip = await this.getClientIP();
-      const ua = navigator.userAgent || "Unknown Device";
+      const localClass = localStorage.getItem("nexus_student_class");
+      const uaPrefix = localClass ? `[CLASS:${localClass}] ` : "";
+      const ua = uaPrefix + (navigator.userAgent || "Unknown Device");
 
       try {
         const { data, error } = await sb.rpc("log_participant_ip", {
@@ -123,22 +140,73 @@
       return data;
     },
 
-    // Claim 1/1 Winner Slot
-    async claimWinner(winnerName = "Peserta 9B") {
+    // Claim 1/1 Winner Slot & Link Student Class by IP
+    async claimWinner(winnerName = "Peserta") {
       const sb = this.client;
       if (!sb) return { success: false, reason: "no_db" };
       const ip = await this.getClientIP();
 
+      // 1. Resolve student's class from ctf_participants (via IP)
+      let resolvedClass = null;
       try {
+        const { data: partData } = await sb
+          .from("ctf_participants")
+          .select("*")
+          .eq("ip_address", ip)
+          .maybeSingle();
+
+        if (partData) {
+          if (partData.student_class) {
+            resolvedClass = partData.student_class;
+          } else if (partData.user_agent && partData.user_agent.includes("[CLASS:")) {
+            const m = partData.user_agent.match(/\[CLASS:(.*?)\]/);
+            if (m && m[1]) resolvedClass = m[1];
+          }
+        }
+      } catch (e) {
+        console.warn("Could not lookup participant class by IP:", e);
+      }
+
+      // Fallback to localStorage if on same device
+      if (!resolvedClass) {
+        resolvedClass = localStorage.getItem("nexus_student_class") || "9B";
+      }
+
+      const fullWinnerName = `Peserta Kelas ${resolvedClass}`;
+
+      try {
+        // Try claim_ctf_winner RPC
         const { data, error } = await sb.rpc("claim_ctf_winner", {
-          p_winner_name: winnerName,
+          p_winner_name: fullWinnerName,
           p_ip: ip
         });
+
         if (error) {
           console.error("Error in claim_ctf_winner RPC:", error);
-          return { success: false, reason: error.message };
+          // Fallback direct update
+          const { error: updErr } = await sb
+            .from("ctf_state")
+            .update({
+              winner_name: fullWinnerName,
+              winner_ip: ip,
+              winner_claimed: true,
+              updated_at: new Date().toISOString()
+            })
+            .eq("id", 1)
+            .eq("winner_claimed", false);
+
+          if (updErr) return { success: false, reason: updErr.message };
         }
-        return data;
+
+        // Also try to update winner_class column if exists
+        try {
+          await sb
+            .from("ctf_state")
+            .update({ winner_class: resolvedClass })
+            .eq("id", 1);
+        } catch (_) {}
+
+        return data || { success: true, winner_class: resolvedClass };
       } catch (err) {
         return { success: false, reason: err.message };
       }

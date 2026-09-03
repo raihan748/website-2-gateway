@@ -553,33 +553,60 @@ document.addEventListener('DOMContentLoaded', () => {
   const barStop = document.getElementById('barStop');
   const copyReportBtn = document.getElementById('copyReportBtn');
   const resetVotesBtn = document.getElementById('resetVotesBtn');
+  const adminSealBtn = document.getElementById('adminSealBtn');
+  const adminWinnerCard = document.getElementById('adminWinnerCard');
+  const adminWinnerClassText = document.getElementById('adminWinnerClassText');
+  const adminWinnerIpText = document.getElementById('adminWinnerIpText');
 
   let currentSurveyData = null;
+  let currentGameState = null;
 
   async function updateSurveyDashboard() {
     if (!window.CTF_BACKEND) return;
+    
+    // 1. Fetch survey results
     const data = await window.CTF_BACKEND.fetchSurveyResults();
-    if (!data) return;
-    currentSurveyData = data;
+    if (data) {
+      currentSurveyData = data;
 
-    if (totalVotesCount) totalVotesCount.textContent = data.total;
-    if (dominantBadge) {
-      dominantBadge.textContent = `DOMINAN: ${data.dominant.label.toUpperCase()} (${data.dominant.percentage}%)`;
+      if (totalVotesCount) totalVotesCount.textContent = data.total;
+      if (dominantBadge) {
+        dominantBadge.textContent = `DOMINAN: ${data.dominant.label.toUpperCase()} (${data.dominant.percentage}%)`;
+      }
+
+      if (countHarder && barHarder) {
+        countHarder.textContent = `${data.counts.HARDER} (${data.percentages.HARDER}%)`;
+        barHarder.style.width = `${data.percentages.HARDER}%`;
+      }
+
+      if (countContinue && barContinue) {
+        countContinue.textContent = `${data.counts.CONTINUE_SAME} (${data.percentages.CONTINUE_SAME}%)`;
+        barContinue.style.width = `${data.percentages.CONTINUE_SAME}%`;
+      }
+
+      if (countStop && barStop) {
+        countStop.textContent = `${data.counts.DISLIKE_STOP} (${data.percentages.DISLIKE_STOP}%)`;
+        barStop.style.width = `${data.percentages.DISLIKE_STOP}%`;
+      }
     }
 
-    if (countHarder && barHarder) {
-      countHarder.textContent = `${data.counts.HARDER} (${data.percentages.HARDER}%)`;
-      barHarder.style.width = `${data.percentages.HARDER}%`;
-    }
-
-    if (countContinue && barContinue) {
-      countContinue.textContent = `${data.counts.CONTINUE_SAME} (${data.percentages.CONTINUE_SAME}%)`;
-      barContinue.style.width = `${data.percentages.CONTINUE_SAME}%`;
-    }
-
-    if (countStop && barStop) {
-      countStop.textContent = `${data.counts.DISLIKE_STOP} (${data.percentages.DISLIKE_STOP}%)`;
-      barStop.style.width = `${data.percentages.DISLIKE_STOP}%`;
+    // 2. Fetch CTF Game State for Winner details (Admin Eyes Only)
+    const state = await window.CTF_BACKEND.fetchState();
+    if (state) {
+      currentGameState = state;
+      if ((state.winner_claimed || state.winner_name) && adminWinnerCard) {
+        adminWinnerCard.style.display = 'flex';
+        const winClass = state.winner_class || (state.winner_name ? state.winner_name.replace('Peserta Kelas ', '').replace('Peserta ', '') : '9B');
+        if (adminWinnerClassText) {
+          adminWinnerClassText.textContent = `KELAS: ${winClass}`;
+        }
+        if (adminWinnerIpText) {
+          const timeStr = state.updated_at ? new Date(state.updated_at).toLocaleTimeString('id-ID') : '';
+          adminWinnerIpText.textContent = `IP: ${state.winner_ip || '-'} ${timeStr ? '• ' + timeStr + ' WIB' : ''}`;
+        }
+      } else if (adminWinnerCard) {
+        adminWinnerCard.style.display = 'none';
+      }
     }
   }
 
@@ -597,6 +624,16 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // Admin Seal Token Action
+  if (adminSealBtn) {
+    adminSealBtn.addEventListener('click', () => {
+      playKeyClick();
+      if (confirm('Apakah Anda ingin keluar dari mode Admin dan mengunci kembali token sesi ini?')) {
+        window.CTF_BACKEND.sealAdmin();
+      }
+    });
+  }
+
   if (copyReportBtn) {
     copyReportBtn.addEventListener('click', () => {
       playKeyClick();
@@ -606,23 +643,29 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       const d = currentSurveyData;
+      const s = currentGameState;
+      const winClass = s?.winner_class || (s?.winner_name ? s.winner_name.replace('Peserta Kelas ', '').replace('Peserta ', '') : null);
+
       const reportText = [
         "==================================================",
-        "📊 LAPORAN HASIL VOTE SURVEI CTF EPISODE 2",
+        "📊 LAPORAN RESMI CTF 2026 (HASIL VOTE & PEMENANG)",
         "==================================================",
-        `Total Responden : ${d.total} Siswa`,
-        `Pilihan Dominan : ${d.dominant.label} (${d.dominant.percentage}%)`,
+        s?.winner_claimed ? `🏆 PEMENANG GEMINI PRO: KELAS ${winClass || '9B'}` : "🏆 STATUS PEMENANG     : Belum Ada Pemenang",
+        s?.winner_ip ? `🌐 IP ADDRESS PEMENANG : ${s.winner_ip}` : "",
+        "--------------------------------------------------",
+        `Total Responden Vote  : ${d.total} Siswa`,
+        `Pilihan Dominan Survei: ${d.dominant.label} (${d.dominant.percentage}%)`,
         "",
-        "Rincian Perolehan Suara:",
+        "Rincian Perolehan Suara Survei:",
         `1. ⚡ Iya, persulit                   : ${d.counts.HARDER} vote (${d.percentages.HARDER}%)`,
         `2. 🎯 Tidak, lanjutkan                : ${d.counts.CONTINUE_SAME} vote (${d.percentages.CONTINUE_SAME}%)`,
         `3. 🛑 Tidak, saya tidak suka CTF, stop : ${d.counts.DISLIKE_STOP} vote (${d.percentages.DISLIKE_STOP}%)`,
         "==================================================",
         "Laporan siap dikirim ke AI untuk perencanaan CTF selanjutnya!"
-      ].join("\n");
+      ].filter(Boolean).join("\n");
 
       navigator.clipboard.writeText(reportText).then(() => {
-        alert("📋 Laporan Hasil Vote berhasil disalin ke clipboard! Anda bisa langsung menempelkannya (Ctrl+V) ke chat!");
+        alert("📋 Laporan Hasil Vote & Pemenang berhasil disalin ke clipboard! Anda bisa langsung menempelkannya (Ctrl+V) ke chat!");
       }).catch(() => {
         prompt("Salin manual laporan di bawah ini:", reportText);
       });

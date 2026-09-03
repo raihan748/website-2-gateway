@@ -1097,6 +1097,74 @@ body::before {
   background: linear-gradient(135deg, var(--accent-primary-light) 0%, var(--accent-primary) 100%);
 }
 
+.admin-btn.seal {
+  background: rgba(239, 68, 68, 0.15);
+  color: #f87171;
+  border: 1px solid rgba(239, 68, 68, 0.35);
+}
+
+.admin-btn.seal:hover {
+  background: #ef4444;
+  color: #ffffff;
+}
+
+/* EXCLUSIVE ADMIN WINNER CARD */
+.admin-winner-card {
+  background: rgba(245, 158, 11, 0.12);
+  border: 1px solid rgba(245, 158, 11, 0.4);
+  box-shadow: 0 0 20px rgba(245, 158, 11, 0.15);
+  border-radius: 12px;
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  animation: slideDown 0.3s ease;
+}
+
+.admin-winner-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.winner-trophy {
+  font-size: 1.3rem;
+}
+
+.winner-title {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #fbbf24;
+  letter-spacing: 0.5px;
+}
+
+.admin-winner-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  background: rgba(0, 0, 0, 0.4);
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.winner-class-highlight {
+  font-family: var(--font-mono);
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: 0.5px;
+}
+
+.winner-ip-meta {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--text-dim);
+}
+
 /* SURVEI MODAL DIALOG */
 .survey-modal-overlay {
   position: fixed;
