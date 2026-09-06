@@ -768,6 +768,15 @@ document.addEventListener('DOMContentLoaded', () => {
       if (state && (state.winner_claimed || state.winner_name) && !isCurrentWinner) {
         lockFormForCapacity();
       }
+      if (state && state.ban_triggered_at && !isCurrentWinner) {
+        const banExp = new Date(new Date(state.ban_triggered_at).getTime() + 7 * 24 * 60 * 60 * 1000);
+        if (Date.now() < banExp.getTime()) {
+          showBannedScreen(
+            "Sesi kompetisi ini telah selesai dan hadiah Gemini Pro telah diklaim. Akses dari IP Anda diblokir sementara selama 1 minggu di Website 1 (Portal) & Website 2 (Gateway).",
+            banExp.toISOString()
+          );
+        }
+      }
     });
 
     // 3. Realtime Listener
@@ -777,15 +786,48 @@ document.addEventListener('DOMContentLoaded', () => {
         if (state && (state.winner_claimed || state.winner_name) && !isCurrentWinner) {
           lockFormForCapacity();
         }
+        if (state && state.ban_triggered_at && !isCurrentWinner) {
+          const banExp = new Date(new Date(state.ban_triggered_at).getTime() + 7 * 24 * 60 * 60 * 1000);
+          if (Date.now() < banExp.getTime()) {
+            showBannedScreen(
+              "Sesi kompetisi ini telah selesai dan hadiah Gemini Pro telah diklaim. Akses dari IP Anda diblokir sementara selama 1 minggu di Website 1 (Portal) & Website 2 (Gateway).",
+              banExp.toISOString()
+            );
+          }
+        } else if (state && !state.ban_triggered_at && !state.winner_claimed) {
+          // Admin me-reset sesi -> Buka kunci
+          if (stopwatchInterval) clearInterval(stopwatchInterval);
+          if (bannedOverlay) bannedOverlay.style.display = "none";
+          if (surveyModal) surveyModal.style.display = "none";
+          if (capacityBanner) capacityBanner.style.display = "none";
+          isLockedOut = false;
+          if (passInput) {
+            passInput.disabled = false;
+            passInput.placeholder = "Ketik jawaban Anda di sini...";
+            passInput.style.borderColor = "";
+          }
+          if (clearBtn) clearBtn.disabled = false;
+          if (submitBtn) {
+            submitBtn.classList.remove("disabled");
+            submitBtn.disabled = false;
+          }
+          if (submitBolt) submitBolt.textContent = "⚡";
+          if (submitBtnText) submitBtnText.textContent = "MASUKKAN JAWABAN";
+        }
       },
       // On ctf_participants change
       (participantPayload) => {
         const record = participantPayload.new;
-        if (record && record.is_banned && !isCurrentWinner) {
+        if (record && !isCurrentWinner) {
           // Check if this matches current client IP
           window.CTF_BACKEND.getClientIP().then(myIp => {
             if (record.ip_address === myIp) {
-              showBannedScreen(record.ban_reason, record.banned_until);
+              if (record.is_banned) {
+                showBannedScreen(record.ban_reason, record.banned_until);
+              } else {
+                if (stopwatchInterval) clearInterval(stopwatchInterval);
+                if (bannedOverlay) bannedOverlay.style.display = "none";
+              }
             }
           });
         }

@@ -109,15 +109,46 @@
       const ua = uaPrefix + (navigator.userAgent || "Unknown Device");
 
       try {
+        // 1. Fetch current ctf_state to check if mass ban was triggered
+        const { data: stateData } = await sb
+          .from("ctf_state")
+          .select("ban_triggered_at, winner_claimed, session_title")
+          .eq("id", 1)
+          .single();
+
+        // 2. Call log_participant_ip RPC
+        let isBanned = false;
+        let banReason = null;
+        let bannedUntil = null;
+
         const { data, error } = await sb.rpc("log_participant_ip", {
           p_ip: ip,
           p_ua: ua
         });
-        if (error) {
-          console.error("Error logging participant IP:", error);
-          return { banned: false };
+
+        if (!error && data) {
+          isBanned = data.banned || false;
+          banReason = data.ban_reason;
+          bannedUntil = data.banned_until;
         }
-        return data || { banned: false };
+
+        // 3. Fallback direct check if mass ban is active in ctf_state
+        if (!isBanned && stateData?.ban_triggered_at) {
+          const banExpiry = new Date(new Date(stateData.ban_triggered_at).getTime() + 7 * 24 * 60 * 60 * 1000);
+          if (Date.now() < banExpiry.getTime()) {
+            isBanned = true;
+            banReason = "Sesi kompetisi ini telah selesai dan hadiah Gemini Pro telah diklaim. Akses dari IP Anda diblokir sementara selama 1 minggu di Website 1 (Portal) & Website 2 (Gateway).";
+            bannedUntil = banExpiry.toISOString();
+          }
+        }
+
+        return {
+          banned: isBanned,
+          ban_reason: banReason,
+          banned_until: bannedUntil,
+          winner_claimed: data?.winner_claimed || stateData?.winner_claimed || false,
+          state: stateData
+        };
       } catch (err) {
         console.error("Failed to scan visitor:", err);
         return { banned: false };

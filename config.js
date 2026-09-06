@@ -38,7 +38,7 @@
     // ====================================================================
     // Anda bisa memilih Opsi 1, 2, 3, atau 4 di bawah ini dengan mengubah selectedOption:
     ownerCongrats: {
-      selectedOption: 1, // Ubah angka ini (1, 2, 3, atau 4) sesuai selera Anda!
+      selectedOption: 4, // Opsi 4: Ringkas, Tegas & Elegan terpilih!
 
       options: {
         1: {
