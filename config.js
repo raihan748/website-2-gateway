@@ -44,22 +44,22 @@
         1: {
           title: "👑 PESAN PENGHORMATAN RESMI DARI OWNER",
           body: "Selamat! Kamu telah membuktikan kecerdasan, ketelitian, dan ketangguhan logika yang luar biasa. Dari seluruh siswa yang bertarung di matriks teka-teki ini, kamulah orang pertama yang berhasil menembus seluruh 8 lapisan cipher dan aturan posisiku tanpa celah. Hadiah Google Gemini Pro 18 Bulan ini adalah bukti nyata dedikasi dan kehebatan analisismu. Nikmati kemenangan mutlakmu!",
-          author: "Raihan, Kelas 9B (Creator & Architect of Nexus CTF)"
+          author: "-Raihan 9B"
         },
         2: {
           title: "🔥 SELAMAT DARI RAIHAN (9B)",
           body: "Wah, gila keren banget! Selamat ya buat kamu yang udah berhasil jadi juara 1 di CTF ini! Jujur, teka-teki 8 kata dan aturan posisi kemarin aku bikin sengaja rumit biar bener-bener nguji otak kita, tapi kamu berhasil pecahin paling pertama dan paling cepet se-sekolah. Selamat menikmati Google Gemini Pro 18 Bulan gratis, semoga kepake banget buat belajar dan eksplorasi AI kamu ke depan!",
-          author: "Raihan (Kelas 9B)"
+          author: "-Raihan 9B"
         },
         3: {
           title: "⚡ VERIFIED: GRANDMASTER CIPHER BREAKER",
           body: "Akses Terverifikasi: Protokol Rahasia Berhasil Dikuasai. Selamat Agen! Kamu adalah agen terbaik yang mampu mengurai enkripsi paling kompleks di Nexus 2026 sebelum orang lain menyadarinya. Kemenangan ini membuktikan kamu berada di kasta tertinggi pemecah kode. Hadiah voucher eksklusif Gemini Pro 18 Bulan kini resmi menjadi milikmu!",
-          author: "Raihan, 9B (System Administrator & Puzzle Architect)"
+          author: "-Raihan 9B"
         },
         4: {
           title: "🏆 APRESIASI RESMI KEPADA SANG JUARA",
           body: "Selamat kepada Sang Juara! Kamu telah menorehkan rekor bersejarah sebagai pemecah sandi tercepat dan tercerdas di ajang Nexus Cyber CTF 2026. Hadiah Gemini Pro 18 Bulan ini adalah apresiasi setinggi-tingginya dari saya atas usaha brilian dan kecepatan analisismu hari ini. Sukses selalu!",
-          author: "Raihan, Kelas 9B"
+          author: "-Raihan 9B"
         }
       }
     },
