@@ -924,8 +924,36 @@ document.addEventListener('DOMContentLoaded', () => {
         const sType = window.CTF_BACKEND.getSessionType(state);
         loadSessionPuzzle(sType);
       }
+
+      // If state in database is clean/reset (no winner and no ban active):
+      if (state && !state.winner_claimed && !state.ban_triggered_at) {
+        isCurrentWinner = false;
+        localStorage.removeItem("nexus_is_winner");
+        localStorage.removeItem("nexus_survey_voted");
+        if (stopwatchInterval) clearInterval(stopwatchInterval);
+        if (bannedOverlay) bannedOverlay.style.display = "none";
+        if (surveyModal) surveyModal.style.display = "none";
+        if (capacityBanner) capacityBanner.style.display = "none";
+        if (victoryCard) victoryCard.style.display = "none";
+        if (formCard) formCard.style.display = "block";
+        isLockedOut = false;
+        if (passInput) {
+          passInput.disabled = false;
+          passInput.placeholder = "Ketik jawaban Anda di sini...";
+          passInput.style.borderColor = "";
+        }
+        if (clearBtn) clearBtn.disabled = false;
+        if (submitBtn) {
+          submitBtn.classList.remove("disabled");
+          submitBtn.disabled = false;
+        }
+        if (submitBolt) submitBolt.textContent = "⚡";
+        if (submitBtnText) submitBtnText.textContent = "MASUKKAN JAWABAN";
+        return;
+      }
+
       const isWinner = isCurrentWinner || localStorage.getItem("nexus_is_winner") === "true";
-      if (isWinner) {
+      if (isWinner && state?.winner_claimed) {
         handleSuccess();
         return;
       }
@@ -967,6 +995,7 @@ document.addEventListener('DOMContentLoaded', () => {
           // Admin me-reset sesi -> Buka kunci & bersihkan status pemenang lama
           isCurrentWinner = false;
           localStorage.removeItem("nexus_is_winner");
+          localStorage.removeItem("nexus_survey_voted");
           if (window._ownerCountdownInterval) clearInterval(window._ownerCountdownInterval);
           if (victoryCard) victoryCard.style.display = "none";
           if (formCard) formCard.style.display = "block";
