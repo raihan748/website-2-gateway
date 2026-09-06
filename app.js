@@ -32,7 +32,7 @@ document.addEventListener('DOMContentLoaded', () => {
     `FASE 2: ATURAN POSISI LOGIC GRID (SUSUN POSISI SLOT 1 S/D 8):\n` +
     `* ATURAN 1 : Kata hasil Anagram (Kata A) menempati Slot 1 paling depan.\n` +
     `* ATURAN 2 : Dua kata berpanjang 7 huruf (Kata B & Kata F) TIDAK BOLEH bersebelahan.\n` +
-    `* ATURAN 3 : Kata D (POWER) berada tepat di antara kata 3 huruf (Kata C) dan kata 5 huruf berakhiran 'S' (Kata E).\n` +
+    `* ATURAN 3 : Kata D berada tepat di antara kata 3 huruf (Kata C) dan kata 5 huruf berakhiran 'S' (Kata E).\n` +
     `* ATURAN 4 : Rangkaian [Kata E] -> [Kata F] -> [Kata G] selalu bersambung secara berurutan.\n` +
     `* ATURAN 5 : Kata perintah aksi (Kata H) menempati Slot 8 paling akhir.\n\n` +
     `CHECKSUM PANJANG HURUF SLOT 1 S/D 8: [ 6, 7, 3, 5, 5, 7, 6, 8 ]\n` +
@@ -195,8 +195,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // 5. CONFIG & DOM ELEMENTS
   const config = window.CTF_CONFIG || {
     geminiRedeemUrl: "https://g.co/play/redeem?code=GEMINI_PRO_REWARD_CLAIM",
-    videoSource: "congrats.mp4",
-    correctPassword: "GEMINI-PREMIUM-PRO-POWER-NEXUS-QUANTUM-CIPHER-ACTIVATE"
+    videoSource: "congrats.mp4"
   };
 
   const authForm = document.getElementById('authForm');
@@ -245,10 +244,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const span = document.createElement('span');
         span.className = 'chip';
         span.id = c.id;
-        span.setAttribute('data-word', c.word);
         span.textContent = c.label;
         formulaChipsContainer.appendChild(span);
-        chips.push({ el: span, word: c.word });
+        chips.push({ el: span, hash: c.hash });
 
         if (idx < puzzle.chips.length - 1) {
           const sep = document.createElement('span');
@@ -348,13 +346,14 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  function updateFormulaHUD(val) {
+  async function updateFormulaHUD(val) {
     const tokens = (val || '').toUpperCase().split(/[-_\s]+/).map(t => t.trim()).filter(Boolean);
+    const tokenHashes = await Promise.all(tokens.map(t => computeSha256(t)));
     let locked = 0;
 
-    chips.forEach(({ el, word }) => {
+    chips.forEach(({ el, hash }) => {
       if (!el) return;
-      const isPresent = tokens.includes(word);
+      const isPresent = tokenHashes.includes(hash);
       el.classList.toggle('active', isPresent);
       if (isPresent) locked++;
     });

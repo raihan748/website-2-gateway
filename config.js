@@ -31,7 +31,7 @@
     // Anda dapat mengganti tautan di bawah ini dengan link redeem/voucher asli yang Anda siapkan:
     activationUrls: {
       ikhwan: "https://serviceactivation.google.com/subscription/new/AQCpiIE8pWV_Ml2STqKYcaTS7ekM0fec6wNwwG8TV3btM7MMsB4vwGXk-HRHJQVbc300o9S9mgfyhilzPA0nNL6HoICrKVrALWIeWM-waH-PGL1I-T-jyWLfV9RGkkfk0zS7RFNb4aHbHdT7-TnRhd6hSDNsJYDY1Wl23ABaAyAFv9-vD4rneBRNY8o0OTui-tJynWuh11axOXX-p1CZYtLr91cZPIGfTUTVf0JKtWuPzcYqJmxTHLZbwMaByB7Ekp26E4jT6GBwh80YSQ==",
-      akhwat: "https://g.co/play/redeem?code=GEMINI_PRO_18_BULAN_AKHWAT"
+      akhwat: "https://serviceactivation.google.com/subscription/new/AQCpiIHGdBqnTnI_yB1MhdolnGcRuDR4trFuUpLmWavHi2sG7J-jKORhzxraj7oaxXPAmyq6hRep3zm4uWp9AcSL8vyHQyGgaWt1o6a5A9_R-hZQZlGaQGtbWotxRP29Bi9z49OkTppReMPGSKBe7loPmFmwFDy5gv8f_Ad-GrmdbYjwmaA7O_DdVmjdDTNFV5ngoe7SiWMZOfYWtJUHWP8WDTA34LDaAJv2RmUiBiRtU9Tca2IOJk55UIRzT_XGhelHdai4pqFzqMawFA=="
     },
 
     // Current Active Session Type: 'ikhwan' | 'akhwat'
@@ -101,26 +101,21 @@
     puzzles: {
       // ------------------------------------------------------------------
       // SESI IKHWAN (PUTRA)
-      // Solusi: GEMINI-PREMIUM-PRO-POWER-NEXUS-QUANTUM-CIPHER-ACTIVATE
       // ------------------------------------------------------------------
       ikhwan: {
         sessionName: "Sesi Putra (Kelas 7, 8, 9)",
         badgeLabel: "👦 SESI IKHWAN",
-        scrambledPool: [
-          "INIMEG", "SOHPLXP", "PRO", "POWER", "NEXUS", "QUANTUM", "CIPHER", "ACTIVATE",
-          "MATRIX", "VECTOR", "SHIELD", "BINARY", "KERNEL", "VORTEX", "NEURON", "BEACON"
-        ],
         targetHash: "cebb94befc62014be5955093830fbd05334d45df7c48edc2173aa707ff67ccdd",
         expectedLengths: [6, 7, 3, 5, 5, 7, 6, 8],
         chips: [
-          { id: 'chip-1', word: 'GEMINI', label: '1. SLOT (6)' },
-          { id: 'chip-2', word: 'PREMIUM', label: '2. SLOT (7)' },
-          { id: 'chip-3', word: 'PRO', label: '3. SLOT (3)' },
-          { id: 'chip-4', word: 'POWER', label: '4. SLOT (5)' },
-          { id: 'chip-5', word: 'NEXUS', label: '5. SLOT (5)' },
-          { id: 'chip-6', word: 'QUANTUM', label: '6. SLOT (7)' },
-          { id: 'chip-7', word: 'CIPHER', label: '7. SLOT (6)' },
-          { id: 'chip-8', word: 'ACTIVATE', label: '8. SLOT (8)' }
+          { id: 'chip-1', hash: '8a2266f450423a535981b12c13c39562b59e4ff8f8574a9b3a6d7a8c526b681c', label: '1. SLOT (6)' },
+          { id: 'chip-2', hash: '0afea7d744b825aa58996d28692d6624f8ae6c360b88f0990f66f4db0e83eabc', label: '2. SLOT (7)' },
+          { id: 'chip-3', hash: '7821a03e83d54c4519defe9980f3c2f15a57a4cb39d1416b4bae327a98c6447a', label: '3. SLOT (3)' },
+          { id: 'chip-4', hash: '10149aa571ab7f5f987c9fec11ed8062491e6fee2cd7fa0e3058088af42a0f2a', label: '4. SLOT (5)' },
+          { id: 'chip-5', hash: '52b797a276d825aaa28f449f1d35682bd4d271f6455be84e3869cdd7aed2ca03', label: '5. SLOT (5)' },
+          { id: 'chip-6', hash: 'afcbd832f42e36fb086363789b438948fab1762e725638c28991e4d4e4768db5', label: '6. SLOT (7)' },
+          { id: 'chip-7', hash: 'e555a71f0ce4ab12bc3de31adda7979c753fa3f9edd36e8cd8929d5bd4b7e906', label: '7. SLOT (6)' },
+          { id: 'chip-8', hash: 'f5dcf0be62e222c4a5e9e367c3feeb42e690c797b4980a45fe4014c64c587f1d', label: '8. SLOT (8)' }
         ],
         dossier: {
           phase1: [
@@ -136,7 +131,7 @@
           phase2: [
             "* ATURAN 1 : Kata hasil Anagram (Kata A) menempati Slot 1 paling depan.",
             "* ATURAN 2 : Dua kata berpanjang 7 huruf (Kata B & Kata F) TIDAK BOLEH bersebelahan.",
-            "* ATURAN 3 : Kata D (POWER) berada tepat di antara kata 3 huruf (Kata C) dan kata 5 huruf berakhiran 'S' (Kata E).",
+            "* ATURAN 3 : Kata D berada tepat di antara kata 3 huruf (Kata C) dan kata 5 huruf berakhiran 'S' (Kata E).",
             "* ATURAN 4 : Rangkaian [Kata E] -> [Kata F] -> [Kata G] selalu bersambung secara berurutan.",
             "* ATURAN 5 : Kata perintah aksi (Kata H) menempati Slot 8 paling akhir."
           ],
@@ -146,42 +141,37 @@
 
       // ------------------------------------------------------------------
       // SESI AKHWAT (PUTRI) - MENCEGAH BYPASS VPN DARI PESERTA IKHWAN
-      // Solusi: ATHENA-VALKYRIE-NOVA-PULSE-CELESTIA-HORIZON-AURORA-IGNITE
       // ------------------------------------------------------------------
       akhwat: {
         sessionName: "Sesi Putri (Kelas 7, 8, 9)",
         badgeLabel: "👧 SESI AKHWAT",
-        scrambledPool: [
-          "EHTANA", "VALKYRIE", "NOVA", "PULSE", "CELESTIA", "HORIZON", "DXURUD", "IGNITE",
-          "STELLAR", "PHOENIX", "SOLARIS", "SYNAPSE", "CRYPTO", "GALAXY", "NEURON", "VORTEX"
-        ],
         targetHash: "7e65afba492b9383700817d24af997403095483019d2c1f62d2ecb511c38a7c0",
         expectedLengths: [6, 8, 4, 5, 8, 7, 6, 6],
         chips: [
-          { id: 'chip-1', word: 'ATHENA', label: '1. SLOT (6)' },
-          { id: 'chip-2', word: 'VALKYRIE', label: '2. SLOT (8)' },
-          { id: 'chip-3', word: 'NOVA', label: '3. SLOT (4)' },
-          { id: 'chip-4', word: 'PULSE', label: '4. SLOT (5)' },
-          { id: 'chip-5', word: 'CELESTIA', label: '5. SLOT (8)' },
-          { id: 'chip-6', word: 'HORIZON', label: '6. SLOT (7)' },
-          { id: 'chip-7', word: 'AURORA', label: '7. SLOT (6)' },
-          { id: 'chip-8', word: 'IGNITE', label: '8. SLOT (6)' }
+          { id: 'chip-1', hash: '7e9968b23a07d46569685d724b788f49779e7de2ff3ae6b5de049282a62c1216', label: '1. SLOT (6)' },
+          { id: 'chip-2', hash: 'f4a79aeb476f321d3e17a850601842a5335dfd652b653cf00716a278bcc7b28c', label: '2. SLOT (8)' },
+          { id: 'chip-3', hash: 'c2385250186d29ac49370c0d87d40cfc0b434bdba9ae2e74e9a94c1cda87d667', label: '3. SLOT (4)' },
+          { id: 'chip-4', hash: '64ab2b69dba510be526608f4e67142d34068fb7cfd6771529a7c54b5cd7a0675', label: '4. SLOT (5)' },
+          { id: 'chip-5', hash: 'badcd5f9c0cab9f7a6e3e393b20437c501e6f20c2bc57d4a3d4b7e991bf091cb', label: '5. SLOT (8)' },
+          { id: 'chip-6', hash: '7e4e26183aacdb054b06f550fb2db860b40106ad27aa9d649e101d581f588b56', label: '6. SLOT (7)' },
+          { id: 'chip-7', hash: '1e28b2651a6d1b2486987925a85576dce1f8713e46acab058d9b200e409e4887', label: '7. SLOT (6)' },
+          { id: 'chip-8', hash: '1c075f99f707c959588fd72aabe60e08f787505534d5f75ac5516c62e904fefa', label: '8. SLOT (6)' }
         ],
         dossier: {
           phase1: [
             "[1] KATA A (Anagram Mitologi)   : Susun huruf dari \"EHTANA\" (Dewi Kebijaksanaan)",
-            "[2] KATA B (Ksatria Pelindung)  : Ksatria pelindung 8 huruf berawalan 'V' & berakhiran 'E' (\"VALKYRIE\")",
-            "[3] KATA C (Ledakan Bintang)    : Ledakan bintang kosmik 4 huruf berawalan 'N' (\"NOVA\")",
-            "[4] KATA D (Gelombang Energi)   : Detak sinyal denyut 5 huruf berakhiran 'SE' (\"PULSE\")",
-            "[5] KATA E (Alam Surgawi)       : Istilah langit/angkasa agung 8 huruf (\"CELESTIA\")",
-            "[6] KATA F (Garis Cakrawala)    : Batas pandang langit 7 huruf berawalan 'H' (\"HORIZON\")",
-            "[7] KATA G (Caesar Shift -3)    : Geser mundur 3 huruf pada sandi fajar kutub \"DXURUD\" (\"AURORA\")",
-            "[8] KATA H (Aksi Penyalaan)     : Perintah menyalakan sistem 6 huruf berawalan 'IG' (\"IGNITE\")"
+            "[2] KATA B (Ksatria Pelindung)  : Ksatria pelindung 8 huruf berawalan 'V' & berakhiran 'E'",
+            "[3] KATA C (Ledakan Bintang)    : Ledakan bintang kosmik 4 huruf berawalan 'N'",
+            "[4] KATA D (Gelombang Energi)   : Detak sinyal denyut 5 huruf berakhiran 'SE'",
+            "[5] KATA E (Alam Surgawi)       : Istilah langit/angkasa agung 8 huruf",
+            "[6] KATA F (Garis Cakrawala)    : Batas pandang langit 7 huruf berawalan 'H'",
+            "[7] KATA G (Caesar Shift -3)    : Geser mundur 3 huruf pada sandi fajar kutub \"DXURUD\"",
+            "[8] KATA H (Aksi Penyalaan)     : Perintah menyalakan sistem 6 huruf berawalan 'IG'"
           ],
           phase2: [
             "* ATURAN 1 : Kata hasil Anagram Dewi Kebijaksanaan (Kata A) menempati Slot 1 paling depan.",
             "* ATURAN 2 : Kata pelindung 8 huruf (Kata B) menempati Slot 2 tepat sebelum kata kosmik 4 huruf (Kata C).",
-            "* ATURAN 3 : Kata C (NOVA) berada tepat di antara kata 8 huruf (Kata B) dan kata gelombang 5 huruf (Kata D).",
+            "* ATURAN 3 : Kata C berada tepat di antara kata 8 huruf (Kata B) dan kata gelombang 5 huruf (Kata D).",
             "* ATURAN 4 : Rangkaian kosmik [Kata D] -> [Kata E] -> [Kata F] selalu bersambung secara berurutan.",
             "* ATURAN 5 : Kata hasil Caesar Shift (Kata G) berada di Slot 7, ditutup kata aksi eksekusi (Kata H) pada Slot 8."
           ],
@@ -202,7 +192,7 @@
     },
 
     get scrambledPool() {
-      return this.getPuzzle(this.activeSession).scrambledPool;
+      return [];
     },
 
     get expectedLengths() {
