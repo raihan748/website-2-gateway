@@ -219,7 +219,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const claimCountdownBox = document.getElementById('claimCountdownBox');
   const countdownSec = document.getElementById('countdownSec');
 
-  let isCurrentWinner = false;
+  let isCurrentWinner = (localStorage.getItem("nexus_is_winner") === "true");
   let isLockedOut = false;
 
   if (redeemBtn) {
@@ -417,23 +417,32 @@ document.addEventListener('DOMContentLoaded', () => {
 
       // Check if matches the active 8-token Master Password SHA-256
       if (inputHash === targetHash) {
+        // Mark as current winner IMMEDIATELY to prevent Realtime WebSocket race condition!
+        isCurrentWinner = true;
+        localStorage.setItem("nexus_is_winner", "true");
+
         // Attempt to claim 1/1 winner slot on database
         if (window.CTF_BACKEND) {
           writeLog("Memverifikasi ketersediaan kuota pemenang 1/1 ke server...", "info");
           const claimRes = await window.CTF_BACKEND.claimWinner("Peserta");
 
           if (claimRes.success) {
-            isCurrentWinner = true;
             handleSuccess();
           } else if (claimRes.reason === 'capacity_full') {
+            isCurrentWinner = false;
+            localStorage.removeItem("nexus_is_winner");
             playErrorBeep();
             writeLog(`❌ KAPASITAS 1/1 SUDAH TERCAPAI: Peserta lain baru saja mendahului Anda!`, "danger");
             lockFormForCapacity();
           } else {
+            isCurrentWinner = false;
+            localStorage.removeItem("nexus_is_winner");
             writeLog("Gagal verifikasi klaim: " + (claimRes.reason || 'Server error'), "danger");
             if (submitBtn && !isLockedOut) submitBtn.disabled = false;
           }
         } else {
+          isCurrentWinner = false;
+          localStorage.removeItem("nexus_is_winner");
           // Strict server validation required - NO OFFLINE WIN ALLOWED!
           playErrorBeep();
           writeLog("❌ KONEKSI SERVER GAGAL: Tidak dapat memvalidasi kuota pemenang ke database. Pastikan koneksi internet aktif!", "danger");
@@ -472,11 +481,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // 7. VICTORY HANDLER (SHOWS OWNER CONGRATULATIONS CARD)
   function handleSuccess() {
+    isCurrentWinner = true;
+    localStorage.setItem("nexus_is_winner", "true");
     playVictoryFanfare();
     writeLog("ACCESS GRANTED! Seluruh 8 teka-teki kata & aturan posisi terpecahkan sempurna.", "success");
     if (passInput) {
       passInput.style.borderColor = "var(--accent-success)";
     }
+
+    // Pastikan modal survei / banned / capacity tertutup agar kartu selamat terlihat jelas
+    if (surveyModal) surveyModal.style.display = "none";
+    if (bannedOverlay) bannedOverlay.style.display = "none";
+    if (capacityBanner) capacityBanner.style.display = "none";
 
     // Populate Owner Letter from Config
     if (config && config.getActiveOwnerMessage) {
@@ -489,29 +505,46 @@ document.addEventListener('DOMContentLoaded', () => {
       if (ownerAuthorText) ownerAuthorText.textContent = activeMsg.author;
     }
 
-    setTimeout(() => {
-      if (formCard) formCard.style.display = "none";
-      if (victoryCard) victoryCard.style.display = "block";
-      triggerSubtleConfetti();
+    // Tampilkan kartu kemenangan dan gulir langsung ke atas
+    if (formCard) formCard.style.display = "none";
+    if (victoryCard) {
+      victoryCard.style.display = "block";
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+    triggerSubtleConfetti();
 
-      // Start 10-Second Countdown on Owner Congratulations Card
-      let timeLeft = 10;
-      const ownerCountdownSec = document.getElementById('ownerCountdownSec');
-      const countdownInterval = setInterval(() => {
-        timeLeft--;
-        if (ownerCountdownSec) ownerCountdownSec.textContent = timeLeft;
+    // Hitung mundur 20 detik (cukup waktu untuk membaca surat)
+    let timeLeft = 20;
+    const ownerCountdownSec = document.getElementById('ownerCountdownSec');
+    if (ownerCountdownSec) ownerCountdownSec.textContent = timeLeft;
 
-        if (timeLeft <= 0) {
-          clearInterval(countdownInterval);
-          // 10 Detik Selesai: Sembunyikan Pesan Owner & Tampilkan Modal Vote untuk Pemenang
-          if (victoryCard) victoryCard.style.display = "none";
-          openSurveyModal(true);
-        }
-      }, 1000);
-    }, 600);
+    if (window._ownerCountdownInterval) clearInterval(window._ownerCountdownInterval);
+    window._ownerCountdownInterval = setInterval(() => {
+      timeLeft--;
+      if (ownerCountdownSec) ownerCountdownSec.textContent = timeLeft;
+
+      if (timeLeft <= 0) {
+        clearInterval(window._ownerCountdownInterval);
+        if (victoryCard) victoryCard.style.display = "none";
+        openSurveyModal(true);
+      }
+    }, 1000);
+
+    // Tombol untuk langsung lanjut kapan saja tanpa harus menunggu 20 detik
+    const proceedToSurveyBtn = document.getElementById('proceedToSurveyBtn');
+    if (proceedToSurveyBtn) {
+      proceedToSurveyBtn.onclick = () => {
+        if (window._ownerCountdownInterval) clearInterval(window._ownerCountdownInterval);
+        if (victoryCard) victoryCard.style.display = "none";
+        openSurveyModal(true);
+      };
+    }
   }
 
   function lockFormForCapacity() {
+    if (isCurrentWinner || localStorage.getItem("nexus_is_winner") === "true") {
+      return;
+    }
     isLockedOut = true;
     if (capacityBanner) capacityBanner.style.display = "flex";
     if (passInput) {
@@ -578,6 +611,9 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function showBannedScreen(reason = null, expiry = null) {
+    if (isCurrentWinner || localStorage.getItem("nexus_is_winner") === "true") {
+      return;
+    }
     pendingBanInfo = { reason, expiry };
 
     // Check if user has already voted in the survey
@@ -619,6 +655,9 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function displayFinalBanOverlay() {
+    if (isCurrentWinner || localStorage.getItem("nexus_is_winner") === "true") {
+      return;
+    }
     if (surveyModal) surveyModal.style.display = "none";
     if (bannedOverlay) {
       bannedOverlay.style.display = "flex";
@@ -870,10 +909,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 1. Scan Visitor IP
     window.CTF_BACKEND.scanVisitor().then(res => {
-      if (res && res.banned) {
+      const isWinner = isCurrentWinner || localStorage.getItem("nexus_is_winner") === "true";
+      if (res && res.banned && !isWinner) {
         showBannedScreen(res.ban_reason, res.banned_until);
       }
-      if (res && res.winner_claimed && !isCurrentWinner) {
+      if (res && res.winner_claimed && !isWinner) {
         lockFormForCapacity();
       }
     });
@@ -884,10 +924,15 @@ document.addEventListener('DOMContentLoaded', () => {
         const sType = window.CTF_BACKEND.getSessionType(state);
         loadSessionPuzzle(sType);
       }
-      if (state && (state.winner_claimed || state.winner_name) && !isCurrentWinner) {
+      const isWinner = isCurrentWinner || localStorage.getItem("nexus_is_winner") === "true";
+      if (isWinner) {
+        handleSuccess();
+        return;
+      }
+      if (state && (state.winner_claimed || state.winner_name) && !isWinner) {
         lockFormForCapacity();
       }
-      if (state && state.ban_triggered_at && !isCurrentWinner) {
+      if (state && state.ban_triggered_at && !isWinner) {
         const banExp = new Date(new Date(state.ban_triggered_at).getTime() + 7 * 24 * 60 * 60 * 1000);
         if (Date.now() < banExp.getTime()) {
           showBannedScreen(
@@ -906,10 +951,11 @@ document.addEventListener('DOMContentLoaded', () => {
           const sType = window.CTF_BACKEND.getSessionType(state);
           loadSessionPuzzle(sType);
         }
-        if (state && (state.winner_claimed || state.winner_name) && !isCurrentWinner) {
+        const isWinner = isCurrentWinner || localStorage.getItem("nexus_is_winner") === "true";
+        if (state && (state.winner_claimed || state.winner_name) && !isWinner) {
           lockFormForCapacity();
         }
-        if (state && state.ban_triggered_at && !isCurrentWinner) {
+        if (state && state.ban_triggered_at && !isWinner) {
           const banExp = new Date(new Date(state.ban_triggered_at).getTime() + 7 * 24 * 60 * 60 * 1000);
           if (Date.now() < banExp.getTime()) {
             showBannedScreen(
@@ -918,7 +964,12 @@ document.addEventListener('DOMContentLoaded', () => {
             );
           }
         } else if (state && !state.ban_triggered_at && !state.winner_claimed) {
-          // Admin me-reset sesi -> Buka kunci
+          // Admin me-reset sesi -> Buka kunci & bersihkan status pemenang lama
+          isCurrentWinner = false;
+          localStorage.removeItem("nexus_is_winner");
+          if (window._ownerCountdownInterval) clearInterval(window._ownerCountdownInterval);
+          if (victoryCard) victoryCard.style.display = "none";
+          if (formCard) formCard.style.display = "block";
           if (stopwatchInterval) clearInterval(stopwatchInterval);
           if (bannedOverlay) bannedOverlay.style.display = "none";
           if (surveyModal) surveyModal.style.display = "none";
@@ -941,7 +992,8 @@ document.addEventListener('DOMContentLoaded', () => {
       // On ctf_participants change
       (participantPayload) => {
         const record = participantPayload.new;
-        if (record && !isCurrentWinner) {
+        const isWinner = isCurrentWinner || localStorage.getItem("nexus_is_winner") === "true";
+        if (record && !isWinner) {
           // Check if this matches current client IP
           window.CTF_BACKEND.getClientIP().then(myIp => {
             if (record.ip_address === myIp) {
