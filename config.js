@@ -30,7 +30,7 @@
     // ====================================================================
     // Anda dapat mengganti tautan di bawah ini dengan link redeem/voucher asli yang Anda siapkan:
     activationUrls: {
-      ikhwan: "https://g.co/play/redeem?code=GEMINI_PRO_18_BULAN_IKHWAN",
+      ikhwan: "https://serviceactivation.google.com/subscription/new/AQCpiIE8pWV_Ml2STqKYcaTS7ekM0fec6wNwwG8TV3btM7MMsB4vwGXk-HRHJQVbc300o9S9mgfyhilzPA0nNL6HoICrKVrALWIeWM-waH-PGL1I-T-jyWLfV9RGkkfk0zS7RFNb4aHbHdT7-TnRhd6hSDNsJYDY1Wl23ABaAyAFv9-vD4rneBRNY8o0OTui-tJynWuh11axOXX-p1CZYtLr91cZPIGfTUTVf0JKtWuPzcYqJmxTHLZbwMaByB7Ekp26E4jT6GBwh80YSQ==",
       akhwat: "https://g.co/play/redeem?code=GEMINI_PRO_18_BULAN_AKHWAT"
     },
 
