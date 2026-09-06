@@ -169,9 +169,9 @@
   <!-- SURVEI EVALUASI CTF EPISODE 2 MODAL -->
   <div id="surveyModal" class="survey-modal-overlay" style="display: none;">
     <div class="survey-modal-card">
-      <div class="survey-icon">🧩</div>
-      <h2 class="survey-title">SURVEI CTF EPISODE 2</h2>
-      <p class="survey-subtitle">
+      <div class="survey-icon" id="surveyIcon">🧩</div>
+      <h2 class="survey-title" id="surveyTitle">SURVEI CTF EPISODE 2</h2>
+      <p class="survey-subtitle" id="surveySubtitle">
         Permainan telah selesai! Sebelum sesi ditutup, mohon berikan pendapat Anda untuk pembuatan tantangan CTF episode berikutnya:
       </p>
 
@@ -216,7 +216,7 @@
 
         <button type="submit" id="submitSurveyBtn" class="neo-btn survey-submit-btn">
           <span class="btn-shine"></span>
-          <span>KIRIM VOTE & SELESAI</span>
+          <span id="submitSurveyBtnText">KIRIM VOTE & SELESAI</span>
           <svg class="btn-arrow" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
             <path d="M5 12h14M12 5l7 7-7 7"/>
           </svg>
@@ -234,8 +234,9 @@
         Sesi kompetisi ini telah selesai dan hadiah Gemini Pro telah diklaim. Akses dari IP Anda diblokir sementara selama 1 minggu.
       </p>
       <div class="banned-timer-box">
-        <span class="timer-label">MASA BLOKIR BERLAKU HINGGA:</span>
-        <span class="timer-value" id="bannedExpiry">7 Hari ke Depan</span>
+        <span class="timer-label">⏱️ SISA WAKTU BLOKIR IP (1 MINGGU):</span>
+        <span class="timer-value stopwatch-live" id="bannedStopwatch">6 Hari, 23 Jam, 59 Menit, 59 Detik</span>
+        <span class="timer-sublabel" id="bannedExpiry">Berlaku hingga: -</span>
       </div>
       <div class="banned-footer-badge">
         <span>🛡️ NEXUS SECURITY ENFORCEMENT</span>
@@ -337,42 +338,36 @@
       </div>
     </div>
 
-    <!-- VICTORY REWARD CARD (NEO BRUTALISM CELEBRATION STYLE) -->
-    <div class="neo-card victory-card" id="victoryCard">
+    <!-- OWNER CONGRATULATIONS CARD (EKSKLUSIF PEMENANG) -->
+    <div class="neo-card victory-card" id="victoryCard" style="display: none;">
       <div class="victory-header">
-        <div class="victory-icon pulse-glow">🏆</div>
-        <h2 class="victory-title glitch" data-text="PORTAL DIBUKA!">SELAMAT, KAMU PEMENANGNYA!</h2>
+        <div class="victory-icon pulse-glow">👑</div>
+        <h2 class="victory-title glitch" data-text="SELAMAT SANG JUARA!">SELAMAT, KAMU SANG JUARA!</h2>
         <div class="victory-badge">ACCESS AUTHORIZED • 1/1 SLOT TERKUNCI</div>
       </div>
 
-      <p class="victory-desc">
-        Luar biasa! Kamu telah berhasil menjadi orang pertama yang memecahkan seluruh 8 teka-teki kriptografi dan aturan posisi! Hadiah resmi Gemini Pro 18 Bulan siap diklaim di bawah ini:
-      </p>
-
-      <!-- HOLOGRAPHIC REWARD CARD -->
-      <div class="redeem-box holo-card" id="rewardInfoBox">
-        <div class="holo-shine"></div>
-        <div class="reward-tag">🎁 REWARD UNLOCKED:</div>
-        <div class="reward-title">GEMINI PRO 18 BULAN</div>
-        <div class="reward-subtitle">Official Voucher Code Access Ready</div>
+      <!-- KARTU SURAT PENGHORMATAN DARI OWNER (RAIHAN, 9B) -->
+      <div class="owner-letter-box">
+        <div class="owner-header-bar">
+          <span class="owner-badge" id="ownerTitleText">👑 PESAN RESMI DARI OWNER / CREATOR</span>
+          <span class="owner-verified-dot">● VERIFIED</span>
+        </div>
+        <div class="owner-quote-icon">❝</div>
+        <p class="owner-body-text" id="ownerBodyText">
+          Selamat! Kamu telah membuktikan kecerdasan, ketelitian, dan ketangguhan logika yang luar biasa. Dari seluruh siswa yang bertarung di matriks teka-teki ini, kamulah orang pertama yang berhasil menembus seluruh 8 lapisan cipher dan aturan posisiku tanpa celah. Hadiah Google Gemini Pro 18 Bulan ini adalah bukti nyata dedikasi dan kehebatan analisismu. Nikmati kemenangan mutlakmu!
+        </p>
+        <div class="owner-signature-row">
+          <div class="owner-sign-line"></div>
+          <span class="owner-author" id="ownerAuthorText">— Raihan, Kelas 9B (Creator & Architect of Nexus CTF)</span>
+        </div>
       </div>
 
-      <!-- INSTANT CLAIM BUTTON (ACTIVE IMMEDIATELY) -->
-      <a href="#" id="redeemBtn" target="_blank" rel="noopener noreferrer" class="redeem-btn">
-        <span class="btn-shine"></span>
-        <span class="redeem-icon">🎁</span>
-        <span>KLAIM GEMINI PRO SEKARANG</span>
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
-          <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3"/>
-        </svg>
-      </a>
-
-      <!-- 10-SECOND REDIRECT BAN COUNTDOWN NOTICE -->
-      <div id="claimCountdownBox" class="claim-countdown-box" style="display: none;">
-        <span class="countdown-icon">⚠️</span>
-        <div class="countdown-text">
-          <span>Hadiah sedang dibuka di tab baru! Akses website ini akan dikunci dalam: </span>
-          <b id="countdownSec">10</b> detik.
+      <!-- 10-SECOND TRANSITION COUNTDOWN -->
+      <div class="owner-countdown-box" id="ownerCountdownBox">
+        <span class="countdown-pulse-dot"></span>
+        <div class="countdown-copy">
+          <span>Mempersiapkan formulir evaluasi & link aktivasi hadiah dalam: </span>
+          <b id="ownerCountdownSec">10</b> detik...
         </div>
       </div>
     </div>

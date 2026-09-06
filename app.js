@@ -389,6 +389,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // 7. VICTORY HANDLER (SHOWS OWNER CONGRATULATIONS CARD)
   function handleSuccess() {
     playVictoryFanfare();
     writeLog("ACCESS GRANTED! Seluruh 8 teka-teki kata & aturan posisi terpecahkan sempurna.", "success");
@@ -396,10 +397,36 @@ document.addEventListener('DOMContentLoaded', () => {
       passInput.style.borderColor = "var(--accent-success)";
     }
 
+    // Populate Owner Letter from Config
+    if (config && config.getActiveOwnerMessage) {
+      const activeMsg = config.getActiveOwnerMessage();
+      const ownerTitleText = document.getElementById('ownerTitleText');
+      const ownerBodyText = document.getElementById('ownerBodyText');
+      const ownerAuthorText = document.getElementById('ownerAuthorText');
+      if (ownerTitleText) ownerTitleText.textContent = activeMsg.title;
+      if (ownerBodyText) ownerBodyText.textContent = activeMsg.body;
+      if (ownerAuthorText) ownerAuthorText.textContent = activeMsg.author;
+    }
+
     setTimeout(() => {
       if (formCard) formCard.style.display = "none";
       if (victoryCard) victoryCard.style.display = "block";
       triggerSubtleConfetti();
+
+      // Start 10-Second Countdown on Owner Congratulations Card
+      let timeLeft = 10;
+      const ownerCountdownSec = document.getElementById('ownerCountdownSec');
+      const countdownInterval = setInterval(() => {
+        timeLeft--;
+        if (ownerCountdownSec) ownerCountdownSec.textContent = timeLeft;
+
+        if (timeLeft <= 0) {
+          clearInterval(countdownInterval);
+          // 10 Detik Selesai: Sembunyikan Pesan Owner & Tampilkan Modal Vote untuk Pemenang
+          if (victoryCard) victoryCard.style.display = "none";
+          openSurveyModal(true);
+        }
+      }, 1000);
     }, 600);
   }
 
@@ -423,24 +450,91 @@ document.addEventListener('DOMContentLoaded', () => {
       stageBadge.className = "neo-badge yellow";
     }
     writeLog("⚠️ SISTEM TERKUNCI: Kuota pemenang 1/1 telah berhasil diklaim.", "warn");
+
+    // Jika bukan pemenang dan belum vote, langsung nyalakan modal vote!
+    if (!isCurrentWinner) {
+      const alreadyVoted = localStorage.getItem("nexus_survey_voted") === "true";
+      if (!alreadyVoted && surveyModal) {
+        openSurveyModal(false);
+      }
+    }
   }
 
   // 8. SURVEY MODAL & BANNED SCREEN HANDLERS
   const surveyModal = document.getElementById('surveyModal');
   const surveyForm = document.getElementById('surveyForm');
   const submitSurveyBtn = document.getElementById('submitSurveyBtn');
+  const submitSurveyBtnText = document.getElementById('submitSurveyBtnText');
+  const surveyIcon = document.getElementById('surveyIcon');
+  const surveyTitle = document.getElementById('surveyTitle');
+  const surveySubtitle = document.getElementById('surveySubtitle');
   let pendingBanInfo = null;
+  let stopwatchInterval = null;
+
+  function openSurveyModal(isWinnerUser = false) {
+    if (!surveyModal) return;
+    surveyModal.style.display = "flex";
+
+    if (isWinnerUser) {
+      if (surveyIcon) surveyIcon.textContent = "🏆";
+      if (surveyTitle) surveyTitle.textContent = "TAHAP TERAKHIR: SURVEI & KLAIM GEMINI PRO";
+      if (surveySubtitle) {
+        surveySubtitle.textContent = "Selamat Juara! Satu langkah terakhir sebelum kamu dialihkan langsung ke link aktivasi Gemini Pro 18 Bulan Anda, mohon berikan 1 vote pendapatmu untuk tantangan CTF berikutnya:";
+      }
+      if (submitSurveyBtnText) {
+        submitSurveyBtnText.textContent = "🚀 KIRIM VOTE & AMBIL GEMINI PRO 18 BULAN ➔";
+      }
+    } else {
+      if (surveyIcon) surveyIcon.textContent = "🧩";
+      if (surveyTitle) surveyTitle.textContent = "SURVEI CTF EPISODE 2";
+      if (surveySubtitle) {
+        surveySubtitle.textContent = "Permainan telah selesai dan hadiah Gemini Pro telah diklaim! Sebelum akses website ditutup selama 1 minggu, mohon berikan pendapat Anda untuk pembuatan tantangan CTF episode berikutnya:";
+      }
+      if (submitSurveyBtnText) {
+        submitSurveyBtnText.textContent = "KIRIM VOTE & SELESAI";
+      }
+    }
+  }
 
   function showBannedScreen(reason = null, expiry = null) {
     pendingBanInfo = { reason, expiry };
 
     // Check if user has already voted in the survey
     const alreadyVoted = localStorage.getItem("nexus_survey_voted") === "true";
-    if (!alreadyVoted && surveyModal) {
-      surveyModal.style.display = "flex";
+    if (!alreadyVoted && surveyModal && !isCurrentWinner) {
+      openSurveyModal(false);
     } else {
       displayFinalBanOverlay();
     }
+  }
+
+  function startLiveStopwatch(expiryIso) {
+    if (stopwatchInterval) clearInterval(stopwatchInterval);
+
+    const targetDate = expiryIso ? new Date(expiryIso) : new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+    const bannedStopwatch = document.getElementById('bannedStopwatch');
+    const bannedExpiry = document.getElementById('bannedExpiry');
+
+    if (bannedExpiry) {
+      bannedExpiry.textContent = "Berlaku hingga: " + targetDate.toLocaleString('id-ID');
+    }
+
+    function tick() {
+      const now = Date.now();
+      const diff = Math.max(0, targetDate.getTime() - now);
+
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+      const minutes = Math.floor((diff / (1000 * 60)) % 60);
+      const seconds = Math.floor((diff / 1000) % 60);
+
+      if (bannedStopwatch) {
+        bannedStopwatch.textContent = `${days} Hari, ${hours} Jam, ${minutes} Menit, ${seconds} Detik`;
+      }
+    }
+
+    tick();
+    stopwatchInterval = setInterval(tick, 1000);
   }
 
   function displayFinalBanOverlay() {
@@ -450,14 +544,11 @@ document.addEventListener('DOMContentLoaded', () => {
       if (bannedReason && pendingBanInfo?.reason) {
         bannedReason.textContent = pendingBanInfo.reason;
       }
-      if (bannedExpiry && pendingBanInfo?.expiry) {
-        const d = new Date(pendingBanInfo.expiry);
-        bannedExpiry.textContent = isNaN(d) ? '7 Hari ke Depan' : d.toLocaleString('id-ID');
-      }
+      startLiveStopwatch(pendingBanInfo?.expiry);
     }
   }
 
-  // Survey Form Submission Handler
+  // Survey Form Submission Handler (Handles Winner Redirect & Participant Lock)
   if (surveyForm) {
     surveyForm.addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -474,51 +565,33 @@ document.addEventListener('DOMContentLoaded', () => {
 
       if (submitSurveyBtn) {
         submitSurveyBtn.disabled = true;
-        submitSurveyBtn.textContent = "⏳ Mengirim Vote...";
+        submitSurveyBtn.textContent = isCurrentWinner
+          ? "⏳ Membuka Link Aktivasi Gemini Pro 18 Bulan..."
+          : "⏳ Mengirim Vote...";
       }
 
-      // Submit vote to backend
+      // 1. Submit vote to backend
       if (window.CTF_BACKEND) {
         await window.CTF_BACKEND.submitSurveyVote(answerKey, answerText);
       }
 
+      // 2. Jika PEMENANG -> Langsung Trigger Mass Ban & Redirect ke Link Gemini Pro 18 Bulan!
+      if (isCurrentWinner) {
+        if (window.CTF_BACKEND) {
+          window.CTF_BACKEND.triggerMassBan();
+        }
+        playVictoryFanfare();
+        const redeemTarget = config.geminiRedeemUrl || "https://g.co/play/redeem";
+        writeLog("Membuka link aktivasi Gemini Pro 18 Bulan...", "success");
+        setTimeout(() => {
+          window.location.href = redeemTarget;
+        }, 800);
+        return;
+      }
+
+      // 3. Jika PESERTA BIASA -> Langsung Tampilkan Layar Banned 1 Minggu dengan Stopwatch!
       playVictoryFanfare();
       displayFinalBanOverlay();
-    });
-  }
-
-  // 9. REDEEM BUTTON CLICK (TRIGGERS 1-WEEK BAN & 10s COUNTDOWN FOR WINNER)
-  if (redeemBtn) {
-    redeemBtn.addEventListener('click', async (e) => {
-      e.preventDefault();
-      redeemBtn.style.pointerEvents = 'none';
-
-      // 1. Open Gemini Pro link in new window
-      window.open(config.geminiRedeemUrl, '_blank');
-
-      // 2. Trigger mass IP ban on backend
-      if (window.CTF_BACKEND) {
-        window.CTF_BACKEND.triggerMassBan();
-      }
-
-      // 3. Show 10-second countdown for winner
-      if (claimCountdownBox && countdownSec) {
-        claimCountdownBox.style.display = "flex";
-        let timeLeft = 10;
-
-        const countdownInterval = setInterval(() => {
-          timeLeft--;
-          countdownSec.textContent = timeLeft;
-
-          if (timeLeft <= 0) {
-            clearInterval(countdownInterval);
-            showBannedScreen(
-              "Selamat! Hadiah Gemini Pro 18 Bulan Anda telah diklaim. Sesi ini telah selesai dan akses website dikunci selama 1 minggu.",
-              new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString()
-            );
-          }
-        }, 1000);
-      }
     });
   }
 
