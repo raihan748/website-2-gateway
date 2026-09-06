@@ -1417,4 +1417,40 @@ body::before {
   .survey-analytics-box { padding: 14px; }
 }
 
+/* ADMIN SESSION BADGE & SWITCH STYLES */
+.admin-session-badge {
+  background: rgba(59, 130, 246, 0.15);
+  color: #60a5fa;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 6px;
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  letter-spacing: 0.5px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.admin-session-badge.akhwat {
+  background: rgba(236, 72, 153, 0.15);
+  color: #f472b6;
+  border-color: rgba(236, 72, 153, 0.35);
+  box-shadow: 0 0 10px rgba(236, 72, 153, 0.2);
+}
+
+.admin-btn.switch-session {
+  border-color: rgba(236, 72, 153, 0.4);
+  color: #f472b6;
+  background: rgba(236, 72, 153, 0.08);
+}
+
+.admin-btn.switch-session:hover {
+  background: rgba(236, 72, 153, 0.2);
+  border-color: #ec4899;
+  box-shadow: 0 0 12px rgba(236, 72, 153, 0.3);
+}
+
+
 

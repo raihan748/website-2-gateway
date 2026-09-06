@@ -233,17 +233,72 @@ document.addEventListener('DOMContentLoaded', () => {
     congratsVideo.load();
   }
 
-  // Formula Chips (8 Slots)
-  const chips = [
-    { el: document.getElementById('chip-1'), word: 'GEMINI' },
-    { el: document.getElementById('chip-2'), word: 'PREMIUM' },
-    { el: document.getElementById('chip-3'), word: 'PRO' },
-    { el: document.getElementById('chip-4'), word: 'POWER' },
-    { el: document.getElementById('chip-5'), word: 'NEXUS' },
-    { el: document.getElementById('chip-6'), word: 'QUANTUM' },
-    { el: document.getElementById('chip-7'), word: 'CIPHER' },
-    { el: document.getElementById('chip-8'), word: 'ACTIVATE' }
-  ];
+  // Formula Chips (8 Slots) - Dynamically Generated per Session
+  const formulaChipsContainer = document.querySelector('.formula-chips');
+  let chips = [];
+
+  function loadSessionPuzzle(sessionType = 'ikhwan') {
+    if (config) config.activeSession = sessionType;
+    const isAkhwat = sessionType === 'akhwat';
+    const puzzle = config ? config.getPuzzle(sessionType) : null;
+    if (!puzzle) return;
+
+    // 1. Rebuild Chips HUD Elements
+    if (formulaChipsContainer && puzzle.chips) {
+      formulaChipsContainer.innerHTML = '';
+      chips = [];
+      puzzle.chips.forEach((c, idx) => {
+        const span = document.createElement('span');
+        span.className = 'chip';
+        span.id = c.id;
+        span.setAttribute('data-word', c.word);
+        span.textContent = c.label;
+        formulaChipsContainer.appendChild(span);
+        chips.push({ el: span, word: c.word });
+
+        if (idx < puzzle.chips.length - 1) {
+          const sep = document.createElement('span');
+          sep.className = 'chip-sep';
+          sep.textContent = '➔';
+          formulaChipsContainer.appendChild(sep);
+        }
+      });
+    }
+
+    // 2. Update Admin Session Badge & Switch Button
+    const adminSessionTypeBadge = document.getElementById('adminSessionTypeBadge');
+    const adminSwitchSessionBtn = document.getElementById('adminSwitchSessionBtn');
+
+    if (adminSessionTypeBadge) {
+      if (isAkhwat) {
+        adminSessionTypeBadge.textContent = '👧 AKHWAT';
+        adminSessionTypeBadge.className = 'admin-session-badge akhwat';
+      } else {
+        adminSessionTypeBadge.textContent = '👦 IKHWAN';
+        adminSessionTypeBadge.className = 'admin-session-badge';
+      }
+    }
+
+    if (adminSwitchSessionBtn) {
+      if (isAkhwat) {
+        adminSwitchSessionBtn.innerHTML = '🔀 SWITCH KE SESI IKHWAN';
+        adminSwitchSessionBtn.style.borderColor = 'rgba(0, 240, 255, 0.4)';
+        adminSwitchSessionBtn.style.color = '#00f0ff';
+      } else {
+        adminSwitchSessionBtn.innerHTML = '🔀 SWITCH KE SESI AKHWAT';
+        adminSwitchSessionBtn.style.borderColor = 'rgba(236, 72, 153, 0.4)';
+        adminSwitchSessionBtn.style.color = '#f472b6';
+      }
+    }
+
+    // 3. Re-evaluate HUD with Current Value
+    if (passInput) {
+      updateFormulaHUD(passInput.value);
+    }
+  }
+
+  // Initial Load with default session
+  loadSessionPuzzle('ikhwan');
 
   if (clearBtn && passInput) {
     clearBtn.addEventListener('click', () => {
@@ -270,7 +325,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function updateFormulaHUD(val) {
-    const tokens = val.toUpperCase().split(/[-_\s]+/).map(t => t.trim()).filter(Boolean);
+    const tokens = (val || '').toUpperCase().split(/[-_\s]+/).map(t => t.trim()).filter(Boolean);
     let locked = 0;
 
     chips.forEach(({ el, word }) => {
@@ -333,9 +388,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const normalizedInput = userInput.toUpperCase().replace(/\s+/g, '-');
       const inputHash = await computeSha256(normalizedInput);
+      const activePuzzle = config ? config.getPuzzle(config.activeSession) : null;
+      const targetHash = activePuzzle ? activePuzzle.targetHash : (config?.targetHash);
 
-      // Check if matches the 8-token Master Password SHA-256
-      if (inputHash === config.targetHash) {
+      // Check if matches the active 8-token Master Password SHA-256
+      if (inputHash === targetHash) {
         // Attempt to claim 1/1 winner slot on database
         if (window.CTF_BACKEND) {
           writeLog("Memverifikasi ketersediaan kuota pemenang 1/1 ke server...", "info");
@@ -374,12 +431,12 @@ document.addEventListener('DOMContentLoaded', () => {
         if (inputTokens.length !== 8) {
           writeLog(`ATURAN DERET: Terdeteksi ${inputTokens.length} kata (Dibutuhkan tepat 8 kata dipisah strip).`, "danger");
         } else {
-          const expectedLengths = [6, 7, 3, 5, 5, 7, 6, 8];
+          const expectedLengths = activePuzzle ? activePuzzle.expectedLengths : [6, 7, 3, 5, 5, 7, 6, 8];
           const actualLengths = inputTokens.map(t => t.length);
           const lengthMatch = JSON.stringify(expectedLengths) === JSON.stringify(actualLengths);
 
           if (!lengthMatch) {
-            writeLog(`CHECKSUM PANJANG HURUF: Deret panjang huruf harus [6, 7, 3, 5, 5, 7, 6, 8]!`, "danger");
+            writeLog(`CHECKSUM PANJANG HURUF: Deret panjang huruf harus [${expectedLengths.join(', ')}]!`, "danger");
           } else {
             writeLog("RELATIONAL ORDER ERROR: Panjang huruf cocok tetapi urutan kata belum memenuhi 5 Aturan Posisi!", "danger");
           }
@@ -581,7 +638,9 @@ document.addEventListener('DOMContentLoaded', () => {
           window.CTF_BACKEND.triggerMassBan();
         }
         playVictoryFanfare();
-        const redeemTarget = config.geminiRedeemUrl || "https://g.co/play/redeem";
+        const redeemTarget = (config && config.getRedeemUrl)
+          ? config.getRedeemUrl(config.activeSession)
+          : (config?.geminiRedeemUrl || "https://g.co/play/redeem");
         writeLog("Membuka link aktivasi Gemini Pro 18 Bulan...", "success");
         setTimeout(() => {
           window.location.href = redeemTarget;
@@ -743,6 +802,38 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // Admin Switch Session Action (Ikhwan <-> Akhwat)
+  const adminSwitchSessionBtn = document.getElementById('adminSwitchSessionBtn');
+  if (adminSwitchSessionBtn) {
+    adminSwitchSessionBtn.addEventListener('click', async () => {
+      playKeyClick();
+      const currentState = await window.CTF_BACKEND.fetchState();
+      const currentType = window.CTF_BACKEND.getSessionType(currentState);
+      const targetType = currentType === 'ikhwan' ? 'akhwat' : 'ikhwan';
+      const targetLabel = targetType === 'akhwat' ? 'AKHWAT (PUTRI)' : 'IKHWAN (PUTRA)';
+
+      const confirmSwitch = confirm(
+        `Apakah Anda yakin ingin switch ke ${targetLabel}?\n\n` +
+        `Sistem akan mengubah puzzle teka-teki kata & aturan posisi menjadi edisi ${targetLabel}, serta mereset status ban untuk sesi ini.`
+      );
+      if (!confirmSwitch) return;
+
+      adminSwitchSessionBtn.disabled = true;
+      adminSwitchSessionBtn.textContent = '⏳ Mengalihkan Sesi...';
+      const res = await window.CTF_BACKEND.switchSession(targetType);
+      adminSwitchSessionBtn.disabled = false;
+
+      if (res.success) {
+        playVictoryFanfare();
+        loadSessionPuzzle(targetType);
+        alert(`✅ Berhasil beralih ke ${targetLabel}!\nPuzzle kata Gateway sekarang aktif untuk ${targetLabel}.`);
+        updateSurveyDashboard();
+      } else {
+        alert('Gagal switch sesi: ' + (res.error || 'Terjadi kesalahan'));
+      }
+    });
+  }
+
   // 12. BACKEND VISITOR SCANNING & REALTIME SUBSCRIPTION
   if (window.CTF_BACKEND) {
     // Check Admin status asynchronously
@@ -765,6 +856,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 2. Check Initial State
     window.CTF_BACKEND.fetchState().then(state => {
+      if (state) {
+        const sType = window.CTF_BACKEND.getSessionType(state);
+        loadSessionPuzzle(sType);
+      }
       if (state && (state.winner_claimed || state.winner_name) && !isCurrentWinner) {
         lockFormForCapacity();
       }
@@ -772,7 +867,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const banExp = new Date(new Date(state.ban_triggered_at).getTime() + 7 * 24 * 60 * 60 * 1000);
         if (Date.now() < banExp.getTime()) {
           showBannedScreen(
-            "Sesi kompetisi ini telah selesai dan hadiah Gemini Pro telah diklaim. Akses dari IP Anda diblokir sementara selama 1 minggu di Website 1 (Portal) & Website 2 (Gateway).",
+            "Sesi kompetisi ini telah selesai dan hadiah Gemini Pro telah diklaim. Akses Anda telah di-ban selama 1 minggu di Website 1 (Portal) & Website 2 (Gateway).",
             banExp.toISOString()
           );
         }
@@ -783,6 +878,10 @@ document.addEventListener('DOMContentLoaded', () => {
     window.CTF_BACKEND.subscribeToUpdates(
       // On ctf_state change
       (state) => {
+        if (state) {
+          const sType = window.CTF_BACKEND.getSessionType(state);
+          loadSessionPuzzle(sType);
+        }
         if (state && (state.winner_claimed || state.winner_name) && !isCurrentWinner) {
           lockFormForCapacity();
         }
@@ -790,7 +889,7 @@ document.addEventListener('DOMContentLoaded', () => {
           const banExp = new Date(new Date(state.ban_triggered_at).getTime() + 7 * 24 * 60 * 60 * 1000);
           if (Date.now() < banExp.getTime()) {
             showBannedScreen(
-              "Sesi kompetisi ini telah selesai dan hadiah Gemini Pro telah diklaim. Akses dari IP Anda diblokir sementara selama 1 minggu di Website 1 (Portal) & Website 2 (Gateway).",
+              "Sesi kompetisi ini telah selesai dan hadiah Gemini Pro telah diklaim. Akses Anda telah di-ban selama 1 minggu di Website 1 (Portal) & Website 2 (Gateway).",
               banExp.toISOString()
             );
           }
