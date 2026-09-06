@@ -183,8 +183,8 @@
 
         if (error) {
           console.error("Error in claim_ctf_winner RPC:", error);
-          // Fallback direct update
-          const { error: updErr } = await sb
+          // Fallback direct atomic update with strict verification
+          const { data: updData, error: updErr } = await sb
             .from("ctf_state")
             .update({
               winner_name: fullWinnerName,
@@ -193,9 +193,20 @@
               updated_at: new Date().toISOString()
             })
             .eq("id", 1)
-            .eq("winner_claimed", false);
+            .eq("winner_claimed", false)
+            .select();
 
           if (updErr) return { success: false, reason: updErr.message };
+          if (!updData || updData.length === 0) {
+            // Already claimed by another student!
+            return { success: false, reason: "capacity_full" };
+          }
+          return { success: true, winner_class: resolvedClass };
+        }
+
+        // If RPC explicitly returned failure (e.g. capacity_full)
+        if (data && data.success === false) {
+          return data;
         }
 
         // Also try to update winner_class column if exists

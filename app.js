@@ -339,7 +339,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Attempt to claim 1/1 winner slot on database
         if (window.CTF_BACKEND) {
           writeLog("Memverifikasi ketersediaan kuota pemenang 1/1 ke server...", "info");
-          const claimRes = await window.CTF_BACKEND.claimWinner("Peserta 9B");
+          const claimRes = await window.CTF_BACKEND.claimWinner("Peserta");
 
           if (claimRes.success) {
             isCurrentWinner = true;
@@ -350,11 +350,13 @@ document.addEventListener('DOMContentLoaded', () => {
             lockFormForCapacity();
           } else {
             writeLog("Gagal verifikasi klaim: " + (claimRes.reason || 'Server error'), "danger");
-            if (submitBtn) submitBtn.disabled = false;
+            if (submitBtn && !isLockedOut) submitBtn.disabled = false;
           }
         } else {
-          // Fallback if no backend
-          handleSuccess();
+          // Strict server validation required - NO OFFLINE WIN ALLOWED!
+          playErrorBeep();
+          writeLog("❌ KONEKSI SERVER GAGAL: Tidak dapat memvalidasi kuota pemenang ke database. Pastikan koneksi internet aktif!", "danger");
+          if (submitBtn && !isLockedOut) submitBtn.disabled = false;
         }
         return;
       }
@@ -404,6 +406,12 @@ document.addEventListener('DOMContentLoaded', () => {
   function lockFormForCapacity() {
     isLockedOut = true;
     if (capacityBanner) capacityBanner.style.display = "flex";
+    if (passInput) {
+      passInput.disabled = true;
+      passInput.placeholder = "KAPASITAS 1/1 TELAH TERKUNCI OLEH PEMENANG...";
+      passInput.style.borderColor = "#f59e0b";
+    }
+    if (clearBtn) clearBtn.disabled = true;
     if (submitBtn) {
       submitBtn.classList.add("disabled");
       submitBtn.disabled = true;
@@ -414,6 +422,7 @@ document.addEventListener('DOMContentLoaded', () => {
       stageBadge.textContent = "● 1/1 CLAIMED";
       stageBadge.className = "neo-badge yellow";
     }
+    writeLog("⚠️ SISTEM TERKUNCI: Kuota pemenang 1/1 telah berhasil diklaim.", "warn");
   }
 
   // 8. SURVEY MODAL & BANNED SCREEN HANDLERS
@@ -676,11 +685,14 @@ document.addEventListener('DOMContentLoaded', () => {
       if (res && res.banned) {
         showBannedScreen(res.ban_reason, res.banned_until);
       }
+      if (res && res.winner_claimed && !isCurrentWinner) {
+        lockFormForCapacity();
+      }
     });
 
     // 2. Check Initial State
     window.CTF_BACKEND.fetchState().then(state => {
-      if (state && state.winner_name && !isCurrentWinner) {
+      if (state && (state.winner_claimed || state.winner_name) && !isCurrentWinner) {
         lockFormForCapacity();
       }
     });
@@ -689,7 +701,7 @@ document.addEventListener('DOMContentLoaded', () => {
     window.CTF_BACKEND.subscribeToUpdates(
       // On ctf_state change
       (state) => {
-        if (state && state.winner_name && !isCurrentWinner) {
+        if (state && (state.winner_claimed || state.winner_name) && !isCurrentWinner) {
           lockFormForCapacity();
         }
       },
