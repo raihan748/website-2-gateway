@@ -1039,7 +1039,9 @@ document.addEventListener('DOMContentLoaded', () => {
       p.style.zIndex = '9999';
       p.style.pointerEvents = 'none';
 
-      document.body.appendChild(p);
+      if (document.body) {
+        document.body.appendChild(p);
+      }
 
       const fallDuration = Math.random() * 2.5 + 2.0;
       const rotationSpeed = Math.random() * 600 - 300;
