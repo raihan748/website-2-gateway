@@ -53,7 +53,11 @@
     // 2. PESAN UCAPAN SELAMAT DARI OWNER (RAIHAN, 9B) KEPADA PEMENANG
     // ====================================================================
     ownerCongrats: {
-      selectedOption: 4, // Opsi 4: Ringkas, Tegas & Elegan terpilih!
+      selectedOption: 4, // Default fallback
+      selectedOptions: {
+        ikhwan: 4, // Opsi 4: Apresiasi Resmi kepada Sang Juara (Sesi Ikhwan)
+        akhwat: 2  // Opsi 2: Selamat dari Raihan (9B) - Santai, Akrab & Keren (Sesi Akhwat)
+      },
 
       options: {
         1: {
@@ -79,8 +83,11 @@
       }
     },
 
-    getActiveOwnerMessage() {
-      const opt = this.ownerCongrats.selectedOption || 4;
+    getActiveOwnerMessage(sessionType) {
+      const type = sessionType || this.activeSession || 'ikhwan';
+      const opt = (this.ownerCongrats.selectedOptions && this.ownerCongrats.selectedOptions[type])
+        ? this.ownerCongrats.selectedOptions[type]
+        : (this.ownerCongrats.selectedOption || 4);
       return this.ownerCongrats.options[opt] || this.ownerCongrats.options[4];
     },
 

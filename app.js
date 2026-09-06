@@ -295,6 +295,17 @@ document.addEventListener('DOMContentLoaded', () => {
     if (passInput) {
       updateFormulaHUD(passInput.value);
     }
+
+    // 4. Update Owner Congratulations Card for active session
+    if (config && config.getActiveOwnerMessage) {
+      const activeMsg = config.getActiveOwnerMessage(sessionType);
+      const ownerTitleText = document.getElementById('ownerTitleText');
+      const ownerBodyText = document.getElementById('ownerBodyText');
+      const ownerAuthorText = document.getElementById('ownerAuthorText');
+      if (ownerTitleText && activeMsg) ownerTitleText.textContent = activeMsg.title;
+      if (ownerBodyText && activeMsg) ownerBodyText.textContent = activeMsg.body;
+      if (ownerAuthorText && activeMsg) ownerAuthorText.textContent = activeMsg.author;
+    }
   }
 
   // Initial Load with default session
@@ -456,7 +467,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Populate Owner Letter from Config
     if (config && config.getActiveOwnerMessage) {
-      const activeMsg = config.getActiveOwnerMessage();
+      const activeMsg = config.getActiveOwnerMessage(config.activeSession);
       const ownerTitleText = document.getElementById('ownerTitleText');
       const ownerBodyText = document.getElementById('ownerBodyText');
       const ownerAuthorText = document.getElementById('ownerAuthorText');
