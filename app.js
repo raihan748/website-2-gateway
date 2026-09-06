@@ -226,12 +226,6 @@ document.addEventListener('DOMContentLoaded', () => {
     redeemBtn.href = config.geminiRedeemUrl;
   }
 
-  // Set Video Source
-  if (congratsVideo && config.videoSource) {
-    const sourceEl = congratsVideo.querySelector('source');
-    if (sourceEl) sourceEl.src = config.videoSource;
-    congratsVideo.load();
-  }
 
   // Formula Chips (8 Slots) - Dynamically Generated per Session
   const formulaChipsContainer = document.querySelector('.formula-chips');
@@ -332,6 +326,25 @@ document.addEventListener('DOMContentLoaded', () => {
     passInput.addEventListener('input', (e) => {
       playKeyClick();
       updateFormulaHUD(e.target.value);
+    });
+
+    passInput.addEventListener('paste', () => {
+      setTimeout(() => {
+        updateFormulaHUD(passInput.value);
+      }, 10);
+    });
+
+    passInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        if (authForm) {
+          if (typeof authForm.requestSubmit === 'function') {
+            authForm.requestSubmit();
+          } else {
+            authForm.dispatchEvent(new Event('submit', { cancelable: true }));
+          }
+        }
+      }
     });
   }
 
