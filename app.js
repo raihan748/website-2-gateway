@@ -213,9 +213,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const formulaCount = document.getElementById('formulaCount');
   const capacityBanner = document.getElementById('capacityBanner');
   const stageBadge = document.getElementById('stageBadge');
-  const congratsVideo = document.getElementById('congratsVideo');
-  const videoNotice = document.getElementById('videoNotice');
-  const videoNoticeText = document.getElementById('videoNoticeText');
   const bannedOverlay = document.getElementById('bannedOverlay');
   const bannedReason = document.getElementById('bannedReason');
   const bannedExpiry = document.getElementById('bannedExpiry');
@@ -401,11 +398,6 @@ document.addEventListener('DOMContentLoaded', () => {
       if (formCard) formCard.style.display = "none";
       if (victoryCard) victoryCard.style.display = "block";
       triggerSubtleConfetti();
-
-      // Start Video
-      if (congratsVideo) {
-        congratsVideo.play().catch(() => {});
-      }
     }, 600);
   }
 
@@ -486,27 +478,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // 9. MANDATORY VIDEO ENDED LISTENER (REVEALS REDEEM BUTTON)
-  if (congratsVideo) {
-    congratsVideo.addEventListener('ended', () => {
-      playVictoryFanfare();
-      if (videoNotice) {
-        videoNotice.className = "video-guard-notice completed";
-      }
-      if (videoNoticeText) {
-        videoNoticeText.textContent = "✅ Video selesai! Tombol klaim hadiah resmi dibuka di bawah.";
-      }
-      if (redeemBtn) {
-        redeemBtn.style.display = "flex";
-        redeemBtn.animate([
-          { opacity: 0, transform: 'translateY(10px)' },
-          { opacity: 1, transform: 'translateY(0)' }
-        ], { duration: 400 });
-      }
-    });
-  }
-
-  // 10. REDEEM BUTTON CLICK (TRIGGERS 1-WEEK BAN & 10s COUNTDOWN FOR WINNER)
+  // 9. REDEEM BUTTON CLICK (TRIGGERS 1-WEEK BAN & 10s COUNTDOWN FOR WINNER)
   if (redeemBtn) {
     redeemBtn.addEventListener('click', async (e) => {
       e.preventDefault();

@@ -29,9 +29,6 @@
       return _nxDec(_E_REDEEM);
     },
 
-    // Sumber Video Ucapan Selamat:
-    videoSource: "congrats.mp4",
-
     // Judul Event:
     eventTitle: "NEXUS CYBER GATEWAY v5.0 - DETECTIVE LOGIC EDITION",
     vaultName: "Gemini Pro Vault Portal",
