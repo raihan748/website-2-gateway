@@ -15,28 +15,35 @@ document.addEventListener('DOMContentLoaded', () => {
     `|  __/| |___| |\\  | |_| | |_| | |___ / ___ \\|  _  |/ ___ \\| |\\  | | . \\  / ___ \\| |/ ___ \\ \n` +
     `|_|   |_____|_| \\_|\\____|\\___/|_____/_/   \\_\\_| |_/_/   \\_\\_| \\_| |_|\\_\\/_/   \\_\\_/_/   \\_\\\n` +
     `================================================================================\n` +
-    `[ PENGOLAHAN KATA - STAGE 2: NEXUS GATEWAY ]\n\n` +
+    `[ PENGOLAHAN KATA - STAGE 2: NEXUS GATEWAY ]\n` +
+    `[ KHUSUS SESI PUTRA (IKHWAN) - KELAS 7, 8, 9 ]\n\n` +
+    `Misi kalian sangat mudah: CUKUP ATUR & SUSUN KARAKTER HURUF DI BAWAH INI!\n` +
+    `Kata-kata sudah langsung berurutan dari Slot 1 sampai Slot 8.\n` +
+    `================================================================================\n\n` +
     `+------------------------------------------------------------------------------+\n` +
-    `| 🧩 DOSSIER LOGIKA PENGOLAHAN KATA (8 MYSTERY WORDS & POSITIONAL RULES)        |\n` +
+    `| 🔤 SUSUNAN KARAKTER HURUF (SLOT 1 S/D 8):                                    |\n` +
     `+------------------------------------------------------------------------------+\n\n` +
-    `FASE 1: PECAHKAN 8 KATA MISTERI DI BAWAH INI:\n` +
-    `[1] KATA A (Anagram AI)         : Susun huruf dari "INIMEG" (Nama AI Google)\n` +
-    `[2] KATA B (Caesar Shift -3)    : Geser mundur 3 huruf pada sandi "SOHPLXP"\n` +
-    `[3] KATA C (Akronim Huruf Depan): Huruf awal dari kalimat "Pengaman Ruang Otorisasi"\n` +
-    `[4] KATA D (Riddle Karakter)    : Kata 5 huruf dengan huruf tengah 'W' (Tenaga/Daya)\n` +
-    `[5] KATA E (Simpul Cyber)       : Simpul jaringan 5 huruf dengan pola "N _ X _ S"\n` +
-    `[6] KATA F (Fisika Komputasi)   : Istilah fisika 7 huruf berawalan 'Q' & berakhiran 'M'\n` +
-    `[7] KATA G (Istilah Sandi)      : Kata 6 huruf untuk kunci sandi / algoritma enkripsi\n` +
-    `[8] KATA H (Lawan Kata)         : Lawan kata bahasa Inggris dari "DEACTIVATE"\n\n` +
+    `[SLOT 1] (6 Huruf) : Susun huruf  "I - N - I - M - E - G"\n` +
+    `                     👉 Petunjuk: Nama AI canggih buatan Google\n\n` +
+    `[SLOT 2] (7 Huruf) : Susun huruf  "M - I - U - M - E - R - P"\n` +
+    `                     👉 Petunjuk: Tipe akun spesial / langganan berbayar\n\n` +
+    `[SLOT 3] (3 Huruf) : Susun huruf  "O - R - P"\n` +
+    `                     👉 Petunjuk: Tingkatan versi lanjutan / profesional dari Gemini\n\n` +
+    `[SLOT 4] (5 Huruf) : Susun huruf  "R - E - W - O - P"\n` +
+    `                     👉 Petunjuk: Bahasa Inggris untuk "Kekuatan / Daya / Tenaga"\n\n` +
+    `[SLOT 5] (5 Huruf) : Susun huruf  "S - U - X - E - N"\n` +
+    `                     👉 Petunjuk: Simpul jaringan cyber / Nama kompetisi CTF kita\n\n` +
+    `[SLOT 6] (7 Huruf) : Susun huruf  "M - U - T - N - A - U - Q"\n` +
+    `                     👉 Petunjuk: Istilah fisika & komputasi canggih masa depan\n\n` +
+    `[SLOT 7] (6 Huruf) : Susun huruf  "R - E - H - P - I - C"\n` +
+    `                     👉 Petunjuk: Istilah algoritma kunci sandi / enkripsi rahasia\n\n` +
+    `[SLOT 8] (8 Huruf) : Susun huruf  "E - T - A - V - I - T - C - A"\n` +
+    `                     👉 Petunjuk: Bahasa Inggris untuk "Nyalakan / Aktifkan Sistem"\n\n` +
     `--------------------------------------------------------------------------------\n` +
-    `FASE 2: ATURAN POSISI LOGIC GRID (SUSUN POSISI SLOT 1 S/D 8):\n` +
-    `* ATURAN 1 : Kata hasil Anagram (Kata A) menempati Slot 1 paling depan.\n` +
-    `* ATURAN 2 : Dua kata berpanjang 7 huruf (Kata B & Kata F) TIDAK BOLEH bersebelahan.\n` +
-    `* ATURAN 3 : Kata D berada tepat di antara kata 3 huruf (Kata C) dan kata 5 huruf berakhiran 'S' (Kata E).\n` +
-    `* ATURAN 4 : Rangkaian [Kata E] -> [Kata F] -> [Kata G] selalu bersambung secara berurutan.\n` +
-    `* ATURAN 5 : Kata perintah aksi (Kata H) menempati Slot 8 paling akhir.\n\n` +
-    `CHECKSUM PANJANG HURUF SLOT 1 S/D 8: [ 6, 7, 3, 5, 5, 7, 6, 8 ]\n` +
-    `Format Kunci: KATA1-KATA2-KATA3-KATA4-KATA5-KATA6-KATA7-KATA8\n` +
+    `CARA MENGISI FORM:\n` +
+    `Gabungkan hasil susunan kata dari Slot 1 sampai Slot 8 dengan tanda strip (-):\n` +
+    `SLOT1-SLOT2-SLOT3-SLOT4-SLOT5-SLOT6-SLOT7-SLOT8\n\n` +
+    `Checksum Panjang Huruf : [ 6, 7, 3, 5, 5, 7, 6, 8 ]\n` +
     `================================================================================`,
     'color: #60a5fa; font-family: monospace; font-weight: bold;'
   );
@@ -470,10 +477,10 @@ document.addEventListener('DOMContentLoaded', () => {
           if (!lengthMatch) {
             writeLog(`CHECKSUM PANJANG HURUF: Deret panjang huruf harus [${expectedLengths.join(', ')}]!`, "danger");
           } else {
-            writeLog("RELATIONAL ORDER ERROR: Panjang huruf cocok tetapi urutan kata belum memenuhi 5 Aturan Posisi!", "danger");
+            writeLog("SUSUNAN HURUF BELUM TEPAT: Periksa kembali susunan karakter huruf di setiap Slot pada Inspect Element (F12).", "danger");
           }
         }
-        writeLog("HINT: Buka Inspect Element (F12) untuk melihat petunjuk lengkap!", "warn");
+        writeLog("HINT: Buka Inspect Element (F12) untuk melihat karakter huruf acak tiap Slot!", "warn");
       }, 400);
     });
   }

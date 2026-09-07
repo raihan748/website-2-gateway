@@ -3,7 +3,7 @@
  * CONFIG.JS - KONFIGURASI LOGIC GRID PUZZLE WEBSITE 2 GATEWAY
  * ====================================================================
  * Master Configuration with Cryptographic Hash Verification & Obfuscation
- * Supports Dynamic Session Profiles: IKHWAN (PUTRA) vs AKHWAT (PUTRI)
+ * Active Session Profile: IKHWAN (PUTRA)
  */
 
 (function () {
@@ -23,18 +23,17 @@
 
   // Encrypted Reward URL Payload Fallback
   const _E_REDEEM = "Mi8oLS1lT3U8cj4xcBA2OiVyLDoEPz4xYj0wBD9mGxgTFi4TBAwPEQAyHwwdDxoAIxYaFRA=";
+  const _E_PROFILE_B = "eyJzZXNzaW9uTmFtZSI6IlNlc2kgUHV0cmkgKEtlbGFzIDcsIDgsIDkpIiwiYmFkZ2VMYWJlbCI6IvCfkacgU0VTSSBBS0hXQVQiLCJ0YXJnZXRIYXNoIjoiN2U2NWFmYmE0OTJiOTM4MzcwMDgxN2QyNGFmOTk3NDAzMDk1NDgzMDE5ZDJjMWY2MmQyZWNiNTExYzM4YTdjMCIsImV4cGVjdGVkTGVuZ3RocyI6WzYsOCw0LDUsOCw3LDYsNl0sImNoaXBzIjpbeyJpZCI6ImNoaXAtMSIsImhhc2giOiI3ZTk5NjhiMjNhMDdkNDY1Njk2ODVkNzI0Yjc4OGY0OTc3OWU3ZGUyZmYzYWU2YjVkZTA0OTI4MmE2MmMxMjE2IiwibGFiZWwiOiIxLiBTTE9UICg2KSJ9LHsiaWQiOiJjaGlwLTIiLCJoYXNoIjoiZjRhNzlhZWI0NzZmMzIxZDNlMTdhODUwNjAxODQyYTUzMzVkZmQ2NTJiNjUzY2YwMDcxNmEyNzhiY2M3YjI4YyIsImxhYmVsIjoiMi4gU0xPVCAoOCkifSx7ImlkIjoiY2hpcC0zIiwiaGFzaCI6ImMyMzg1MjUwMTg2ZDI5YWM0OTM3MGMwZDg3ZDQwY2ZjMGI0MzRiZGJhOWFlMmU3NGU5YTk0YzFjZGE4N2Q2NjciLCJsYWJlbCI6IjMuIFNMT1QgKDQpIn0seyJpZCI6ImNoaXAtNCIsImhhc2giOiI2NGFiMmI2OWRiYTUxMGJlNTI2NjA4ZjRlNjcxNDJkMzQwNjhmYjdjZmQ2NzcxNTI5YTdjNTRiNWNkN2EwNjc1IiwibGFiZWwiOiI0LiBTTE9UICg1KSJ9LHsiaWQiOiJjaGlwLTUiLCJoYXNoIjoiYmFkY2Q1ZjljMGNhYjlmN2E2ZTNlMzkzYjIwNDM3YzUwMWU2ZjIwYzJiYzU3ZDRhM2Q0YjdlOTkxYmYwOTFjYiIsImxhYmVsIjoiNS4gU0xPVCAoOCkifSx7ImlkIjoiY2hpcC02IiwiaGFzaCI6IjdlNGUyNjE4M2FhY2RiMDU0YjA2ZjU1MGZiMmRiODYwYjQwMTA2YWQyN2FhOWQ2NDllMTAxZDU4MWY1ODhiNTYiLCJsYWJlbCI6IjYuIFNMT1QgKDcpIn0seyJpZCI6ImNoaXAtNyIsImhhc2giOiIxZTI4YjI2NTFhNmQxYjI0ODY5ODc5MjVhODU1NzZkY2UxZjg3MTNlNDZhY2FiMDU4ZDliMjAwZTQwOWU0ODg3IiwibGFiZWwiOiI3LiBTTE9UICg2KSJ9LHsiaWQiOiJjaGlwLTgiLCJoYXNoIjoiMWMwNzVmOTlmNzA3Yzk1OTU4OGZkNzJhYWJlNjBlMDhmNzg3NTA1NTM0ZDVmNzVhYzU1MTZjNjJlOTA0ZmVmYSIsImxhYmVsIjoiOC4gU0xPVCAoNikifV19";
 
   window.CTF_CONFIG = {
     // ====================================================================
-    // 1. LINK AKTIVASI GOOGLE GEMINI PRO 18 BULAN PER SESI
+    // 1. LINK AKTIVASI GOOGLE GEMINI PRO 18 BULAN
     // ====================================================================
-    // Anda dapat mengganti tautan di bawah ini dengan link redeem/voucher asli yang Anda siapkan:
     activationUrls: {
-      ikhwan: "https://serviceactivation.google.com/subscription/new/AQCpiIE8pWV_Ml2STqKYcaTS7ekM0fec6wNwwG8TV3btM7MMsB4vwGXk-HRHJQVbc300o9S9mgfyhilzPA0nNL6HoICrKVrALWIeWM-waH-PGL1I-T-jyWLfV9RGkkfk0zS7RFNb4aHbHdT7-TnRhd6hSDNsJYDY1Wl23ABaAyAFv9-vD4rneBRNY8o0OTui-tJynWuh11axOXX-p1CZYtLr91cZPIGfTUTVf0JKtWuPzcYqJmxTHLZbwMaByB7Ekp26E4jT6GBwh80YSQ==",
-      akhwat: "https://serviceactivation.google.com/subscription/new/AQCpiIHGdBqnTnI_yB1MhdolnGcRuDR4trFuUpLmWavHi2sG7J-jKORhzxraj7oaxXPAmyq6hRep3zm4uWp9AcSL8vyHQyGgaWt1o6a5A9_R-hZQZlGaQGtbWotxRP29Bi9z49OkTppReMPGSKBe7loPmFmwFDy5gv8f_Ad-GrmdbYjwmaA7O_DdVmjdDTNFV5ngoe7SiWMZOfYWtJUHWP8WDTA34LDaAJv2RmUiBiRtU9Tca2IOJk55UIRzT_XGhelHdai4pqFzqMawFA=="
+      ikhwan: "https://serviceactivation.google.com/subscription/new/AQCpiIE8pWV_Ml2STqKYcaTS7ekM0fec6wNwwG8TV3btM7MMsB4vwGXk-HRHJQVbc300o9S9mgfyhilzPA0nNL6HoICrKVrALWIeWM-waH-PGL1I-T-jyWLfV9RGkkfk0zS7RFNb4aHbHdT7-TnRhd6hSDNsJYDY1Wl23ABaAyAFv9-vD4rneBRNY8o0OTui-tJynWuh11axOXX-p1CZYtLr91cZPIGfTUTVf0JKtWuPzcYqJmxTHLZbwMaByB7Ekp26E4jT6GBwh80YSQ=="
     },
 
-    // Current Active Session Type: 'ikhwan' | 'akhwat'
+    // Current Active Session Type: 'ikhwan'
     activeSession: 'ikhwan',
 
     // Helper untuk mengambil link redeem sesuai sesi aktif
@@ -55,8 +54,7 @@
     ownerCongrats: {
       selectedOption: 4, // Default fallback
       selectedOptions: {
-        ikhwan: 4, // Opsi 4: Apresiasi Resmi kepada Sang Juara (Sesi Ikhwan)
-        akhwat: 2  // Opsi 2: Selamat dari Raihan (9B) - Santai, Akrab & Keren (Sesi Akhwat)
+        ikhwan: 4 // Opsi 4: Apresiasi Resmi kepada Sang Juara (Sesi Ikhwan)
       },
 
       options: {
@@ -96,7 +94,7 @@
     vaultName: "Gemini Pro Vault Portal",
 
     // ====================================================================
-    // 3. DUAL PUZZLE SPECIFICATIONS (IKHWAN & AKHWAT)
+    // 3. PUZZLE SPECIFICATIONS (SESI PUTRA)
     // ====================================================================
     puzzles: {
       // ------------------------------------------------------------------
@@ -118,64 +116,18 @@
           { id: 'chip-8', hash: 'f5dcf0be62e222c4a5e9e367c3feeb42e690c797b4980a45fe4014c64c587f1d', label: '8. SLOT (8)' }
         ],
         dossier: {
-          phase1: [
-            "[1] KATA A (Anagram AI)         : Susun huruf dari \"INIMEG\" (Nama AI Google)",
-            "[2] KATA B (Caesar Shift -3)    : Geser mundur 3 huruf pada sandi \"SOHPLXP\"",
-            "[3] KATA C (Akronim Huruf Depan): Huruf awal dari kalimat \"Pengaman Ruang Otorisasi\"",
-            "[4] KATA D (Riddle Karakter)    : Kata 5 huruf dengan huruf tengah 'W' (Tenaga/Daya)",
-            "[5] KATA E (Simpul Cyber)       : Simpul jaringan 5 huruf dengan pola \"N _ X _ S\"",
-            "[6] KATA F (Fisika Komputasi)   : Istilah fisika 7 huruf berawalan 'Q' & berakhiran 'M'",
-            "[7] KATA G (Istilah Sandi)      : Kata 6 huruf untuk kunci sandi / algoritma enkripsi",
-            "[8] KATA H (Lawan Kata)         : Lawan kata bahasa Inggris dari \"DEACTIVATE\""
+          slots: [
+            "[SLOT 1] (6 Huruf) : Susun huruf  \"I - N - I - M - E - G\" (Clue: Nama AI buatan Google)",
+            "[SLOT 2] (7 Huruf) : Susun huruf  \"M - I - U - M - E - R - P\" (Clue: Akun spesial / langganan berbayar)",
+            "[SLOT 3] (3 Huruf) : Susun huruf  \"O - R - P\" (Clue: Versi lanjutan / profesional dari Gemini)",
+            "[SLOT 4] (5 Huruf) : Susun huruf  \"R - E - W - O - P\" (Clue: Bahasa Inggris kekuatan/daya/tenaga)",
+            "[SLOT 5] (5 Huruf) : Susun huruf  \"S - U - X - E - N\" (Clue: Simpul jaringan cyber / Tema CTF kita)",
+            "[SLOT 6] (7 Huruf) : Susun huruf  \"M - U - T - N - A - U - Q\" (Clue: Fisika & komputasi canggih masa depan)",
+            "[SLOT 7] (6 Huruf) : Susun huruf  \"R - E - H - P - I - C\" (Clue: Algoritma kunci sandi / enkripsi rahasia)",
+            "[SLOT 8] (8 Huruf) : Susun huruf  \"E - T - A - V - I - T - C - A\" (Clue: Bahasa Inggris nyalakan/aktifkan sistem)"
           ],
-          phase2: [
-            "* ATURAN 1 : Kata hasil Anagram (Kata A) menempati Slot 1 paling depan.",
-            "* ATURAN 2 : Dua kata berpanjang 7 huruf (Kata B & Kata F) TIDAK BOLEH bersebelahan.",
-            "* ATURAN 3 : Kata D berada tepat di antara kata 3 huruf (Kata C) dan kata 5 huruf berakhiran 'S' (Kata E).",
-            "* ATURAN 4 : Rangkaian [Kata E] -> [Kata F] -> [Kata G] selalu bersambung secara berurutan.",
-            "* ATURAN 5 : Kata perintah aksi (Kata H) menempati Slot 8 paling akhir."
-          ],
+          format: "SLOT1-SLOT2-SLOT3-SLOT4-SLOT5-SLOT6-SLOT7-SLOT8",
           checksum: "[ 6, 7, 3, 5, 5, 7, 6, 8 ]"
-        }
-      },
-
-      // ------------------------------------------------------------------
-      // SESI AKHWAT (PUTRI) - MENCEGAH BYPASS VPN DARI PESERTA IKHWAN
-      // ------------------------------------------------------------------
-      akhwat: {
-        sessionName: "Sesi Putri (Kelas 7, 8, 9)",
-        badgeLabel: "👧 SESI AKHWAT",
-        targetHash: "7e65afba492b9383700817d24af997403095483019d2c1f62d2ecb511c38a7c0",
-        expectedLengths: [6, 8, 4, 5, 8, 7, 6, 6],
-        chips: [
-          { id: 'chip-1', hash: '7e9968b23a07d46569685d724b788f49779e7de2ff3ae6b5de049282a62c1216', label: '1. SLOT (6)' },
-          { id: 'chip-2', hash: 'f4a79aeb476f321d3e17a850601842a5335dfd652b653cf00716a278bcc7b28c', label: '2. SLOT (8)' },
-          { id: 'chip-3', hash: 'c2385250186d29ac49370c0d87d40cfc0b434bdba9ae2e74e9a94c1cda87d667', label: '3. SLOT (4)' },
-          { id: 'chip-4', hash: '64ab2b69dba510be526608f4e67142d34068fb7cfd6771529a7c54b5cd7a0675', label: '4. SLOT (5)' },
-          { id: 'chip-5', hash: 'badcd5f9c0cab9f7a6e3e393b20437c501e6f20c2bc57d4a3d4b7e991bf091cb', label: '5. SLOT (8)' },
-          { id: 'chip-6', hash: '7e4e26183aacdb054b06f550fb2db860b40106ad27aa9d649e101d581f588b56', label: '6. SLOT (7)' },
-          { id: 'chip-7', hash: '1e28b2651a6d1b2486987925a85576dce1f8713e46acab058d9b200e409e4887', label: '7. SLOT (6)' },
-          { id: 'chip-8', hash: '1c075f99f707c959588fd72aabe60e08f787505534d5f75ac5516c62e904fefa', label: '8. SLOT (6)' }
-        ],
-        dossier: {
-          phase1: [
-            "[1] KATA A (Anagram Mitologi)   : Susun huruf dari \"EHTANA\" (Dewi Kebijaksanaan)",
-            "[2] KATA B (Ksatria Pelindung)  : Ksatria pelindung 8 huruf berawalan 'V' & berakhiran 'E'",
-            "[3] KATA C (Ledakan Bintang)    : Ledakan bintang kosmik 4 huruf berawalan 'N'",
-            "[4] KATA D (Gelombang Energi)   : Detak sinyal denyut 5 huruf berakhiran 'SE'",
-            "[5] KATA E (Alam Surgawi)       : Istilah langit/angkasa agung 8 huruf",
-            "[6] KATA F (Garis Cakrawala)    : Batas pandang langit 7 huruf berawalan 'H'",
-            "[7] KATA G (Caesar Shift -3)    : Geser mundur 3 huruf pada sandi fajar kutub \"DXURUD\"",
-            "[8] KATA H (Aksi Penyalaan)     : Perintah menyalakan sistem 6 huruf berawalan 'IG'"
-          ],
-          phase2: [
-            "* ATURAN 1 : Kata hasil Anagram Dewi Kebijaksanaan (Kata A) menempati Slot 1 paling depan.",
-            "* ATURAN 2 : Kata pelindung 8 huruf (Kata B) menempati Slot 2 tepat sebelum kata kosmik 4 huruf (Kata C).",
-            "* ATURAN 3 : Kata C berada tepat di antara kata 8 huruf (Kata B) dan kata gelombang 5 huruf (Kata D).",
-            "* ATURAN 4 : Rangkaian kosmik [Kata D] -> [Kata E] -> [Kata F] selalu bersambung secara berurutan.",
-            "* ATURAN 5 : Kata hasil Caesar Shift (Kata G) berada di Slot 7, ditutup kata aksi eksekusi (Kata H) pada Slot 8."
-          ],
-          checksum: "[ 6, 8, 4, 5, 8, 7, 6, 6 ]"
         }
       }
     },
@@ -183,7 +135,14 @@
     // Helper untuk mengambil puzzle aktif
     getPuzzle(sessionType) {
       const type = sessionType || this.activeSession || 'ikhwan';
-      return this.puzzles[type] || this.puzzles.ikhwan;
+      if (type === 'akhwat') {
+        try {
+          return JSON.parse(atob(_E_PROFILE_B));
+        } catch (e) {
+          return this.puzzles.ikhwan;
+        }
+      }
+      return this.puzzles.ikhwan;
     },
 
     // Compatibility Getters

@@ -50,35 +50,47 @@
     |_|   |_____|_| \_|\____|\___/|_____/_/   \_\_| |_/_/   \_\_| \_| |_|\_\/_/   \_\_/_/   \_\
     ================================================================================
     [ PENGOLAHAN KATA - STAGE 2: NEXUS GATEWAY ]
+    [ KHUSUS SESI PUTRA (IKHWAN) - KELAS 7, 8, 9 ]
     
-    Selamat datang di fase ke 2, dan kalian harus mengolah kata demi kata untuk masuk
-    ke portal aktivasi hadiah di akun kalian. Buka Inspect Element (F12) untuk melihat clue!
+    Selamat datang di Gate Terakhir! Misi kalian sangat mudah:
+    CUKUP ATUR & SUSUN KARAKTER HURUF DI BAWAH INI UNTUK SETIAP SLOT (SLOT 1 S/D 8)!
+    Semua kata sudah langsung berurutan dari Slot 1 sampai Slot 8.
     ================================================================================
 
     +------------------------------------------------------------------------------+
-    | 🧩 DOSSIER LOGIKA PENGOLAHAN KATA (8 TEKA-TEKI KATA & 5 ATURAN POSISI)       |
+    | 🔤 SUSUNAN KARAKTER HURUF (SLOT 1 S/D 8):                                    |
     +------------------------------------------------------------------------------+
 
-    FASE 1: PECAHKAN 8 KATA MISTERI DI BAWAH INI:
-    [1] KATA A (Anagram AI)         : Susun huruf dari "INIMEG" (Nama AI Google)
-    [2] KATA B (Caesar Shift -3)    : Geser mundur 3 huruf pada sandi "SOHPLXP"
-    [3] KATA C (Akronim Huruf Depan): Huruf awal dari kalimat "Pengaman Ruang Otorisasi"
-    [4] KATA D (Riddle Karakter)    : Kata 5 huruf dengan huruf tengah 'W' (Tenaga/Daya)
-    [5] KATA E (Simpul Cyber)       : Simpul jaringan 5 huruf dengan pola "N _ X _ S"
-    [6] KATA F (Fisika Komputasi)   : Istilah fisika 7 huruf berawalan 'Q' & berakhiran 'M'
-    [7] KATA G (Istilah Sandi)      : Kata 6 huruf untuk kunci sandi / algoritma enkripsi
-    [8] KATA H (Lawan Kata)         : Lawan kata bahasa Inggris dari "DEACTIVATE"
+    [SLOT 1] (6 Huruf) : Susun huruf  "I - N - I - M - E - G"
+                         👉 Petunjuk: Nama AI canggih buatan Google
+
+    [SLOT 2] (7 Huruf) : Susun huruf  "M - I - U - M - E - R - P"
+                         👉 Petunjuk: Tipe akun spesial / langganan berbayar
+
+    [SLOT 3] (3 Huruf) : Susun huruf  "O - R - P"
+                         👉 Petunjuk: Tingkatan versi lanjutan / profesional dari Gemini
+
+    [SLOT 4] (5 Huruf) : Susun huruf  "R - E - W - O - P"
+                         👉 Petunjuk: Bahasa Inggris untuk "Kekuatan / Daya / Tenaga"
+
+    [SLOT 5] (5 Huruf) : Susun huruf  "S - U - X - E - N"
+                         👉 Petunjuk: Simpul jaringan cyber / Nama kompetisi CTF kita
+
+    [SLOT 6] (7 Huruf) : Susun huruf  "M - U - T - N - A - U - Q"
+                         👉 Petunjuk: Istilah fisika & komputasi canggih masa depan
+
+    [SLOT 7] (6 Huruf) : Susun huruf  "R - E - H - P - I - C"
+                         👉 Petunjuk: Istilah algoritma kunci sandi / enkripsi rahasia
+
+    [SLOT 8] (8 Huruf) : Susun huruf  "E - T - A - V - I - T - C - A"
+                         👉 Petunjuk: Bahasa Inggris untuk "Nyalakan / Aktifkan Sistem"
 
     --------------------------------------------------------------------------------
-    FASE 2: ATURAN POSISI LOGIC GRID (SUSUN POSISI SLOT 1 S/D 8):
-    * ATURAN 1 : Kata hasil Anagram (Kata A) menempati Slot 1 paling depan.
-    * ATURAN 2 : Dua kata berpanjang 7 huruf (Kata B & Kata F) TIDAK BOLEH bersebelahan.
-    * ATURAN 3 : Kata D berada tepat di antara kata 3 huruf (Kata C) dan kata 5 huruf berakhiran 'S' (Kata E).
-    * ATURAN 4 : Rangkaian [Kata E] -> [Kata F] -> [Kata G] selalu bersambung secara berurutan.
-    * ATURAN 5 : Kata perintah aksi (Kata H) menempati Slot 8 paling akhir.
-
-    CHECKSUM PANJANG HURUF SLOT 1 S/D 8: [ 6, 7, 3, 5, 5, 7, 6, 8 ]
-    Format Kunci: KATA1-KATA2-KATA3-KATA4-KATA5-KATA6-KATA7-KATA8
+    CARA MENGISI FORM:
+    Gabungkan hasil susunan kata dari Slot 1 sampai Slot 8 dengan tanda strip (-):
+    SLOT1-SLOT2-SLOT3-SLOT4-SLOT5-SLOT6-SLOT7-SLOT8
+    
+    Checksum Panjang Huruf : [ 6, 7, 3, 5, 5, 7, 6, 8 ]
     ================================================================================
   -->
 
@@ -148,8 +160,8 @@
 
         <!-- ADMIN ACTION BUTTONS -->
         <div class="admin-survey-actions">
-          <button type="button" id="adminSwitchSessionBtn" class="admin-btn switch-session" title="Beralih antara Sesi Ikhwan & Sesi Akhwat">
-            🔀 SWITCH KE SESI AKHWAT
+          <button type="button" id="adminSwitchSessionBtn" class="admin-btn switch-session" title="Beralih Sesi">
+            🔀 SWITCH SESI
           </button>
           <button type="button" id="copyReportBtn" class="admin-btn copy-btn">
             📋 SALIN LAPORAN VOTE & PEMENANG
